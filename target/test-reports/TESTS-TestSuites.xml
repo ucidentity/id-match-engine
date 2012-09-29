@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="0" name="AlgorithmTypeControllerTests" package="dolphin" tests="1" time="0.377" timestamp="2012-09-18T16:55:46">
+      <properties />
+
+      <testcase classname="dolphin.AlgorithmTypeControllerTests" name="testSomething" time="0.258">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.AlgorithmTypeControllerTests.testSomething(AlgorithmTypeControllerTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="1" name="AlgorithmTypeTests" package="dolphin" tests="1" time="0.223" timestamp="2012-09-18T16:55:47">
+      <properties />
+
+      <testcase classname="dolphin.AlgorithmTypeTests" name="testSomething" time="0.155">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.AlgorithmTypeTests.testSomething(AlgorithmTypeTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="0" hostname="Macs-MacBook-Pro-2.local" id="2" name="MatchRuleControllerTests" package="dolphin" tests="1" time="0.261" timestamp="2012-09-18T16:55:47">
+      <properties />
+
+      <testcase classname="dolphin.MatchRuleControllerTests" name="testSomething" time="0.194" />
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="0" hostname="Macs-MacBook-Pro-2.local" id="3" name="MatchRuleTests" package="dolphin" tests="1" time="0.598" timestamp="2012-09-18T16:55:47">
+      <properties />
+
+      <testcase classname="dolphin.MatchRuleTests" name="testSomething" time="0.502" />
+
+      <system-out><![CDATA[--Output from testSomething--
+this is println from testSomething in MatchRuleTests
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="4" name="MatchingServiceTests" package="dolphin" tests="1" time="0.119" timestamp="2012-09-18T16:55:47">
+      <properties />
+
+      <testcase classname="dolphin.MatchingServiceTests" name="testSomething" time="0.021">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.MatchingServiceTests.testSomething(MatchingServiceTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="5" name="PersonControllerTests" package="dolphin" tests="1" time="0.256" timestamp="2012-09-18T16:55:48">
+      <properties />
+
+      <testcase classname="dolphin.PersonControllerTests" name="testSomething" time="0.186">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.PersonControllerTests.testSomething(PersonControllerTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="6" name="PersonTests" package="dolphin" tests="1" time="0.119" timestamp="2012-09-18T16:55:48">
+      <properties />
+
+      <testcase classname="dolphin.PersonTests" name="testSomething" time="0.055">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.PersonTests.testSomething(PersonTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="7" name="SoundexServiceTests" package="dolphin" tests="1" time="0.111" timestamp="2012-09-18T16:55:48">
+      <properties />
+
+      <testcase classname="dolphin.SoundexServiceTests" name="testSomething" time="0.014">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.SoundexServiceTests.testSomething(SoundexServiceTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="8" name="SourceAttributeControllerTests" package="dolphin" tests="1" time="0.239" timestamp="2012-09-18T16:55:48">
+      <properties />
+
+      <testcase classname="dolphin.SourceAttributeControllerTests" name="testSomething" time="0.171">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.SourceAttributeControllerTests.testSomething(SourceAttributeControllerTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="9" name="SourceAttributeTests" package="dolphin" tests="1" time="0.149" timestamp="2012-09-18T16:55:49">
+      <properties />
+
+      <testcase classname="dolphin.SourceAttributeTests" name="testSomething" time="0.054">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.SourceAttributeTests.testSomething(SourceAttributeTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="10" name="TargetAttributeControllerTests" package="dolphin" tests="1" time="0.243" timestamp="2012-09-18T16:55:49">
+      <properties />
+
+      <testcase classname="dolphin.TargetAttributeControllerTests" name="testSomething" time="0.174">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.TargetAttributeControllerTests.testSomething(TargetAttributeControllerTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="Macs-MacBook-Pro-2.local" id="11" name="TargetAttributeTests" package="dolphin" tests="1" time="0.056" timestamp="2012-09-18T16:55:49">
+      <properties />
+
+      <testcase classname="dolphin.TargetAttributeTests" name="testSomething" time="0.054">
+          <failure message="junit.framework.AssertionFailedError: Implement me" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: Implement me
+	at dolphin.TargetAttributeTests.testSomething(TargetAttributeTests.groovy:15)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSomething--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSomething--
+]]></system-err>
+
+  </testsuite>
+</testsuites>
