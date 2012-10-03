@@ -6,7 +6,7 @@
 
 <br><b>Enter the person profile to search or match </b>
 
-<g:form action="match2" >
+<g:form action="match" >
 <br><label for="firstname">Firstname :</label><g:textField name="firstName" value="" />
 <br><label for="lastname">Lastname :</label><g:textField name="lastName" value="" />
 <br><label for="daetOfBirth">Date Of Birth :</label><g:textField name="dateOfBirth" value="" />

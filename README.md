@@ -39,6 +39,7 @@ Fill in the search form, and "Run Match".
 You shall see the results for exact match and recon match where found.
 
 2. Curl
+curl -X POST -d "{"data": {"Name": "venu", "lastName": "alla", "social": "111222333"}}" -H "content-type: application/json" http://localhost:8080/dolphin/person/match2
 
 
 

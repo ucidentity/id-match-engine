@@ -2,6 +2,8 @@ package dolphin
 
 import grails.converters.JSON
 import grails.converters.XML
+import org.codehaus.groovy.grails.web.servlet.mvc.*;
+
 
 class PersonController {
   
@@ -15,6 +17,7 @@ class PersonController {
    }
    
   def match(){
+     println "params passed are ${params}"
      def persons = Person.list();
      def rules = MatchRule.list();
      def exactMatchMap= [:];
@@ -34,7 +37,10 @@ class PersonController {
 
 
   def match2(){
-
+     println "params passed are ${params}"
+     def jsonElement = JSON.parse(request);
+     println "json element is ${jsonElement}"
+     println "json data element is ${jsonElement.data}"
      def persons = Person.list();
      def rules = MatchRule.list();
      def exactMatchMap= [:];
@@ -43,7 +49,7 @@ class PersonController {
 
         def personScore = 0;
         rules.each() { rule ->
-            personScore = personScore + matchingService.executeRule(rule,person,params);
+            personScore = personScore + matchingService.executeRule(rule,person,jsonElement.data);
         }
        def resultPerson = person;
        if(personScore >= 90 ) exactMatchMap.put(person.uid,resultPerson);
