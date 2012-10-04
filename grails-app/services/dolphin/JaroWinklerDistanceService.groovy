@@ -1,5 +1,9 @@
 package dolphin;
 
+/*
+Software License and Copyright notice:
+http://ipira.berkeley.edu/software-copyright-notice-and-disclaimer
+*/
 
 /*
  * http://en.wikipedia.org/wiki/Jaro-Winkler_distance

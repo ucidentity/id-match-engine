@@ -1,5 +1,12 @@
 package dolphin
 
+/*
+Software License and Copyright notice:
+http://ipira.berkeley.edu/software-copyright-notice-and-disclaimer
+*/
+
+
+
 import grails.converters.JSON
 import grails.converters.XML
 import org.codehaus.groovy.grails.web.servlet.mvc.*;
