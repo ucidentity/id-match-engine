@@ -1,3 +1,4 @@
+<!--
 /* 
  * Copyright ©2012. The Regents of the University of California (Regents).
  * All Rights Reserved. Permission to use, copy, modify, and distribute this
@@ -22,6 +23,7 @@
  * HEREUNDER IS PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE
  * MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  */
+-->
 
 <html>
 <head>
