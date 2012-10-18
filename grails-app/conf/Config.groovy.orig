@@ -91,30 +91,3 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
-
-//custom configuration venu alla
-//this is where the incoming form params to registry columns is mapped
-//this allows to hide the internal column names and provide for a json api that is user friendly
-//most important, this decouples the internal column names from external api, so if a column name changes,
-//api users do not need to change anything, admin needs to just update this map.
-
-idMatch.schemaMap = [
-     fname : 'firstName',
-     lname : 'lastName',
-     dob : 'dateOfBirth',
-     ssn : 'social',
-     middle : 'middleInitial',
-     zip : 'zipCode'
-]
-
-//this is where the rules will go
-//map keys are registry columns, not incoming form parameters
-idMatch.ruleSet = [
-    social : [exactMatchscore:"50", algorithmMatchScore : "40", algorithm: "EditDistance", distance:"2"],
-    firstName : [ exactMatchscore:"20", algorithmMatchScore : "15", algorithm: "Soundex"],     
-    lastName : [ exactMatchscore:"30", algorithmMatchScore : "25", algorithm: "Soundex"],     
-]
-
-idMatch.cutOffScores = [ exact : '100', recon : '80' ]
-
-idMatch.algorithmSet = ["Soundex","NYSIIS","EditDistance","DaitchMakotoff"]

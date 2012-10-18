@@ -31,7 +31,8 @@ import org.codehaus.groovy.grails.web.servlet.mvc.*;
 
 
 class PersonController {
-  
+
+  def grailsApplication; //config object  
   def matchingService;
 
   def scaffold = true;
@@ -40,7 +41,8 @@ class PersonController {
        def persons = Person.list();
        return [ persons: persons ]
    }
-   
+  
+//this is a web form action? 
   def match(){
      println "params passed are ${params}"
      def persons = Person.list();
@@ -60,7 +62,7 @@ class PersonController {
      return [ persons: persons, exactMatchMap: exactMatchMap, reconMatchMap: reconMatchMap]
    }
 
-
+//this is json action?
   def match2(){
      println "params passed are ${params}"
      def jsonElement = JSON.parse(request);
@@ -83,8 +85,41 @@ class PersonController {
       def resultList = [];
       resultList.add(exactMatchMap);
       resultList.add(reconMatchMap);
-      render resultList as JSON;
+      render resultList as JSON; 
   }
+
+
+//this is json  action using file based configuration rules
+/*
+  for each rule, get key
+  get value from json input using this key
+  get value from registry using this key and schemaMap
+  if(compareSimple(inputVal,registryVal)) then add simple score
+  else (compareViaAlgorithm(inputVal,registryVal,algorithm), and add score
+  
+*/
+def match3(){
+    
+      def persons = Person.list();
+      def schemaMap = grailsApplication.config.idMatch.schemaMap;
+      def rules = grailsApplication.config.idMatch.ruleSet;
+      def ruleKeySet = rules.keySet();
+      def cutOffScoreSet = grailsApplication.config.idMatch.cutOffScoreSet;
+      def jsonDataMap = JSON.parse(request).data;
+      println "json map is "+ jsonDataMap;
+      persons.each(){ person ->
+            println "person is "+person;
+            ruleKeySet.each() { ruleKey ->
+             println "rule Key is " + ruleKey;
+             println "json input for this key is " + jsonDataMap.get(ruleKey); 
+
+         }
+    
+      }
+      render "ran match3 successfully"
+
+}
+
 
    
 
