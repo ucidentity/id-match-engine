@@ -53,6 +53,9 @@ class MatchingService {
     }
     }
 
+  /*
+   * over loaded method for json request, till I figure out how grails converts json request into GrailsParameterMap params
+   */
   def executeRule(MatchRule rule, Person person, java.util.Map params) {
       def result = 0;
       def attr = rule.attribute
@@ -72,6 +75,27 @@ class MatchingService {
              return 0;
     }
     }
+
+
+     /* takes ruleConfigMap, jsonInputValue, registryValue 
+      * and returns scores as set in the ruleConfigMap 
+      */ 
+     def executeRule(java.util.Map ruleConfigMap, String jsonValue, String registryValue ) {  
+       println "entered executeRule, ${ruleConfigMap}, ${jsonValue}, ${registryValue} "      
+       def exactScore = ruleConfigMap.exactMatchScore  as int;
+       def likeScore = ruleConfigMap.likeMatchScore as int;
+       def algorithm = ruleConfigMap.algorithm;
+       def distance = ruleConfigMap.distance;
+       
+       def isExact = jsonValue.equals(registryValue);
+       if(isExact) return exactScore;
+       def serviceName = algorithm+"Service";
+       println "serviceName is"+serviceName;
+       def myService = this.class.classLoader.loadClass("dolphin.${serviceName}", true, false)?.newInstance()
+       def isSimilar = "${serviceName}".compare(jsonValue,registryValue);
+       if(isSimilar) return likeMatchScore;
+
+     }
 
 
    //pass Algorithm, stringA, stringB

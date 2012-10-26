@@ -101,20 +101,39 @@ class PersonController {
 def match3(){
     
       def persons = Person.list();
-      def schemaMap = grailsApplication.config.idMatch.schemaMap;
       def rules = grailsApplication.config.idMatch.ruleSet;
       def ruleKeySet = rules.keySet();
+      def schemaMap = grailsApplication.config.idMatch.schemaMap;
       def cutOffScoreSet = grailsApplication.config.idMatch.cutOffScoreSet;
       def jsonDataMap = JSON.parse(request).data;
       println "json map is "+ jsonDataMap;
+      def exactResults = [];
+      def reconResults = [];
       persons.each(){ person ->
             println "person is "+person;
+            def personMatchScore = 0;
             ruleKeySet.each() { ruleKey ->
              println "rule Key is " + ruleKey;
-             println "json input for this key is " + jsonDataMap.get(ruleKey); 
-
+             def jsonDataValue = jsonDataMap.get(ruleKey).toString();
+             println "json data value is "+jsonDataValue;
+             def dbColName = schemaMap.get(ruleKey);
+             println "schemaMap value for ruleKey is ${dbColName}";
+             def registryValue = person."${dbColName}";
+             println "person col value for this key is ${registryValue}";
+             def ruleConfigMap = rules.get(ruleKey);
+             println "rule config is "+ruleConfigMap;
+             def ruleScore = matchingService.executeRule(ruleConfigMap, jsonDataValue,registryValue);
+             println "ruleScore is "+ruleScore;
+             personMatchScore = personMatchScore + ruleScore;
+ 
          }
-    
+             println "personMatchScore is "+personMatchScore; 
+             if (personMatchScore > cutOffScoreSet.get("exact")) exactResults.add(person.uid);
+             else if ((personMatchScore > cutOffScoreSet.get("recon"))
+                       &&
+                       (personMatchScore < cutOffScoreSet.get("match") )
+                      )
+                      reconResults.add(person.uid);
       }
       render "ran match3 successfully"
 
