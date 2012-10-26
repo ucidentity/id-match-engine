@@ -26,23 +26,16 @@ package dolphin
 
 class SourceAttributeController {
 
-/* custom controller code begin */
     def scaffold = true;
+    def grailsApplication;
 
-    def mylist() { 
-       def mylist = SourceAttribute.list();
-       render "<br>source attr is "
-       mylist.each{
-            render "<br>" +it.name 
-       }
+    //this is the default controller code
+    def index() {
+       
+        render "real attr for fname is ${grailsApplication.config.idMatch.ruleSet}"
+
      }
-/* custom controller code end */
 
 
-
-/*
-    this is the default controller code
-    def index() { }
-
-*/
+  
 }

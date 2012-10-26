@@ -49,4 +49,10 @@ class EditDistanceService {
 
    }
 
+   def compare(String s, String t, String distance ) {
+      def realDistance = new OysterEditDistance().computeDistance(s,t);
+      if(realDistance > distance ) return false;
+      else return true;
+   }
+
 }

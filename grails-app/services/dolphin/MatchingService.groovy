@@ -91,9 +91,14 @@ class MatchingService {
        if(isExact) return exactScore;
        def serviceName = algorithm+"Service";
        println "serviceName is"+serviceName;
+       def isSimilar = false;
        def myService = this.class.classLoader.loadClass("dolphin.${serviceName}", true, false)?.newInstance()
-       def isSimilar = "${serviceName}".compare(jsonValue,registryValue);
-       if(isSimilar) return likeMatchScore;
+       if(distance == null) {
+        isSimilar = myService.compare(jsonValue,registryValue);
+        println "isSimilar is "+isSimilar;
+       }else 
+       isSimilar = myService.compare(jsonValue,registryValue, distance);
+       if(isSimilar) return likeScore;  else return 0;
 
      }
 
