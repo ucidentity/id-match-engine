@@ -104,7 +104,10 @@ def match3(){
       def rules = grailsApplication.config.idMatch.ruleSet;
       def ruleKeySet = rules.keySet();
       def schemaMap = grailsApplication.config.idMatch.schemaMap;
-      def cutOffScoreSet = grailsApplication.config.idMatch.cutOffScoreSet;
+      def cutOffScoreMap = grailsApplication.config.idMatch.cutOffScoreMap;
+      println "cutOffScoreMap is "+cutOffScoreMap;
+      def exactCutOffScore = cutOffScoreMap.get("exact") as int;
+      def reconCutOffScore = cutOffScoreMap.get("recon") as int;
       def jsonDataMap = JSON.parse(request).data;
       println "json map is "+ jsonDataMap;
       def exactResults = [];
@@ -128,14 +131,20 @@ def match3(){
  
          }
              println "personMatchScore is "+personMatchScore; 
-             if (personMatchScore > cutOffScoreSet.get("exact")) exactResults.add(person.uid);
-             else if ((personMatchScore > cutOffScoreSet.get("recon"))
+             if (personMatchScore == exactCutOffScore.intValue() ) {
+                exactResults.add(person.uid);
+                println "exact match results are "+exactResults;
+             }
+             else if ((personMatchScore > reconCutOffScore.intValue())
                        &&
-                       (personMatchScore < cutOffScoreSet.get("match") )
+                       (personMatchScore <  exactCutOffScore.intValue() )
                       )
-                      reconResults.add(person.uid);
+                     {  reconResults.add(person.uid); println "recon match results are "+reconResults; }
       }
-      render "ran match3 successfully"
+       def response = [:];
+       response.put("exact" , exactResults);
+       response.put("recon" , reconResults);
+       render response;
 
 }
 

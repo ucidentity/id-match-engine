@@ -30,7 +30,8 @@ import edu.ualr.oyster.utilities.*;
 class MatchingService {
  
 
-    def soundexService;
+    def soundexService; //TODO: Remove this as this is dynamically loaded 
+    def grailsApplication;
 
    //pass MatchRule, Person and Params object
    //return the score of that rule if match found
@@ -90,9 +91,11 @@ class MatchingService {
        def isExact = jsonValue.equals(registryValue);
        if(isExact) return exactScore;
        def serviceName = algorithm+"Service";
-       println "serviceName is"+serviceName;
+       println "derived serviceName is "+serviceName;
        def isSimilar = false;
-       def myService = this.class.classLoader.loadClass("dolphin.${serviceName}", true, false)?.newInstance()
+       def className = "dolphin."+serviceName;
+       def myService = this.class.classLoader.loadClass(className.toString(), true)?.newInstance()
+       //def myService = grailsApplication.classLoader.loadClass("dolphin.${serviceName}").newInstance();
        if(distance == null) {
         isSimilar = myService.compare(jsonValue,registryValue);
         println "isSimilar is "+isSimilar;
