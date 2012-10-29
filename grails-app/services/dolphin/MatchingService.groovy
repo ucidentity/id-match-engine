@@ -96,11 +96,12 @@ class MatchingService {
        def className = "dolphin."+serviceName;
        def myService = this.class.classLoader.loadClass(className.toString(), true)?.newInstance()
        //def myService = grailsApplication.classLoader.loadClass("dolphin.${serviceName}").newInstance();
+       println myService.toString();
        if(distance == null) {
         isSimilar = myService.compare(jsonValue,registryValue);
-        println "isSimilar is "+isSimilar;
        }else 
-       isSimilar = myService.compare(jsonValue,registryValue, distance);
+       { isSimilar = myService.compare(jsonValue,registryValue, distance); }
+       println "compare returned isSimilar as "+isSimilar;
        if(isSimilar) return likeScore;  else return 0;
 
      }

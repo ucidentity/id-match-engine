@@ -49,9 +49,12 @@ class EditDistanceService {
 
    }
 
-   def compare(String s, String t, String distance ) {
-      def realDistance = new OysterEditDistance().computeDistance(s,t);
-      if(realDistance > distance ) return false;
+   def compare(String s, String t, String distance) {
+      println "EditDistance compare called"
+      def distanceInt = distance as int;
+      def realDistance = new OysterEditDistance().computeDistance(s,t) as int;
+      println "RealDistance computed is ${realDistance}"
+      if(realDistance.intValue() > distanceInt.intValue() ) return false;
       else return true;
    }
 
