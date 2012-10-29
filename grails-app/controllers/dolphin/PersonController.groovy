@@ -144,7 +144,7 @@ def match3(){
        def response = [:];
        response.put("exact" , exactResults);
        response.put("recon" , reconResults);
-       render response;
+       render response as JSON;
 
 }
 
