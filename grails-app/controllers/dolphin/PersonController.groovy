@@ -132,14 +132,14 @@ def match3(){
          }
              println "personMatchScore is "+personMatchScore; 
              if (personMatchScore == exactCutOffScore.intValue() ) {
-                exactResults.add(person.uid);
+                exactResults.add(person.uid +":"+personMatchScore);
                 println "exact match results are "+exactResults;
              }
              else if ((personMatchScore > reconCutOffScore.intValue())
                        &&
                        (personMatchScore <  exactCutOffScore.intValue() )
                       )
-                     {  reconResults.add(person.uid); println "recon match results are "+reconResults; }
+                     {  reconResults.add(person.uid+":"+personMatchScore); println "recon match results are "+reconResults; }
       }
        def response = [:];
        response.put("exact" , exactResults);

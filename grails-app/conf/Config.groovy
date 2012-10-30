@@ -105,6 +105,9 @@ idMatch.schemaMap = [
      ssn : 'social',
      middle : 'middleInitial',
      zip : 'zipCode'
+     stuId : 'studentId'
+     empId : 'employeeId'
+     affId : 'affiliateId'
 ]
 
 //this is where the rules will go
