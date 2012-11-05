@@ -34,62 +34,9 @@ class PersonController {
 
   def grailsApplication; //config object  
   def matchingService;
-
-  def scaffold = true;
-
-  def search(){
-       def persons = Person.list();
-       return [ persons: persons ]
-   }
-  
-//this is a web form action? 
-  def match(){
-     println "params passed are ${params}"
-     def persons = Person.list();
-     def rules = MatchRule.list();
-     def exactMatchMap= [:];
-     def reconMatchMap = [:];
-     persons.each(){person ->
-
-        def personScore = 0;
-        rules.each() { rule ->
-            personScore = personScore + matchingService.executeRule(rule,person,params);
-        }
-       if(personScore >= 90 ) exactMatchMap.put(person.firstName+"-"+person.lastName,personScore);
-       if(personScore < 90)  reconMatchMap.put(person.firstName+"-"+person.lastName,personScore);
-
-      }
-     return [ persons: persons, exactMatchMap: exactMatchMap, reconMatchMap: reconMatchMap]
-   }
-
-//this is json action?
-  def match2(){
-     println "params passed are ${params}"
-     def jsonElement = JSON.parse(request);
-     println "json element is ${jsonElement}"
-     println "json data element is ${jsonElement.data}"
-     def persons = Person.list();
-     def rules = MatchRule.list();
-     def exactMatchMap= [:];
-     def reconMatchMap = [:];
-     persons.each(){person ->
-
-        def personScore = 0;
-        rules.each() { rule ->
-            personScore = personScore + matchingService.executeRule(rule,person,jsonElement.data);
-        }
-       def resultPerson = person;
-       if(personScore >= 90 ) exactMatchMap.put(person.uid,resultPerson);
-       if(personScore < 90  && personScore > 50)  reconMatchMap.put(person.uid,resultPerson);
-      }
-      def resultList = [];
-      resultList.add(exactMatchMap);
-      resultList.add(reconMatchMap);
-      render resultList as JSON; 
-  }
+  def securityService;
 
 
-//this is json  action using file based configuration rules
 /*
   for each rule, get key
   get value from json input using this key
@@ -98,8 +45,9 @@ class PersonController {
   else (compareViaAlgorithm(inputVal,registryVal,algorithm), and add score
   
 */
-def match3(){
-    
+def match(){
+      def failure = [reason : "failed authentication"];
+      if(securityService.login(request) == false) render failure as JSON; 
       def persons = Person.list();
       def rules = grailsApplication.config.idMatch.ruleSet;
       def ruleKeySet = rules.keySet();
@@ -112,9 +60,12 @@ def match3(){
       println "json map is "+ jsonDataMap;
       def exactResults = [];
       def reconResults = [];
+      //for each person in the person list
       persons.each(){ person ->
             println "person is "+person;
             def personMatchScore = 0;
+            def personProfile = [:];
+            //for each rule in a given rule list
             ruleKeySet.each() { ruleKey ->
              println "rule Key is " + ruleKey;
              def jsonDataValue = jsonDataMap.get(ruleKey).toString();
@@ -128,18 +79,25 @@ def match3(){
              def ruleScore = matchingService.executeRule(ruleConfigMap, jsonDataValue,registryValue);
              println "ruleScore is "+ruleScore;
              personMatchScore = personMatchScore + ruleScore;
+             personProfile.put(ruleKey, registryValue);
  
          }
              println "personMatchScore is "+personMatchScore; 
              if (personMatchScore == exactCutOffScore.intValue() ) {
-                exactResults.add(person.uid +":"+personMatchScore);
+                personProfile.put("uid", person.uid); 
+                personProfile.put("personMatchScore", personMatchScore);
+                exactResults.add(personProfile);
                 println "exact match results are "+exactResults;
              }
              else if ((personMatchScore > reconCutOffScore.intValue())
                        &&
                        (personMatchScore <  exactCutOffScore.intValue() )
                       )
-                     {  reconResults.add(person.uid+":"+personMatchScore); println "recon match results are "+reconResults; }
+                     {  personProfile.put("uid", person.uid); 
+                        personProfile.put("personMatchScore", personMatchScore);
+                        reconResults.add(personProfile); 
+                        println "recon match results are "+reconResults; 
+                     }
       }
        def response = [:];
        response.put("exact" , exactResults);
@@ -148,14 +106,10 @@ def match3(){
 
 }
 
-
-   
-
-   def xml(){
-      def persons = Person.list();
-      render persons as XML;
-   }
- 
+  /*
+   * deprecated
+   *
+   */ 
    def json(){
       def persons = Person.list();
       render persons as JSON;

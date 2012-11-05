@@ -104,9 +104,9 @@ idMatch.schemaMap = [
      dob : 'dateOfBirth',
      ssn : 'social',
      middle : 'middleInitial',
-     zip : 'zipCode'
-     stuId : 'studentId'
-     empId : 'employeeId'
+     zip : 'zipCode',
+     stuId : 'studentId',
+     empId : 'employeeId',
      affId : 'affiliateId'
 ]
 
@@ -123,3 +123,11 @@ idMatch.ruleSet = [
 idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
 
 idMatch.algorithmSet = ["Soundex","NYSIIS","EditDistance","DaitchMakotoff"]
+
+idMatch.securityKeys = [
+
+   tester1 : '123456',
+   tester2 : '234567',
+   tester3 : '345678'
+
+]
