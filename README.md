@@ -47,14 +47,24 @@ idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
 
 #Search
 1. Curl
-curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333"}}" -H "content-type: application/json" http://localhost:8080/dolphin/person/match3
-(pipe for formatting the response | python -m json.tool )
-2.Response is similar to (only uids and scores are returned):
+curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/person/match
+NOTE: pipe for formatting the response { | python -m json.tool }
+
+2.Response is similar to :
 {
-    "exact": [
-        "4444:100"
-    ], 
-    "recon": []
+    "exact": [], 
+    "input": {
+        "fName": "venu", 
+        "lName": "allo", 
+        "ssn": 111222333
+    }, 
+    "recon": [
+        {
+            "fName": "venu", 
+            "lName": "alla", 
+            "personMatchScore": 95, 
+            "ssn": "111222333", 
+            "uid": "1111"
+        }
+    ]
 }
-
-

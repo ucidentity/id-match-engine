@@ -100,6 +100,7 @@ def match(){
                      }
       }
        def response = [:];
+       response.put("input", jsonDataMap)
        response.put("exact" , exactResults);
        response.put("recon" , reconResults);
        render response as JSON;
