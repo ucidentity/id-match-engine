@@ -33,50 +33,6 @@ class MatchingService {
     def soundexService; //TODO: Remove this as this is dynamically loaded 
     def grailsApplication;
 
-   //pass MatchRule, Person and Params object
-   //return the score of that rule if match found
-    def executeRule(MatchRule rule, Person person, org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap params) {
-      def result = 0;
-      def attr = rule.attribute
-      def score = rule.score
-      def algorithm = rule.algorithm
-      switch (rule.attribute) {
-         case "social":
-             if(runAlgorithm(person.social,params.social.toString(),algorithm) < 3){ println("returning ${score}"); return score;} else { println "returning zero"; return 0;}
-         case "firstname":
-             if(runAlgorithm(person.firstName,params.firstName,algorithm)) return score; else return 0;
-         case "lastname":
-             if(runAlgorithm(person.lastName,params.lastName,algorithm)) return score; else return 0;
-         case "dob":
-             if(runAlgorithm(person.dateOfBirth,params.dateOfBirth,algorithm)) return score; else return 0;
-         default:
-             return 0;
-    }
-    }
-
-  /*
-   * over loaded method for json request, till I figure out how grails converts json request into GrailsParameterMap params
-   */
-  def executeRule(MatchRule rule, Person person, java.util.Map params) {
-      def result = 0;
-      def attr = rule.attribute
-      def score = rule.score
-      def algorithm = rule.algorithm
-      switch (rule.attribute) {
-         case "social":
-     println "params object from jsonElement.data is ${params}"
-             if(runAlgorithm(person.social,params.social.toString(),algorithm) < 3){ println("returning ${score}"); return score;} else { println "returning zero"; return 0;}
-         case "firstname":
-             if(runAlgorithm(person.firstName,params.firstName,algorithm)) return score; else return 0;
-         case "lastname":
-             if(runAlgorithm(person.lastName,params.lastName,algorithm)) return score; else return 0;
-         case "dob":
-             if(runAlgorithm(person.dateOfBirth,params.dateOfBirth,algorithm)) return score; else return 0;
-         default:
-             return 0;
-    }
-    }
-
 
      /* takes ruleConfigMap, jsonInputValue, registryValue 
       * and returns scores as set in the ruleConfigMap 
@@ -106,7 +62,9 @@ class MatchingService {
 
      }
 
-
+   /*
+    * deprecate this one, not used any more
+    */
    //pass Algorithm, stringA, stringB
    def runAlgorithm(String stringA, String stringB,String algorithm){
  
