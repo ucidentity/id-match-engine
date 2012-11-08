@@ -99,15 +99,11 @@ log4j = {
 //api users do not need to change anything, admin needs to just update this map.
 
 idMatch.schemaMap = [
-     fName : 'firstName',
-     lName : 'lastName',
-     dob : 'dateOfBirth',
-     ssn : 'social',
-     middle : 'middleInitial',
-     zip : 'zipCode',
-     stuId : 'studentId',
-     empId : 'employeeId',
-     affId : 'affiliateId'
+     empId : 'attr1',
+     ssn : 'attr2',
+     dob : 'attr3',
+     fName : 'attr4',
+     lName : 'attr5',
 ]
 
 //this is where the rules will go
@@ -115,9 +111,11 @@ idMatch.schemaMap = [
 //use the same keys as in schemaMap
 //this decouples it from database column name changes
 idMatch.ruleSet = [
-    ssn : [exactMatchScore:"50", likeMatchScore : "40", algorithm: "EditDistance", distance:"2"],
-    fName : [ exactMatchScore:"20", likeMatchScore : "15", algorithm: "Soundex"],     
-    lName : [ exactMatchScore:"30", likeMatchScore : "25", algorithm: "Soundex"],     
+    empId: [exactMatchScore:"50", likeMatchScore : "20", algorithm: "EditDistance", distance:"1"],
+    ssn : [exactMatchScore:"50", likeMatchScore : "30", algorithm: "EditDistance", distance:"1"],
+    dob: [exactMatchScore:"10", likeMatchScore : "5", algorithm: "EditDistance", distance:"1"],
+    fName : [ exactMatchScore:"20", likeMatchScore : "10", algorithm: "Soundex"],     
+    lName : [ exactMatchScore:"30", likeMatchScore : "20", algorithm: "Soundex"],     
 ]
 
 idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]

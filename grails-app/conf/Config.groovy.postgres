@@ -99,11 +99,11 @@ log4j = {
 //api users do not need to change anything, admin needs to just update this map.
 
 idMatch.schemaMap = [
+     empId : 'attr1',
+     ssn : 'attr2',
+     dob : 'attr3',
      fName : 'attr4',
      lName : 'attr5',
-     dob : 'attr3',
-     ssn : 'attr2',
-     empId : 'attr1',
 ]
 
 //this is where the rules will go
@@ -111,11 +111,11 @@ idMatch.schemaMap = [
 //use the same keys as in schemaMap
 //this decouples it from database column name changes
 idMatch.ruleSet = [
-    ssn : [exactMatchScore:"50", likeMatchScore : "30", algorithm: "EditDistance", distance:"1"],
     empId: [exactMatchScore:"50", likeMatchScore : "20", algorithm: "EditDistance", distance:"1"],
+    ssn : [exactMatchScore:"50", likeMatchScore : "30", algorithm: "EditDistance", distance:"1"],
+    dob: [exactMatchScore:"10", likeMatchScore : "5", algorithm: "EditDistance", distance:"1"],
     fName : [ exactMatchScore:"20", likeMatchScore : "10", algorithm: "Soundex"],     
     lName : [ exactMatchScore:"30", likeMatchScore : "20", algorithm: "Soundex"],     
-    dob: [exactMatchScore:"10", likeMatchScore : "5", algorithm: "EditDistance", distance:"1"],
 ]
 
 idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
