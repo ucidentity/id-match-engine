@@ -27,7 +27,11 @@ package dolphin
 
 
 class Person {
-
+    //attr1 column replaces the default grails id column
+    static mapping = { 
+            id name: 'attr1'
+            version false
+     }
     String attr1
     String attr2
     String attr3
