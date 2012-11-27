@@ -84,7 +84,7 @@ def match(){
          }
              println "personMatchScore is "+personMatchScore; 
              if (personMatchScore == exactCutOffScore.intValue() ) {
-                personProfile.put("uid", person.uid); 
+                personProfile.put("person", person); 
                 personProfile.put("personMatchScore", personMatchScore);
                 exactResults.add(personProfile);
                 println "exact match results are "+exactResults;
@@ -93,7 +93,7 @@ def match(){
                        &&
                        (personMatchScore <  exactCutOffScore.intValue() )
                       )
-                     {  personProfile.put("uid", person.uid); 
+                     {  personProfile.put("person", person); 
                         personProfile.put("personMatchScore", personMatchScore);
                         reconResults.add(personProfile); 
                         println "recon match results are "+reconResults; 
@@ -112,6 +112,8 @@ def match(){
    *
    */ 
    def json(){
+      def failure = [reason : "failed authentication"];
+      if(securityService.login(request) == false) render failure as JSON; 
       def persons = Person.list();
       render persons as JSON;
    }

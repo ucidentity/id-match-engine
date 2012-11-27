@@ -5,6 +5,7 @@
 //                             "classpath:${appName}-config.groovy",
 //                             "file:${userHome}/.grails/${appName}-config.properties",
 //                             "file:${userHome}/.grails/${appName}-config.groovy"]
+grails.config.locations = [  "file:${userHome}/.grails/${appName}-external-config.groovy" ]
 
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -97,7 +98,7 @@ log4j = {
 //this allows to hide the internal column names and provide for a json api that is user friendly
 //most important, this decouples the internal column names from external api, so if a column name changes,
 //api users do not need to change anything, admin needs to just update this map.
-
+/*
 idMatch.schemaMap = [
      empId : 'attr1',
      ssn : 'attr2',
@@ -110,12 +111,15 @@ idMatch.schemaMap = [
 //map keys are registry columns, not incoming form parameters
 //use the same keys as in schemaMap
 //this decouples it from database column name changes
+//idMatch.ruleSet = [
+//    empId: [exactMatchScore:"50", likeMatchScore : "20", algorithm: "EditDistance", distance:"1"],
+//    ssn : [exactMatchScore:"50", likeMatchScore : "30", algorithm: "EditDistance", distance:"1"],
+//    dob: [exactMatchScore:"10", likeMatchScore : "5", algorithm: "EditDistance", distance:"1"],
+//    fName : [ exactMatchScore:"20", likeMatchScore : "10", algorithm: "Soundex"],     
+//    lName : [ exactMatchScore:"30", likeMatchScore : "20", algorithm: "Soundex"],     
+//]
 idMatch.ruleSet = [
-    empId: [exactMatchScore:"50", likeMatchScore : "20", algorithm: "EditDistance", distance:"1"],
-    ssn : [exactMatchScore:"50", likeMatchScore : "30", algorithm: "EditDistance", distance:"1"],
-    dob: [exactMatchScore:"10", likeMatchScore : "5", algorithm: "EditDistance", distance:"1"],
-    fName : [ exactMatchScore:"20", likeMatchScore : "10", algorithm: "Soundex"],     
-    lName : [ exactMatchScore:"30", likeMatchScore : "20", algorithm: "Soundex"],     
+    ssn : [exactMatchScore:"50", likeMatchScore : "30", algorithm: "EditDistance", distance:"1"]
 ]
 
 idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
@@ -129,3 +133,4 @@ idMatch.securityKeys = [
    tester3 : '345678'
 
 ]
+*/

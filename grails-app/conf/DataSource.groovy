@@ -1,9 +1,5 @@
 dataSource {
     pooled = true
-    driverClassName = "org.postgresql.Driver"
-    dialect = "org.hibernate.dialect.PostgreSQLDialect"
-    username = "postgres"
-    password = ""
 }
 
 hibernate {
@@ -16,7 +12,11 @@ environments {
     development {
         dataSource {
             dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
-            url = "jdbc:postgresql:postgres"
+            url = "jdbc:mysql://localhost/dolphin?useUniCode=yes&characterEncoding=UTF-8"
+            username = "root"
+            password = ""
+            driverClassName = "com.mysql.jdbc.Driver"
+            dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
         }
     }
     test {
@@ -28,10 +28,11 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            //url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-            //url = "jdbc:postgresql:postgres"
             url = "jdbc:postgresql://localhost/postgres"
-            pooled = true
+            username = "postgres"
+            password = ""
+            driverClassName = "org.postgresql.Driver"
+            dialect = "org.hibernate.dialect.PostgreSQLDialect"
             properties {
                maxActive = -1
                minEvictableIdleTimeMillis=1800000
