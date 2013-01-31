@@ -49,6 +49,7 @@ def match(){
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON; 
       def persons = Person.list();
+      println "DATE match called "+new Date();
       def rules = grailsApplication.config.idMatch.ruleSet;
       def ruleKeySet = rules.keySet();
       def schemaMap = grailsApplication.config.idMatch.schemaMap;
@@ -103,6 +104,7 @@ def match(){
        response.put("input", jsonDataMap)
        response.put("exact" , exactResults);
        response.put("recon" , reconResults);
+       println "Date match complete "+new Date(); 
        render response as JSON;
 
 }
