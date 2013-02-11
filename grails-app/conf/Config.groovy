@@ -94,6 +94,7 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+   debug 'org.hibernate.SQL' //venu.alla CUSTOM to print sql statements 
 }
 
 //CUSTOM: view reload and view directory is externalized

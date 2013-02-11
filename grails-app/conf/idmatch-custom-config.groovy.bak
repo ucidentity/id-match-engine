@@ -40,14 +40,14 @@ idMatch.securityKeys = [
 //do not execute rules that have no request values
 //example: if ssn is missing in request, do not run rules that have ssn
 idMatch.canonicalMatchRuleSet = [
-["ssn"],
-["fName","lName"]
+"ssn",
+"fName,lName,dob"
 ]
 //run these rules to find similar person entries
 //send them under similar 
 idMatch.fuzzyMatchRuleSet = [
-  ["confidence" : 90, "attr" : ["ssn","lName","dob"] ],
-  ["confidence" : 80, "attr" : ["ssn","fName","dob"] ] 
+  ["confidence" : 90, "attr" : "ssn,lName,dob" ],
+  ["confidence" : 80, "attr" : "ssn,fName,dob" ] 
 ]
 
 //configure the fuzzy logic to use for each attribute

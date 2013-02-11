@@ -137,13 +137,32 @@ def match(){
     def match2() {
  
       def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
+      def selectStmt;
+      def lastName = "alla"
+      canonicalMatchRuleSet.each {
+           if(it.size() == 1 ) { 
+             def realColName = grailsApplication.config.idMatch.schemaMap.get(it[0]);
+             selectStmt = "${realColName} = '004323'" 
+           }
+          else { println it.size() ; 
+                def subStmt; 
+                it.each{ attr -> 
+                  def realColName = grailsApplication.config.idMatch.schemaMap.get(attr);
+                  if(subStmt == null) subStmt = "${realColName} = '${lastName}'";
+                  else subStmt = "${subStmt} AND ${realColName} = '${lastName}'";
+                }
+                 selectStmt = "(${selectStmt}) OR (${subStmt})"
+         }
+      }
+      def hqlStmt = "from User where ${selectStmt}".trim();
+      println hqlStmt;
+      def results = User.findAll(hqlStmt); // uses HQL
+      println "results are "+results;
       def fuzzyMatchRuleSet  = grailsApplication.config.idMatch.fuzzyMatchRuleSet;         
       def attributeFuzzyMatchAlgorithm = grailsApplication.config.idMatch.attributeFuzzyMatchAlgorithm;
-      if(fuzzyMatchRuleSet == null ) println "fuzzyMatchRuleSet is null" else { println "${fuzzyMatchRuleSet[0]}  and ${fuzzyMatchRuleSet[1]} " }
-      if(attributeFuzzyMatchAlgorithm == null ) println "attribute fuzzy match is null" else println "${attributeFuzzyMatchAlgorithm.ssn}"
       render "${canonicalMatchRuleSet} ${fuzzyMatchRuleSet} ${attributeFuzzyMatchAlgorithm}" ;
 
     }
-  
+
 
 }
