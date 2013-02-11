@@ -37,6 +37,7 @@ class PersonController {
   def securityService;
 
 
+  def scaffold = true;
 /*
   for each rule, get key
   get value from json input using this key
@@ -46,41 +47,50 @@ class PersonController {
   
 */
 def match(){
+      println request
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON; 
-      def persons = Person.list();
-      println "DATE match called "+new Date();
       def rules = grailsApplication.config.idMatch.ruleSet;
-      def ruleKeySet = rules.keySet();
+      println "rules is "+rules;
+      def ruleKeySet = rules.keySet(); //get keys for the rules
       def schemaMap = grailsApplication.config.idMatch.schemaMap;
+      println "schemaMap is "+schemaMap;
       def cutOffScoreMap = grailsApplication.config.idMatch.cutOffScoreMap;
       println "cutOffScoreMap is "+cutOffScoreMap;
       def exactCutOffScore = cutOffScoreMap.get("exact") as int;
       def reconCutOffScore = cutOffScoreMap.get("recon") as int;
-      def jsonDataMap = JSON.parse(request).data;
+      def jsonDataMap = JSON.parse(request).data; //request has data as body field
       println "json map is "+ jsonDataMap;
+      def jsonDataMapKey = jsonDataMap.keySet();
+      println "json data key is "+jsonDataMapKey;
       def exactResults = [];
       def reconResults = [];
+      //
+      //get all persons in the registry
+      println "pre-fetch "+new Date();
+      def persons = User.list();
+      println "post fetch "+new Date();
       //for each person in the person list
       persons.each(){ person ->
             println "person is "+person;
             def personMatchScore = 0;
             def personProfile = [:];
             //for each rule in a given rule list
-            ruleKeySet.each() { ruleKey ->
+            jsonDataMapKey.each() { ruleKey ->
              println "rule Key is " + ruleKey;
-             def jsonDataValue = jsonDataMap.get(ruleKey).toString();
+             def jsonDataValue = jsonDataMap.get(ruleKey).toString(); //get value from json
              println "json data value is "+jsonDataValue;
-             def dbColName = schemaMap.get(ruleKey);
+             def dbColName = schemaMap.get(ruleKey); //get real col name from schema map
              println "schemaMap value for ruleKey is ${dbColName}";
              def registryValue = person."${dbColName}";
              println "person col value for this key is ${registryValue}";
-             def ruleConfigMap = rules.get(ruleKey);
+             def ruleConfigMap = rules.get(ruleKey); //get the rule configuration for a given key
              println "rule config is "+ruleConfigMap;
+             if(ruleConfigMap != null){
              def ruleScore = matchingService.executeRule(ruleConfigMap, jsonDataValue,registryValue);
              println "ruleScore is "+ruleScore;
              personMatchScore = personMatchScore + ruleScore;
-             personProfile.put(ruleKey, registryValue);
+             personProfile.put(ruleKey, registryValue)};
  
          }
              println "personMatchScore is "+personMatchScore; 
@@ -90,7 +100,7 @@ def match(){
                 exactResults.add(personProfile);
                 println "exact match results are "+exactResults;
              }
-             else if ((personMatchScore > reconCutOffScore.intValue())
+             else if ((personMatchScore >= reconCutOffScore.intValue())
                        &&
                        (personMatchScore <  exactCutOffScore.intValue() )
                       )
@@ -119,5 +129,21 @@ def match(){
       def persons = Person.list();
       render persons as JSON;
    }
+
+
+   /*
+    * match for new configuration
+    */
+    def match2() {
+ 
+      def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
+      def fuzzyMatchRuleSet  = grailsApplication.config.idMatch.fuzzyMatchRuleSet;         
+      def attributeFuzzyMatchAlgorithm = grailsApplication.config.idMatch.attributeFuzzyMatchAlgorithm;
+      if(fuzzyMatchRuleSet == null ) println "fuzzyMatchRuleSet is null" else { println "${fuzzyMatchRuleSet[0]}  and ${fuzzyMatchRuleSet[1]} " }
+      if(attributeFuzzyMatchAlgorithm == null ) println "attribute fuzzy match is null" else println "${attributeFuzzyMatchAlgorithm.ssn}"
+      render "${canonicalMatchRuleSet} ${fuzzyMatchRuleSet} ${attributeFuzzyMatchAlgorithm}" ;
+
+    }
+  
 
 }

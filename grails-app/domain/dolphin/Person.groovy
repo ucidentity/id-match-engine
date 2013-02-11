@@ -32,10 +32,9 @@ class Person {
             id name: 'attr1'
             version false
      }
-    String attr1
-    String attr2
-    String attr3
-    String attr4
-    String attr5
+    String attr1 //ssn
+    String attr2 //fname
+    String attr3 //lname
+    String attr4 //dob
     
 }

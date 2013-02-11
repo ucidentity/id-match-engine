@@ -31,6 +31,7 @@ class MatchingService {
  
 
     def soundexService; //TODO: Remove this as this is dynamically loaded 
+    def berkeleyEditDistanceService;
     def grailsApplication;
 
 
@@ -38,6 +39,10 @@ class MatchingService {
       * and returns scores as set in the ruleConfigMap 
       */ 
      def executeRule(java.util.Map ruleConfigMap, String jsonValue, String registryValue ) {  
+       def ctx = grailsApplication.mainContext;
+       println "grailsApplication object is "+grailsApplication;
+       println "ctx object is "+ctx;
+       //def myService = ctx.getBean(serviceName)
        println "entered executeRule, ${ruleConfigMap}, ${jsonValue}, ${registryValue} "      
        def exactScore = ruleConfigMap.exactMatchScore  as int;
        def likeScore = ruleConfigMap.likeMatchScore as int;
@@ -46,18 +51,16 @@ class MatchingService {
        
        def isExact = jsonValue.equals(registryValue);
        if(isExact) return exactScore;
-       def serviceName = algorithm+"Service";
+       def serviceName = "dolphin."+algorithm+"Service";
        println "derived serviceName is "+serviceName;
+       def  myService = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
        def isSimilar = false;
-       def className = "dolphin."+serviceName;
-       def myService = this.class.classLoader.loadClass(className.toString(), true)?.newInstance()
-       //def myService = grailsApplication.classLoader.loadClass("dolphin.${serviceName}").newInstance();
-       println myService.toString();
        if(distance == null) {
         isSimilar = myService.compare(jsonValue,registryValue);
+        println "compare for null distance returned " +isSimilar;
        }else 
-       { isSimilar = myService.compare(jsonValue,registryValue, distance); }
-       println "compare returned isSimilar as "+isSimilar;
+       { isSimilar = myService.compare(jsonValue,registryValue, distance as int); 
+       println "compare returned isSimilar as "+isSimilar; }
        if(isSimilar) return likeScore;  else return 0;
 
      }

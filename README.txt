@@ -3,43 +3,68 @@
 #Desc: id match grails app install/run/test instructions
 #ref: https://spaces.internet2.edu/display/cifer/ID+Match+Engine
 
-#Needs
+#Dependencies
 1. Grails 2.0 ( http://grails.org/ )
 2. Java 1.6+
 3. Needs MySql 6+ or any other RDBMS
 
-#Install
+#Setup
 1. cd to the folder where you find this README.txt
 2. cd grails-app/conf
-3. edit the DataSource.groovy to have proper backend connection info
-   the existing DataSource is configured for mysql running on localhost.
 
-#Startup
-1. cd to install folder 
-2. run grails
-3. run-app
-4. app will startup on localhost:8080/dolphin
 
-#Configure(Setup)
-1. Add Persons (current schema only supports firstname,lastname,ssn,uid,dateOfBirth,Middle)
-localhost:8080/dolphin/person
+A.Aegistry Setup
+1. Edit DataSource.groovy to point grails app to the database that contains the Person Registry
+Note: Current version supports only one table. 
 
-2. Add Attribute Schema (only: ssn,firstname,lastname,dateOfBirth)
-localhost:8080/dolphin/targetAttribute
+B.SchamaMap Setup
+1. Edit Config.groovy, 
+2. left-side is for external facing request attribute names, right-side is for internal database column names.
+ex:
+idMatch.schemaMap = [
+     fName : 'firstName',
+     lName : 'lastName',
+     dob : 'dateOfBirth',
+     ssn : 'social'
+}
 
-3. Add Match Rule(s)
-localhost:8080/dolphin/matchRule/form
-ex: Select the attribute, the algorithm to use for matching, and set the score for the match.
-Note: the total score can exceed 100, and this is a bug that will be fixed
+C. Match Rules Setup 
+1. Edit Config.groovy
+2. For each attribute that is part of the search filter, add a rule, assign scores for exact and like matches. provide algorithm to use for like matching.
+ex:
+idMatch.ruleSet = [
+    ssn : [exactMatchScore:"50", likeMatchScore : "40", algorithm: "EditDistance", distance:"2"],
+    fName : [ exactMatchScore:"20", likeMatchScore : "15", algorithm: "Soundex"],     
+    lName : [ exactMatchScore:"30", likeMatchScore : "25", algorithm: "Soundex"],     
+]
+
+D. Cut Off Score Setup
+1. Edit Config.groovy
+2. Provide cutoffs for exact match and recon match. 
+ex:
+idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
+
 
 #Search
-1. Browser
-http://localhost:8080/dolphin/Person/search
-Fill in the search form, and "Run Match".
-You shall see the results for exact match and recon match where found.
+1. Curl
+curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/person/match
+NOTE: pipe for formatting the response { | python -m json.tool }
 
-2. Curl
-
-
-
-
+2.Response is similar to :
+{
+    "exact": [], 
+    "input": {
+        "fName": "venu", 
+        "lName": "allo", 
+        "ssn": 111222333
+    }, 
+    "recon": [
+        {
+            "fName": "venu", 
+            "lName": "alla", 
+            "personMatchScore": 95, 
+            "ssn": "111222333", 
+            "uid": "1111"
+        }
+    ]
+}
