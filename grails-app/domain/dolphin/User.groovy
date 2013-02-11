@@ -9,4 +9,5 @@ class User {
     String attr2 //fname
     String attr3 //lname
     String attr4 //dob
+    String attr5 //city
 }

@@ -46,8 +46,4 @@ class SoundexService {
     def getCode(String s1){
         return new Soundex().getSoundex(s1);}
 
-    def compareNew(String s1, String s2){
-        println("inside SoundexService.newCompare");
-       return new Soundex().compareSoundex(s1,s2);
-     }
 }

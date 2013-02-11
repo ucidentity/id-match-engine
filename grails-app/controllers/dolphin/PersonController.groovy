@@ -135,6 +135,10 @@ def match(){
     * match for new configuration
     */
     def match2() {
+      def failure = [reason : "failed authentication"];
+      if(securityService.login(request) == false) render failure as JSON;
+      def jsonDataMap = JSON.parse(request).data; //request has data as body field
+      println "json map is "+ jsonDataMap;
  
       def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
       def selectStmt;
@@ -142,16 +146,24 @@ def match(){
       canonicalMatchRuleSet.each {
            if(it.size() == 1 ) { 
              def realColName = grailsApplication.config.idMatch.schemaMap.get(it[0]);
-             selectStmt = "${realColName} = '004323'" 
+             def jsonInputValue = jsonDataMap.get(it[0]);
+             if(jsonInputValue != null) 
+             selectStmt = "${realColName} = '${jsonInputValue}'" 
            }
           else { println it.size() ; 
                 def subStmt; 
+                def isEmpty = false; //making an assumption that json has all required field values
                 it.each{ attr -> 
+                  println "got ${attr} to make sql"
+                  def jsonInputValue = jsonDataMap.get(attr); 
+                  if(jsonInputValue == null) { println "${attr} value is empty"; isEmpty = true; }  
+                  if((jsonInputValue != null ) && (isEmpty != true) ) {
                   def realColName = grailsApplication.config.idMatch.schemaMap.get(attr);
-                  if(subStmt == null) subStmt = "${realColName} = '${lastName}'";
-                  else subStmt = "${subStmt} AND ${realColName} = '${lastName}'";
+                  if((subStmt == null)) subStmt = "${realColName} = '${jsonInputValue}'";
+                  else subStmt = "${subStmt} AND ${realColName} = '${jsonInputValue}'"; 
+                  }
                 }
-                 selectStmt = "(${selectStmt}) OR (${subStmt})"
+                 if(!isEmpty) { selectStmt = "(${selectStmt}) OR (${subStmt})" }
          }
       }
       def hqlStmt = "from User where ${selectStmt}".trim();
@@ -164,5 +176,14 @@ def match(){
 
     }
 
+   def debug(){
+      def jsonDataMap = JSON.parse(request).data; //request has data as body field
+      def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
+      def schemaMap = grailsApplication.config.idMatch.schemaMap;
+      render "${jsonDataMap} ${canonicalMatchRuleSet} ${schemaMap}" 
+
+
+    }
 
 }
+

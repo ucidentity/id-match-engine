@@ -6,9 +6,10 @@
 
 idMatch.schemaMap = [
        ssn : 'attr1',
-       dob : 'attr4',
      fName : 'attr2',
-     lName : 'attr3'
+     lName : 'attr3',
+       dob : 'attr4',
+     city  : 'attr5'
 ]
 
 //this is where the rules will go
@@ -28,11 +29,9 @@ idMatch.algorithmSet = ["Soundex","NYSIIS","EditDistance","DaitchMakotoff"]
 
 //Used for authn via Http Basic
 idMatch.securityKeys = [
-
    tester1 : '123456',
    tester2 : '234567',
    tester3 : '345678'
-
 ]
 
 //a list of rules, each rule by itself is canonical
@@ -40,14 +39,15 @@ idMatch.securityKeys = [
 //do not execute rules that have no request values
 //example: if ssn is missing in request, do not run rules that have ssn
 idMatch.canonicalMatchRuleSet = [
-"ssn",
-"fName,lName,dob"
+["ssn"],
+["dob","lName"],
+["fName","lName","city" ]
 ]
 //run these rules to find similar person entries
 //send them under similar 
 idMatch.fuzzyMatchRuleSet = [
-  ["confidence" : 90, "attr" : "ssn,lName,dob" ],
-  ["confidence" : 80, "attr" : "ssn,fName,dob" ] 
+  ["confidence" : 90, "attr" : ["ssn","lName","dob"] ],
+  ["confidence" : 80, "attr" : ["ssn","fName","dob"] ] 
 ]
 
 //configure the fuzzy logic to use for each attribute
