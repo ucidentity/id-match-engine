@@ -4,9 +4,11 @@ class BootStrap {
 
     def init = { servletContext ->
         
+        
         //def users = dolphin.User.list();
         //users.each{ it.delete(flush: true) } 
-        1.times { i ->
+        
+        5000.times { i ->
             def ssn = RandomStringUtils.random(9,"0123456789");
             def dob = RandomStringUtils.random(8,"0123456789"); 
             def fname = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");

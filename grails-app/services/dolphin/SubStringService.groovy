@@ -5,6 +5,7 @@ import edu.ualr.oyster.utilities.CharacterSubstringMatches;
 class SubStringService {
 
 
+    static CharacterSubstringMatches  singleton = new CharacterSubstringMatches();
    /**
      * Determines if a source and target are equivalent based on if the first x
      * characters starting from the left or right are the same, i.e. SubStrLeft(4) makes
@@ -19,10 +20,10 @@ class SubStringService {
      def result = false;
      if(startFrom == null ) return false;
      if("LAST".equals(startFrom.toUpperCase())){
-        return new CharacterSubStringMatches.left(s1,t1,length);
+        return singleton.left(s1,t1,length);
       }
      if("FIRST".equals(startFrom.toUpperCase())) {
-        return new CharacterSubStringMatches.right(s1,t1,length);
+        return singleton.right(s1,t1,length);
 
      }
      return result; 

@@ -33,18 +33,19 @@ http://ipira.berkeley.edu/software-copyright-notice-and-disclaimer
 import edu.ualr.oyster.utilities.OysterEditDistance;
 
 class EditDistanceService {
+ 
+   static OysterEditDistance  singleton = new OysterEditDistance();
 
    def computeDistance(java.lang.String s, java.lang.String t) { 
    
       println "computeDistance called on service"; 
-      return new OysterEditDistance().computeDistance(s,t);
+      return singleton.computeDistance(s,t);
    }
 
 
    def computeNormalizedScore (String s, String t){
       println "computeNormalizedScore called on service"
-      OysterEditDistance oed = new OysterEditDistance();
-      int distance = oed.computerDistance(s,t);
+      int distance = singleton.computerDistance(s,t);
       return oed.computeNormalizedScore(); 
 
    }
@@ -52,7 +53,7 @@ class EditDistanceService {
    def compare(String s, String t, String distance) {
       println "EditDistance compare called"
       def distanceInt = distance as int;
-      def realDistance = new OysterEditDistance().computeDistance(s,t) as int;
+      def realDistance = singleton.computeDistance(s,t) as int;
       println "RealDistance computed is ${realDistance}"
       if(realDistance.intValue() > distanceInt.intValue() ) return false;
       else return true;

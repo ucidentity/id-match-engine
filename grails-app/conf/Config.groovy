@@ -79,9 +79,9 @@ log4j = {
     // Example of changing the log pattern for the default console
     // appender:
     //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
+    appenders {
+        console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+    }
 
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -95,6 +95,8 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
    debug 'org.hibernate.SQL' //venu.alla CUSTOM to print sql statements 
+   debug 'grails.app' //venu.alla
+   debug 'java.lang'
 }
 
 //CUSTOM: view reload and view directory is externalized

@@ -3,9 +3,8 @@ package dolphin
 import edu.ualr.oyster.utilities.OysterUtilityTranspose;
 
 class TranspositionService {
-
-    def serviceMethod() {
-    }
+ 
+    static OysterUtilityTranspose singleton = new OysterUtilityTranspose();
 
    /**
      * One string differs from the other string by only one adjacent transposition (John - Jhon)
@@ -14,6 +13,9 @@ class TranspositionService {
      * @return true if single position transpose, otherwise false
      */
     def boolean compare(String s1, String t1){
-       return new OysterUtilityTranspose.differByTranspose(s1,t1);
+       //log.debug("Enter for "+s1+" and "+t1);
+       def result = singleton.differByTranspose(s1,t1);
+       log.debug("Exit with  ${result} for "+s1+" and "+t1);
+       return result;
     }
 }
