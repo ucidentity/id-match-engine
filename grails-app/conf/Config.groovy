@@ -8,7 +8,8 @@
 
 //calnet CUSTOM configuration
 //grails.config.locations = [  "file:${userHome}/.grails/idmatch-custom-config.groovy" ]
-grails.config.locations = [  "file:/Users/macadmin/.grails/idmatch-custom-config.groovy" ]
+grails.config.locations = [  "file:/usr/share/idmatch/idmatch-schema-and-rules.groovy",
+                             "file:/usr/share/idmatch/idmatch-perf-tuning.groovy"]
 
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -95,7 +96,9 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
    debug 'org.hibernate.SQL' //venu.alla CUSTOM to print sql statements 
-   debug 'grails.app' //venu.alla
+   //debug 'grails.app.service' //venu.alla
+   //debug 'grails.app.controller' //venu.alla
+   debug 'grails.app'
    debug 'java.lang'
 }
 

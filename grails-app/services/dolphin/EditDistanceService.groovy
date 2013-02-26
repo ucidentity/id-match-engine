@@ -37,24 +37,22 @@ class EditDistanceService {
    static OysterEditDistance  singleton = new OysterEditDistance();
 
    def computeDistance(java.lang.String s, java.lang.String t) { 
-   
-      println "computeDistance called on service"; 
+      log.debug("computeDistance called on service"); 
       return singleton.computeDistance(s,t);
    }
 
 
    def computeNormalizedScore (String s, String t){
-      println "computeNormalizedScore called on service"
+      log.debug("computeNormalizedScore called on service");
       int distance = singleton.computerDistance(s,t);
       return oed.computeNormalizedScore(); 
 
    }
 
    def compare(String s, String t, String distance) {
-      println "EditDistance compare called"
       def distanceInt = distance as int;
       def realDistance = singleton.computeDistance(s,t) as int;
-      println "RealDistance computed is ${realDistance}"
+      log.debug("distance computed for ${s} and ${t} is ${realDistance}");
       if(realDistance.intValue() > distanceInt.intValue() ) return false;
       else return true;
    }

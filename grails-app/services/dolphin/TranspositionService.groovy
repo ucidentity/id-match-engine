@@ -14,6 +14,7 @@ class TranspositionService {
      */
     def boolean compare(String s1, String t1){
        //log.debug("Enter for "+s1+" and "+t1);
+       if(s1.equalsIgnoreCase(t1)){return true}; //transposition not needed, just return true
        def result = singleton.differByTranspose(s1,t1);
        log.debug("Exit with  ${result} for "+s1+" and "+t1);
        return result;

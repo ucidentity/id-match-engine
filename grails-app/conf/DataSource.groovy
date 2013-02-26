@@ -9,7 +9,7 @@ hibernate {
 }
 // environment specific settings
 environments {
-    development {
+    test {
         dataSource {
             dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
             url = "jdbc:mysql://localhost/dolphin?useUniCode=yes&characterEncoding=UTF-8"
@@ -19,7 +19,7 @@ environments {
             dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
         }
     }
-    test {
+    development {
         dataSource {
             dbCreate = "update"
             url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"

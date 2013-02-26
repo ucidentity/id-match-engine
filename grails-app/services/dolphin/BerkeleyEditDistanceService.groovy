@@ -1,5 +1,11 @@
 package dolphin
 
+/*
+ * this class is a copy and paste of LED code from Oyster
+ * just wanted to check if I could change the code to exit if the distance exeeded maxDistance
+ * instead of computing the final distance say 5, why not exist as soon as it is apparent that it exceeded the maxDistance
+ * 
+ */
 class BerkeleyEditDistanceService {
 
 

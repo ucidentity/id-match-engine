@@ -38,12 +38,17 @@ import edu.ualr.oyster.utilities.Soundex;
 */
 
 class SoundexService {
+  
+    def static singleton = new Soundex();
 
     def compare(String s1, String s2) { 
-       println("inside SoundexService.compare");
-       return new Soundex().compareSoundex(s1,s2); }
+       log.debug("Enter");
+       def result = singleton.compareSoundex(s1,s2); 
+       log.debug("${result} for ${s1} and ${s2}");
+       return result;
+     }
 
     def getCode(String s1){
-        return new Soundex().getSoundex(s1);}
+        return singleton.getSoundex(s1);}
 
 }
