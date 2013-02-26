@@ -107,9 +107,10 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
       ConcurrentHashMap atomicMap = new ConcurrentHashMap();
       atomicMap.clear();
       ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
-      //def users = userService.getCache();
+      def users = userService.getCache();
+      def userCount = users.size();
       def start =  new Date();
-      userService.getCache().each { user ->
+      users.each { user ->
       //anonymous runnable
       Runnable worker = new Runnable(){
           public void run() {
@@ -135,7 +136,7 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
     log.debug("Exit");
 def timeTaken = (end.getTime() - start.getTime())/1000;
     log.debug("Exit");
-    return "Soundex for ${atomicCounter.intValue()} out of  ${User.count} started at ${start} ,and took ${timeTaken} with results ${atomicMap.size()} and ${atomicMap} "
+    return "Soundex for ${atomicCounter.intValue()} out of  ${userCount} started at ${start} ,and took ${timeTaken} with results ${atomicMap.size()} and ${atomicMap} "
  
   }
 

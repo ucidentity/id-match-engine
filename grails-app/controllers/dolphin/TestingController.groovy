@@ -18,16 +18,10 @@ class TestingController {
     def userService;
 
 
-    def transposeUnit(){
-       if(transpositionService.compare(params.s1, params.t1))
-        render "${params.s1} and ${params.t1} compare is true"
-       else render "${params.s1} and ${params.t1} compare is false"
-     }
-
-
-   /*
-    *
-    */
+    /*
+     * this is a test to time users.count invocations of transpositionService.compare
+     *
+     */
     def transpose() { 
       def input = params.source;
       def users = userService.getCache();
@@ -41,7 +35,10 @@ class TestingController {
       render "transpose for ${User.count()} users started at ${start} ,and ended at ${end} with results ${matchList} " 
      }
 
-   
+  
+   /*
+    * same as above except that it involves multi-threading
+    */ 
    def transposeOptimized() {
       def result =  fuzzyMatchService.getTransposeMatches(params.source);
       render result; 
@@ -49,12 +46,9 @@ class TestingController {
     }
  
 
-    def editDistanceUnit(){
-    def compareResult = editDistanceService.compare(params.s, params.t,"1");
-    render "${compareResult} for ${params.s} and ${params.t}"
-    }
-
-  
+    /*
+     * this is a test to time N invocations of editDistanceService.compare 
+     */
     def editDistance(){
       def input = params.source;
       def users = userService.getCache();
@@ -69,15 +63,23 @@ class TestingController {
 
      }
  
+    /*
+     * same as the above except multi-threaded 
+     */
     def editDistanceOptimized() {
           def result = fuzzyMatchService.getEditDistanceMatches(params.source);
           render result;
      }
 
 
+    /*
+     * test to time Soundex.compare invocations for N times
+     * sample results on mac laptop for 200K users: 29263, 29029, 28980, 28992
+     */
     def soundex() {
       def input = params.source;
       def users = userService.getCache();
+      def userCount = users.size();
       long start =  new Date().getTime();
       def matchList = [];
       users.each { user ->
@@ -85,21 +87,34 @@ class TestingController {
           if(soundexService.compare(input, user.attr2)) matchList.add(user);
        }
       long end = new Date().getTime();
-      render "soundex for ${User.count()} users took ${end-start} ms with results ${matchList} "
+      render "soundex for ${userCount} users took ${end-start} ms with results ${matchList} "
 
     }
- 
+
+   /*
+    * same as above except that multi-threading is involved
+    * sample test results with 8 threads and 200K db: 13127, 12941, 12937,
+    */ 
     def soundexOptimized(){
      def result = fuzzyMatchService.getSoundexMatches(params.source);
           render result;
      }
 
 
+    /* 
+     * ignore this for now, was meant to execute a Fuzzy Match Rule as configured
+     */
     def fuzzyRule(){
          def result = fuzzyMatchService.getMatchesByRule(params.source);
          render result;
      }
 
+
+    /*
+     * a test to time a simple while for 200K
+     * for each iteration, call Soundex.compare method
+     * sample results on my laptop in millisecs: 1290,1413,1406,1391 
+     */
     def javaWhile(){
      int counter = 0;
      int matchCounter = 0;
@@ -118,20 +133,30 @@ class TestingController {
         render "Time lapsed is for "+counter+" is "+(endTime - startTime);
    }
 
+  /*
+   * a test to time the for loop instead of the groovy users.each loop
+   * for each user, call Soundex.compare method
+   * sample results on my laptop for 200K users in db: 
+   */
    def javaUserIter(){
      java.util.List matchList = [];
      Soundex soundex = new Soundex();
+     String source = params.source;
      java.util.List users = userService.getCache();
      long start = new java.util.Date().getTime();
      for(User user: users) { log.debug("say something ${user.attr2}"); 
-                             if(soundex.compareSoundex("karl", user.attr2)) matchList.add(user); }
+                             if(soundex.compareSoundex(source, user.attr2)) matchList.add(user); }
      long end = new java.util.Date().getTime();
      log.debug("done ${end-start} and ${matchList}");
      render " ${new Date()} : done ${end-start}";
 
    }
  
-   def javaUserIterOptimized(){
+  /*
+   * not implemented
+   * this method is similar to javaUserIter except that concurrency is involved
+   */ 
+  def javaUserIterOptimized(){
              def result = fuzzyMatchService.getMatchesByJavaIter(params.source);
              render result;
    }
