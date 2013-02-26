@@ -1,6 +1,8 @@
 import org.apache.commons.lang.RandomStringUtils;
 
 class BootStrap {
+  
+    def userService;
 
     def init = { servletContext ->
         
@@ -18,6 +20,7 @@ class BootStrap {
 
         }
         println dolphin.User.count;
+        userService.warmUpCache();
      }
     
     def destroy = {

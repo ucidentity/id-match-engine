@@ -75,8 +75,9 @@ class TestingController {
     /*
      * test to time Soundex.compare invocations for N times
      * sample results on mac laptop for 200K users: 29263, 29029, 28980, 28992
+     * with grails restart and 3G free memory avl: 14607,11673,14408,
      */
-    def soundex() {
+    def groovyUserIter() {
       def input = params.source;
       def users = userService.getCache();
       def userCount = users.size();
@@ -87,17 +88,18 @@ class TestingController {
           if(soundexService.compare(input, user.attr2)) matchList.add(user);
        }
       long end = new Date().getTime();
-      render "soundex for ${userCount} users took ${end-start} ms with results ${matchList} "
+      render "${new Date() }: soundex for ${userCount} users took ${end-start} ms with results ${matchList} "
 
     }
 
    /*
     * same as above except that multi-threading is involved
     * sample test results with 8 threads and 200K db: 13127, 12941, 12937,
+    * after restart of grails and with 3G free memory avl: 11921, 11783,11776 
     */ 
     def soundexOptimized(){
      def result = fuzzyMatchService.getSoundexMatches(params.source);
-          render result;
+          render "${new Date()}"+ result;
      }
 
 
@@ -137,6 +139,7 @@ class TestingController {
    * a test to time the for loop instead of the groovy users.each loop
    * for each user, call Soundex.compare method
    * sample results on my laptop for 200K users in db: 
+   * when about 3.2G mem avl: 3094, 2985,3007,3005
    */
    def javaUserIter(){
      java.util.List matchList = [];

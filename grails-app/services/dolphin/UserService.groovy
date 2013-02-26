@@ -2,10 +2,14 @@ package dolphin
 
 class UserService {
  
-    def users;
+    static def users;
 
     def getCache() {
-      if(users==null) users = User.list();
+      warmUpCache();
       return users;
     }
+
+   def warmUpCache(){
+      if(users == null) users = User.list();
+   }
 }
