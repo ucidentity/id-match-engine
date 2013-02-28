@@ -1,7 +1,6 @@
 package dolphin
 
 class CanonicalMatchService {
- 
     def grailsApplication;
 
     /*
@@ -12,19 +11,27 @@ class CanonicalMatchService {
      * (ssn = foo) OR (dob = foo AND lname = foo )
      */
     def executeRules(java.util.Map jsonDataMap) {
-     def results = "";
+      log.debug("Enter");
+      def results = "";
       log.debug( "json map is "+ jsonDataMap );
       def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
-      def allRulesStmt;
+      log.debug(canonicalMatchRuleSet); 
+      def rulesCompositeStmt;
       canonicalMatchRuleSet.each {
            //if rule has only one attribute
+           log.debug("${it} and ${it.size()}");
            if(it.size() == 1 ) {
              def realColName = grailsApplication.config.idMatch.schemaMap.get(it[0]);
+             log.debug("real col name ${realColName}");
              def jsonInputValue = jsonDataMap.get(it[0]);
+             log.debug("json value for this attr "+jsonInputValue);
              if(jsonInputValue != null) {
-             def ruleStmt = "${realColName} = '${jsonInputValue}'"
-             allRulesStmt = allRulesStmt!=null? "${allRulesStmt} OR ${ruleStmt}" : ${ruleStmt}; }
-           } else { 
+               def ruleStmt = "${realColName} = '${jsonInputValue}'"
+               log.debug("rule stmt is ${ruleStmt}"); 
+               if(rulesCompositeStmt == null) rulesCompositeStmt  =  "(${ruleStmt})";  else {rulesCompositeStmt = "${rulesCompositeStmt} OR (${ruleStmt})";}
+               log.debug(rulesCompositeStmt);
+           }
+          }else{ 
                //if rule has more than one attribute, construct AND statement
                 log.debug( it.size() );
                 def ruleStmt;
@@ -37,18 +44,36 @@ class CanonicalMatchService {
                     def realColName = grailsApplication.config.idMatch.schemaMap.get(attr);
                     if((ruleStmt == null)) ruleStmt = "${realColName} = '${jsonInputValue}'";
                     else ruleStmt = "${ruleStmt} AND ${realColName} = '${jsonInputValue}'";
+                    log.debug(ruleStmt);
                   }
-                }
+                } //for each attr loop
                 //append to composite stmt 
-                 if(emptyAttributeCount == 0) { allRulesStmt = allRulesStmt!=null? "${allRulesStmt} OR ${ruleStmt}" : ${ruleStmt};}
+                 if(emptyAttributeCount == 0) { 
+                      if(rulesCompositeStmt == null) rulesCompositeStmt  =  "(${ruleStmt})";  
+                      else {rulesCompositeStmt = "${rulesCompositeStmt} OR (${ruleStmt})";}
+                  }
+                 log.debug(rulesCompositeStmt);
          }
-      }
-      def hqlStmt = "from User where ${selectStmt}".trim();
+      } // for each rule loop
+      def hqlStmt = "from User where ${rulesCompositeStmt}".trim();
       log.debug( hqlStmt );
-      results = User.findAll(hqlStmt); // uses HQL
+      results = User.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
       return results;
 
     }
 
+    String execute(java.lang.Object jsonObject){ 
+        return jsonObject.data;
+
+    }
+
+    String hqlTest(){
+      String hqlStmt = "from User where (attr1 = '111222333') OR (attr4 = '123456' AND attr3 = 'alla') OR (attr2 = 'venu' AND attr3 = 'alla' AND attr5 = 'Berkeley')";
+      log.debug("hql stmt is ${hqlStmt}");
+      java.util.List results = User.findAll(hqlStmt);
+      log.debug("results are "+results);
+      return results;
+
+}
 }
