@@ -10,7 +10,7 @@ class CanonicalMatchService {
      * if rule set is ["ssn","dob,lname"], then sql filter should be 
      * (ssn = foo) OR (dob = foo AND lname = foo )
      */
-    def executeRules(java.util.Map jsonDataMap) {
+    def java.util.List  executeRules(java.util.Map jsonDataMap) {
       log.debug("Enter");
       def results = "";
       log.debug( "json map is "+ jsonDataMap );
@@ -59,8 +59,13 @@ class CanonicalMatchService {
       log.debug( hqlStmt );
       results = User.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
-      return results;
-
+      java.util.ArrayList summaryResult = [];
+      results.each{ result -> 
+                    log.debug(result.attr1);
+                    summaryResult.add(result.attr1);
+                  }
+      log.debug(summaryResult);
+      return summaryResult;
     }
 
     String execute(java.lang.Object jsonObject){ 
@@ -68,12 +73,16 @@ class CanonicalMatchService {
 
     }
 
+    /*
+     * only for debugging purposes
+     */
     String hqlTest(){
-      String hqlStmt = "from User where (attr1 = '111222333') OR (attr4 = '123456' AND attr3 = 'alla') OR (attr2 = 'venu' AND attr3 = 'alla' AND attr5 = 'Berkeley')";
+      String hqlStmt = 
+        "from User where (attr1 = '111222333') OR (attr4 = '123456' AND attr3 = 'alla') OR (attr2 = 'venu' AND attr3 = 'alla' AND attr5 = 'Berkeley')";
       log.debug("hql stmt is ${hqlStmt}");
       java.util.List results = User.findAll(hqlStmt);
       log.debug("results are "+results);
       return results;
 
-}
+    }
 }
