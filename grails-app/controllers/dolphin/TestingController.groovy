@@ -75,7 +75,7 @@ class TestingController {
     /*
      * test to time Soundex.compare invocations for N times
      * sample results on mac laptop for 200K users: 29263, 29029, 28980, 28992
-     * with grails restart and 3G free memory avl: 14607,11673,14408,
+     * with grails restart and 3G free memory avl in millisecs: 14607,11673,14408,
      */
     def groovyUserIter() {
       def input = params.source;
@@ -85,6 +85,7 @@ class TestingController {
       def matchList = [];
       users.each { user ->
           println "running soundex on ${input} and ${user.attr2}"
+          //if you replace soundexService with soundex object, the timing is much faster
           if(soundexService.compare(input, user.attr2)) matchList.add(user);
        }
       long end = new Date().getTime();
@@ -95,7 +96,7 @@ class TestingController {
    /*
     * same as above except that multi-threading is involved
     * sample test results with 8 threads and 200K db: 13127, 12941, 12937,
-    * after restart of grails and with 3G free memory avl: 11921, 11783,11776 
+    * after restart of grails and with 3G free memory avl in millisecs: 11921, 11783,11776 
     */ 
     def soundexOptimized(){
      def result = fuzzyMatchService.getSoundexMatches(params.source);
@@ -139,11 +140,13 @@ class TestingController {
    * a test to time the for loop instead of the groovy users.each loop
    * for each user, call Soundex.compare method
    * sample results on my laptop for 200K users in db: 
-   * when about 3.2G mem avl: 3094, 2985,3007,3005
+   * when about 3.2G mem avl in millisecs: 3094, 2985,3007,3005
    */
    def javaUserIter(){
      java.util.List matchList = [];
-     Soundex soundex = new Soundex();
+     //Soundex soundex = new Soundex();
+     String serviceName = "edu.ualr.oyster.utilities."+"Soundex";
+     def  soundex = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
      String source = params.source;
      java.util.List users = userService.getCache();
      long start = new java.util.Date().getTime();

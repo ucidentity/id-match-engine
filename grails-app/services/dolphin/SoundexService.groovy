@@ -35,6 +35,7 @@ import edu.ualr.oyster.utilities.Soundex;
 /*
 * http://en.wikipedia.org/wiki/Soundex
 *
+* both strings need to start with  same character!! Karl and Carl are not same!!
 */
 
 class SoundexService {

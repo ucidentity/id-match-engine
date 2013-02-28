@@ -60,18 +60,6 @@ def fuzzyMatch(){
 
 
    /*
-    *  return canonical Match results for a given user input
-    */
-    def canonicalMatch() {
-      def failure = [reason : "failed authentication"];
-      if(securityService.login(request) == false) render failure as JSON;
-      def jsonDataMap = JSON.parse(request).data; //request has data as body field
-      render canonicalMatchService.executeRules(jsonDataMap);
-    }
-
-
-
-   /*
     * debug configuration
     */
    def debug(){
