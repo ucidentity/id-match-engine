@@ -13,35 +13,20 @@ class CanonicalController {
     def  canonicalMatchService;
     def securityService;
   
-  
-   /* 
-    @CompileStatic 
-    def runCompiled() { 
-      HttpServletRequest request;
-      def failure = [reason : "failed authentication"];
-      if(securityService.login(request) == false) render failure as JSON;
-      java.lang.Object jsonObject = JSON.parse(request); //add .data later to get to data
-      if(jsonObject == null) render "missing json data"
-      render canonicalMatchService.execute(jsonObject);
-    }
-   */
-
     /*
-     * 
+     * this is the main method that is called via this service 
      */
     def run(){
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON;
       def jsonDataMap = JSON.parse(request).data;
-      if(jsonDataMap == null) render "missing json data"
-      render canonicalMatchService.executeRules(jsonDataMap);
+      if(jsonDataMap) {
+      render canonicalMatchService.executeRules(jsonDataMap); }
+      else render "json is empty";
     }
  
-   def index() {
+    def index() {
       render "call run with json data"
     }
-   
-   def hqlTest() {
-      render canonicalMatchService.hqlTest();
-   }
+
 }
