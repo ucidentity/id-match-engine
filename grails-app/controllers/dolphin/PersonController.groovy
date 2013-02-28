@@ -40,15 +40,11 @@ class PersonController {
 
 
   def scaffold = true;
-/*
-  for each rule, get key
-  get value from json input using this key
-  get value from registry using this key and schemaMap
-  if(compareSimple(inputVal,registryVal)) then add simple score
-  else (compareViaAlgorithm(inputVal,registryVal,algorithm), and add score
-  
-*/
-def fuzzyMatch(){
+
+ /*
+  * returns matches based on fuzzy rules
+  */
+ def fuzzyMatch(){
       println request
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON; 
@@ -56,6 +52,18 @@ def fuzzyMatch(){
       def response  =  fuzzyMatchService.executeRulesV1(jsonDataMap);
       render response as JSON;
 
+}
+
+
+/*
+ * returns matches based on canonical rules
+ */
+def canonicalMatch(){
+      def failure = [reason : "failed authentication"];
+      if(securityService.login(request) == false) render failure as JSON;
+      def jsonDataMap = JSON.parse(request).data;
+      if(jsonDataMap) { render canonicalMatchService.executeRules(jsonDataMap) as JSON; }
+      else render "json is empty";
 }
 
 
