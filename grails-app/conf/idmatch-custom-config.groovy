@@ -39,24 +39,17 @@ idMatch.securityKeys = [
 //do not execute rules that have no request values
 //example: if ssn is missing in request, do not run rules that have ssn
 idMatch.canonicalMatchRuleSet = [
-["ssn"],
 ["dob","lName"],
+["ssn"],
 ["fName","lName","city" ]
 ]
+
 //run these rules to find similar person entries
-//send them under similar 
-idMatch.fuzzyMatchRuleSet = [
-  ["confidence" : 90, "attr" : ["ssn","lName","dob"] ],
-  ["confidence" : 80, "attr" : ["ssn","fName","dob"] ] 
-]
-
-//configure the fuzzy logic to use for each attribute
-//since phonetic only works compared strings have same starting char,
-//fetch 
-idMatch.attributeFuzzyMatchAlgorithm = [
-fName : [algorithm : "Soundex" ],
-lName : [algorithm : "Soundex" ],
-  ssn : [algorithm : "EditDistance", distance: 1 ],
-  dob : [algorithm : "EditDistance", distance : 1 ]
-
+//add attributes by priority, that is attributes that are more relevant should be added first and less relevant 
+//are added at the bottom, 
+//note: the more attributes to match, the more work to do, so make sure u r careful with this configuration
+idMatch.fuzzyMatchRule = [
+  ssn : [algorithm : "EditDistance", distance : "1"],
+  lName : [algorithm : "Transpose", distance : "1"],
+  fName : [alogrithm : "Soundex"] 
 ]

@@ -20,7 +20,15 @@ class CanonicalController {
       else render "json is empty";
     }
  
-    def index() {
+     /*
+      * redirect to usage
+      */
+       def index() { forward action: "usage"}
+
+     /*
+      * usage
+      */ 
+     def usage() {
 
       render """USAGE: curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clien-H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/canonical/run"""
     }

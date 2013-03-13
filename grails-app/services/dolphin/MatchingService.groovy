@@ -30,13 +30,14 @@ import edu.ualr.oyster.utilities.*;
 class MatchingService {
  
 
-    def soundexService; //TODO: Remove this as this is dynamically loaded 
-    def berkeleyEditDistanceService;
     def grailsApplication;
 
 
-     /* takes ruleConfigMap, jsonInputValue, registryValue 
+     /* 
+      *
+      * takes ruleConfigMap, jsonInputValue, registryValue 
       * and returns scores as set in the ruleConfigMap 
+      * DEPRECATED as scores are no longer computed, instead admin will give fuzzy match rules
       */ 
      def executeRule(java.util.Map ruleConfigMap, String jsonValue, String registryValue ) {  
        def ctx = grailsApplication.mainContext;
@@ -64,33 +65,5 @@ class MatchingService {
        if(isSimilar) return likeScore;  else return 0;
 
      }
-
-   /*
-    * deprecate this one, not used any more
-    */
-   //pass Algorithm, stringA, stringB
-   def runAlgorithm(String stringA, String stringB,String algorithm){
- 
-         log.info  "the passed in attr are  ${stringA} and ${stringB} and ${algorithm}"
-       switch (algorithm) {
-         case "Soundex":
-               def result = soundexService.compare(stringA,stringB);
-               println "the result of compare is "+result;
-               return result;
-         case "NYSIIS":
-               return NYSIISService.compare(stringA,stringB);
-         case "DaitchMokotoff":
-              return  DaitchMokotoffService.compare(stringA,stringB);
-         case "Levenstein":
-               return new OysterEditDistance().computeDistance(stringA,stringB);
-         case "JaroWinkler":
-              return JarowinklerDistanceService.computeDistance(stringA,stringB)
-         default:
-             return 0;
-
-
-
-   }
-}
 
 }

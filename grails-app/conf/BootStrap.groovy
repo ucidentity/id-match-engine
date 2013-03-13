@@ -8,12 +8,12 @@ class BootStrap {
         
          
         //only run this if set to true 
-        if(true) {        
+        if(false) {        
         //dont delete unless u want to reduce or existing user count
-        def users = dolphin.User.list();
-        users.each{ it.delete(flush: true) } 
+        //def users = dolphin.User.list();
+        //users.each{ it.delete(flush: true) } 
         long start = new Date().getTime();
-        500.times { i ->
+        34388.times { i ->
             def ssn = RandomStringUtils.random(9,"0123456789");
             def dob = RandomStringUtils.random(8,"0123456789"); 
             def fname = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");

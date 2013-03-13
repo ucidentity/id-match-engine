@@ -42,10 +42,13 @@ class SoundexService {
   
     def static singleton = new Soundex();
 
+    /*
+     * this method is faster after removing log.debug stmts
+     */
     def compare(String s1, String s2) { 
-       log.debug("Enter");
+       //log.debug("Enter");
        def result = singleton.compareSoundex(s1,s2); 
-       log.debug("${result} for ${s1} and ${s2}");
+       //log.debug("${result} for ${s1} and ${s2}");
        return result;
      }
 

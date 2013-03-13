@@ -11,5 +11,6 @@ class UserService {
 
    def warmUpCache(){
       if(users == null) users = User.list();
+      log.debug( "users found "+User.count());
    }
 }
