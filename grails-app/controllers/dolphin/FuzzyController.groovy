@@ -22,7 +22,7 @@ class FuzzyController {
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON;
       java.util.Map jsonDataMap = JSON.parse(request).data;
-      if(jsonDataMap) { render fuzzyMatchService.runMatch(jsonDataMap) as JSON; }
+      if(jsonDataMap) { render fuzzyMatchService.getMatches(jsonDataMap) as JSON; }
       else render "[error: "json request payload is empty"]";
    }
  

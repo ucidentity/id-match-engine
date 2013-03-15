@@ -20,29 +20,30 @@ class TransposeService {
        return result;
     }
 
-    def boolean findMatches(String inputValue, String registryColName, java.util.List users){
+    def java.util.List findMatches(String inputValue, String registryColName, java.util.List users){
       java.util.List results = [];
         OysterUtilityTranspose transpose = new OysterUtilityTranspose();
         users.each() { user ->
            String registryValue = user."${registryColName}"
            if(transpose.differByTranspose(inputValue,registryValue)) results.add(user);
-           log.debug("results found in Transpose ${results}");
+        }
+        log.debug("results found in Transpose ${results}");
         return results;
-    }
    }
      
     /*
      * currently oyster transpose always defaults to distance of 1 and hence this method is redundant  
      */
-    def boolean findMatches(String inputValue, String registryColName, java.util.List users, int distance){
-      java.util.List results = [];
+    def java.util.List findMatches(String inputValue, String registryColName, java.util.List users, int distance){
+        log.debug("entering findMatches");
+        java.util.List results = [];
         OysterUtilityTranspose transpose = new OysterUtilityTranspose();
         users.each() { user ->
            String registryValue = user."${registryColName}"
-           log.debug("comparing ${inputValue} and ${registryValue}");
+           //log.debug("comparing ${inputValue} and ${registryValue}");
            if(transpose.differByTranspose(inputValue,registryValue)) results.add(user);
-    }
-           log.debug("results found in Transpose ${results}");
-           return results;
+         }
+         log.debug("results found in Transpose ${results}");
+         return results;
    }
 }

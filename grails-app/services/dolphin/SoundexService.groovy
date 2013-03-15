@@ -56,16 +56,17 @@ class SoundexService {
         return singleton.getSoundex(s1);}
 
     def findMatches(String jsonValue, String registryColName, java.util.List users) {
+        log.debug("entering findMatches");
         java.util.List results = [];
         Soundex soundex = new Soundex();
         users.each() { user -> 
            String registryValue = user."${registryColName}"
            //only do soundex if first chars match, else skip
            if(String.valueOf(jsonValue.charAt(0)).equalsIgnoreCase(String.valueOf(registryValue.charAt(0)))) {
-           log.debug("comparing ${jsonValue} and ${registryValue}");
+           //log.debug("comparing ${jsonValue} and ${registryValue}");
            if(soundex.compareSoundex(jsonValue,registryValue)) results.add(user);}
         }
-        log.debug("results found in Soundex ${results}");
+        log.debug("${results.size()} results found in Soundex match");
         return results;
     
     }

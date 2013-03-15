@@ -107,7 +107,7 @@ class FuzzyMatchService {
      * then this rule should be created higher.
      * 
      */
-    def runMatch(java.util.Map jsonDataMap){
+    def getMatches(java.util.Map jsonDataMap){
       java.util.List results = [];
       log.debug( "json map is "+ jsonDataMap);
       def fuzzyRules = grailsApplication.config.idMatch.fuzzyMatchRuleSet;
@@ -146,12 +146,11 @@ class FuzzyMatchService {
          String distance = matchTypes.get(attr).distance;
          String registryName = schemaMap.get(attr);
          String inputValue = jsonDataMap.get(attr);
-         log.debug("inputValue = ${inputValue} and registryName = ${registryName} and serviceName = ${serviceName} and distance = ${distance}");
+         log.debug("doing a match for ${listToMatch.size()} with inputValue = ${inputValue} and registryName = ${registryName} and serviceName = ${serviceName} and distance = ${distance}");
          def  myService = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
          if(distance == null) { listToMatch =  myService.findMatches(inputValue,registryName,listToMatch); }
-         else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int); 
-                log.debug("matched list size is "+listToMatch.size());}
-      } 
+         else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int);  }
+        } 
       }
       log.debug("listToMatch is the final result list");
       return listToMatch;

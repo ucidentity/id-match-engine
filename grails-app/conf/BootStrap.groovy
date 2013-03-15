@@ -13,7 +13,7 @@ class BootStrap {
         //def users = dolphin.User.list();
         //users.each{ it.delete(flush: true) } 
         long start = new Date().getTime();
-        1000.times { i ->
+        200000.times { i ->
             def ssn = RandomStringUtils.random(9,"0123456789");
             def dob = RandomStringUtils.random(8,"0123456789"); 
             def fname = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");
