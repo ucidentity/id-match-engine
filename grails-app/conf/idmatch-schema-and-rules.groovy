@@ -57,9 +57,9 @@ idMatch.fuzzyMatchRuleSet = [
 
 //this is where the type of match algorithm to use for a given attribute is specified
 //if an attribute is not specified here but is present in the rules, then that rule will be ignored 
-idMatch.fuzzyMatchType = [
-  ssn : [algorithm : "EditDistance", distance : "1"],
-  lName : [algorithm : "Transpose", distance : "1"],
-  fName : [alogrithm : "Soundex"]
+idMatch.fuzzyMatchTypes = [
+  ssn : [matchType : "EditDistance", distance : "1"],
+  lName : [matchType : "Transpose", distance : "1"],
+  fName : [matchType : "Soundex"]
 ]
 

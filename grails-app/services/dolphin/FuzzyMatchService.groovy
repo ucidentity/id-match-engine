@@ -111,10 +111,10 @@ class FuzzyMatchService {
       java.util.List results = [];
       log.debug( "json map is "+ jsonDataMap);
       def fuzzyRules = grailsApplication.config.idMatch.fuzzyMatchRuleSet;
-      log.debug( "rules is "+rules);
-      def matchTypes = grailsApplication.config.idMatch.fuzzyMatchType;
-      log.debug( "matchTypes is "+matchType);
-      def matchTypeKeySet = matchType.keySet(); //get the attributes 
+      log.debug( "rules is "+fuzzyRules);
+      def matchTypes = grailsApplication.config.idMatch.fuzzyMatchTypes;
+      log.debug( "matchTypes is "+matchTypes);
+      def matchTypeKeySet = matchTypes.keySet(); //get the attributes 
       log.debug( "matchTypeKeySet is" +matchTypeKeySet);
       def schemaMap = grailsApplication.config.idMatch.schemaMap;
       log.debug( "schemaMap is "+schemaMap);
@@ -122,33 +122,39 @@ class FuzzyMatchService {
       log.debug( "json data key is "+jsonDataMapKey);
       java.util.List filteredFuzzyRules = [];
       //filter the rules and keep only those that have attr values in the request
+      //also remove rules that have attrs which are not configured for Match type algorithms
       fuzzyRules.each(){ rule -> 
           log.debug(rule.size());
           int emptyAttributeCount = 0;
           rule.each() { attr -> 
-          if(!jsonDataMap.has(attr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
+            log.debug("${jsonDataMap.has(attr)}  and ${matchTypes.get(attr)}");
+            if((!jsonDataMap.has(attr)) || (matchTypes.get(attr)==null)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
           }
-          if(emptyAttributeCount == 0) filteredRuleList.add(rule);
-      }
-      //filter the rules further to remove rules that have attr with no match type in FuzzyMatchType configuration
-      //if admin does not tell me which Fuzzy Match Type to use, I cannot use this attribute to do fuzzy match and hence I will skip this rule
-      java.util.List doubleFilteredFuzzyRules;
-      filteredFuzzyRules.each(){ rule ->
-        int emptyAttributeCount = 0;
-        rule.each() { attr ->
-           if(!matchTypes.has(attr)) { log.debug("found ${attr} with no match type configured"); emptyAttributeCount = emptyAttributeCount+1 }
-        } 
-        if(emptyAttributeCount == 0) doubleFilteredFuzzyRules.add(rule);
+          if(emptyAttributeCount == 0) filteredFuzzyRules.add(rule);
       }
       //finally i have rules that have attributes with values in request and match types in configuration
       //it is time to do the match
-      //java.util.List users = userService.getCache();
-      doubleFilteredFuzzyRules[0].each { attr -> 
-         String serviceName = matchTypes.get(attr).algorithm;
-         log.debug(serviceName);
+      java.util.List listToMatch = userService.getCache();
+      //only take the first rule, and run match for each attribute in the list
+      //as you run match on each attribute, the candidate list keeps shrinking, hence the attributes later in the list 
+      //will only run matches on a list that is much shorter.
+      filteredFuzzyRules[0].each { attr -> 
+         if(listToMatch.size() > 0) {
+         log.debug("getting algorithm from ${matchTypes.get(attr)}");
+         String serviceName = "dolphin."+matchTypes.get(attr).matchType+"Service";
+         log.debug("serviceName is ${serviceName}");
+         String distance = matchTypes.get(attr).distance;
+         String registryName = schemaMap.get(attr);
+         String inputValue = jsonDataMap.get(attr);
+         log.debug("inputValue = ${inputValue} and registryName = ${registryName} and serviceName = ${serviceName} and distance = ${distance}");
+         def  myService = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
+         if(distance == null) { listToMatch =  myService.findMatches(inputValue,registryName,listToMatch); }
+         else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int); 
+                log.debug("matched list size is "+listToMatch.size());}
+      } 
       }
- 
-      return results;
+      log.debug("listToMatch is the final result list");
+      return listToMatch;
 
     }
     
