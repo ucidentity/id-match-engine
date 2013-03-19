@@ -3,17 +3,23 @@ import org.apache.commons.lang.RandomStringUtils;
 class BootStrap {
   
     def userService;
+    def grailsApplication;
 
     def init = { servletContext ->
         
-         
+        log.debug(grailsApplication.config.idMatch); 
+        def createUsers = grailsApplication.config.idMatch.test.createUsers;
+        Integer userCount = grailsApplication.config.idMatch.test.size as int;
+ 
+        log.debug("${createUsers} and ${userCount}");
+
         //only run this if set to true 
-        if(true) {        
+        if(createUsers) {        
         //dont delete unless u want to reduce or existing user count
         //def users = dolphin.User.list();
         //users.each{ it.delete(flush: true) } 
         long start = new Date().getTime();
-        200000.times { i ->
+        userCount.intValue().times { i ->
             def ssn = RandomStringUtils.random(9,"0123456789");
             def dob = RandomStringUtils.random(8,"0123456789"); 
             def fname = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");
@@ -27,11 +33,13 @@ class BootStrap {
 
         }
         long end = new Date().getTime();
-        println "created ${dolphin.User.count} in ${end-start}";
+        log.debug( "created ${userCount} in ${end-start}");
+        log.debug( "total users in db now is ${dolphin.User.count()}")
         }
         userService.warmUpCache();
      }
     
     def destroy = {
+       
     }
 }

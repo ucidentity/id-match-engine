@@ -1,16 +1,40 @@
-package dolphin
+package dolphin;
+
+
+import dolphin.User;
 
 class UserService {
  
-    static def users;
+    def users;
+    def REFRESH_INTERVAL_TIME = 6*60*60*1000;
+    def lastRefreshTime;
+    
 
     def getCache() {
-      warmUpCache();
+      if(users?.size() == 0) { log.debug("users is null"); warmUpCache(); }
+      else {
+         def timeSinceRefresh = new Date().getTime() - lastRefreshTime;
+         if(timeSinceRefresh >= REFRESH_INTERVAL_TIME) { log.debug("${timeSinceRefresh} ${REFRESH_INTERVAL_TIME}"); renewCache();}
+      }
+      
+      log.debug("User.getAll() size is ${users.size()}");
+      log.debug( "User.count() is "+User.count());
       return users;
     }
 
+   /* should we use findAll or getAll */
    def warmUpCache(){
-      if(users == null) users = User.list();
-      log.debug( "users found "+User.count());
+     log.debug("User.getAll called");
+      users = User.getAll(); 
+      lastRefreshTime = new Date().getTime();
+   }
+
+  
+  /* should we user findAll or getAll */ 
+   def renewCache(){
+      log.debug("renewCache called");
+       users = User.getAll();
+       lastRefreshTime = new Date().getTime();
+
    }
 }

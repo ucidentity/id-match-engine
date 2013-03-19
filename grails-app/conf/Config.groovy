@@ -9,7 +9,8 @@
 //calnet CUSTOM configuration
 //grails.config.locations = [  "file:${userHome}/.grails/idmatch-custom-config.groovy" ]
 grails.config.locations = [  "file:/usr/share/idmatch/idmatch-schema-and-rules.groovy",
-                             "file:/usr/share/idmatch/idmatch-perf-tuning.groovy"]
+                             "file:/usr/share/idmatch/idmatch-perf-tuning.groovy",
+                             "file:/usr/share/idmatch/idmatch-logging.groovy"]
 
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]

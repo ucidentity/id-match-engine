@@ -71,8 +71,9 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
      * a test to time a simple while for 200K
      * for each iteration, call Soundex.compare method
      * sample results on my laptop in millisecs: 1290,1413,1406,1391
+     * 500K : 3042ms, 3231ms, 3009
      */
-    def javaWhileWithNewInstance(String source){
+    def javaWhileWithNewInstance(String source, Integer maxCount){
      int counter = 0;
      int matchCounter = 0;
                 //Soundex soundex  = new Soundex();
@@ -80,7 +81,7 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
                 def  soundex = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
                 String randomSt = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");
                 long startTime = new Date().getTime();
-                while(counter < 500*1000){
+                while(counter < maxCount.intValue()){
                         counter = counter+1;
                         if(soundex.compareSoundex(source, randomSt)){ matchCounter  = matchCounter + 1 };
                 }
@@ -94,12 +95,12 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
      * for each iteration, call Soundex.compare method
      * sample results on my laptop in millisecs: 1290,1413,1406,1391
      */
-    def javaWhileWithGrailsService(String source){
+    def javaWhileWithGrailsService(String source, Integer maxCount){
      int counter = 0;
      int matchCounter = 0;
                 String randomSt = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");
                 long startTime = new Date().getTime();
-                while(counter < 200*1000){
+                while(counter < maxCount.intValue()){
                         counter = counter+1;
                         if(soundexService.compare(source, randomSt)){ matchCounter  = matchCounter + 1 };
                 }
@@ -114,7 +115,7 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
    * sample results on my laptop for 200K users in db:
    * when about 3.2G mem avl in millisecs: 3094, 2985,3007,3005
    */
-   def javaUserIter(String source){
+   def javaForLoop(String source){
      java.util.List matchList = [];
      String serviceName = "edu.ualr.oyster.utilities."+"Soundex";
      def  soundex = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
@@ -133,7 +134,7 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
      * sample results on mac laptop for 200K users: 29263, 29029, 28980, 28992
      * with grails restart and 3G free memory avl in millisecs: 14607,11673,14408,
      */
-    def groovyUserIter(String source) {
+    def groovyEachLoop(String source) {
       def users = userService.getCache();
       def userCount = users.size();
       def matchList = [];
@@ -147,6 +148,27 @@ def timeTaken = (end.getTime() - start.getTime())/1000;
       return "${new Date() }: soundex for ${userCount} users took ${end-start} ms with results ${matchList} "
 
     }
+
+
+    /*
+     * test to time Soundex.compare invocations for N times
+     * sample results on mac laptop for 200K users: 29263, 29029, 28980, 28992
+     * with grails restart and 3G free memory avl in millisecs: 14607,11673,14408,
+     */
+    def groovyEachLoopWithGrailsService(String source) {
+      def users = userService.getCache();
+      def userCount = users.size();
+      def matchList = [];
+      String serviceName = "edu.ualr.oyster.utilities."+"Soundex";
+      long start =  new Date().getTime();
+      users.each { user ->
+          if(soundexService.compareSoundex(source, user.attr2)) matchList.add(user);
+       }
+      long end = new Date().getTime();
+      return "${new Date() }: soundex for ${userCount} users took ${end-start} ms with results ${matchList} "
+
+    }
+
 
 
 }

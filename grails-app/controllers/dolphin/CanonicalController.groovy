@@ -6,17 +6,17 @@ import javax.servlet.http.HttpServletRequest;
 
 class CanonicalController {
 
-    dolphin.CanonicalMatchService  canonicalMatchService;
-    dolphin.SecurityService securityService;
+    def  canonicalMatchService;
+    def securityService;
   
     /*
      * this is the main method that is called via this service 
      */
-    def run(){
+    def getMatches(){
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON;
       def jsonDataMap = JSON.parse(request).data;
-      if(jsonDataMap) { render canonicalMatchService.executeRules(jsonDataMap) as JSON; }
+      if(jsonDataMap) { render canonicalMatchService.getMatches(jsonDataMap) as JSON; }
       else render "json is empty";
     }
  

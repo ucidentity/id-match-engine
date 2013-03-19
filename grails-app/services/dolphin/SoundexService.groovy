@@ -66,7 +66,7 @@ class SoundexService {
            //log.debug("comparing ${jsonValue} and ${registryValue}");
            if(soundex.compareSoundex(jsonValue,registryValue)) results.add(user);}
         }
-        log.debug("${results.size()} results found in Soundex match");
+        log.debug("${results.size()} users matched");
         return results;
     
     }

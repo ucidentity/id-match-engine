@@ -52,14 +52,17 @@ idMatch.canonicalMatchRuleSet = [
 //for this release only one rule that is found to have values for all attributes in the request will be run
 idMatch.fuzzyMatchRuleSet = [
 ["dob","lName"],
-["fName","lName","ssn" ]
+["ssn","fName","lName"]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified
 //if an attribute is not specified here but is present in the rules, then that rule will be ignored 
 idMatch.fuzzyMatchTypes = [
-  ssn : [matchType : "EditDistance", distance : "1"],
+    ssn : [matchType : "EditDistance", distance : "1"],
   lName : [matchType : "Transpose", distance : "1"],
   fName : [matchType : "Soundex"]
 ]
 
+//only for testing phase
+idMatch.test.createUsers = true
+idMatch.test.size = 200000

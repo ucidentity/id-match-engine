@@ -5,6 +5,7 @@ class User {
     //can i force any attribute to be not null
     //uid can be one
     static constraints = {
+      attr1 nullable: false
       attr2 nullable: true
       attr3 nullable: true
       attr4 nullable: true

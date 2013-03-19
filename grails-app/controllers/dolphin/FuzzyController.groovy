@@ -18,7 +18,7 @@ class FuzzyController {
       else render "[error: "json request payload is empty"]";
     }
 
-   def runNew(){
+   def getMatches(){
       def failure = [reason : "failed authentication"];
       if(securityService.login(request) == false) render failure as JSON;
       java.util.Map jsonDataMap = JSON.parse(request).data;
@@ -27,7 +27,7 @@ class FuzzyController {
    }
  
     def index() {
-      render """USAGE: curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clien-H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/run"""
+      render """USAGE: curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clien-H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/runMatches"""
     }
 
 }

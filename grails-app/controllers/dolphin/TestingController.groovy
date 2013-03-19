@@ -6,29 +6,32 @@ class TestingController {
     def testingService;
 
 
-    def javaWhileType1(){
-        String result =  testingService.javaWhileWithNewInstance(params.source);
+    def javaWhileNewSoundex(){
+        String result =  testingService.javaWhileWithNewInstance(params.source, params.maxCount as int);
         render result;
      }
 
-    def javaWhileType2(){
-        render testingService.javaWhileWithGrailsService(params.source);
+    def javaWhileSoundexService(){
+        render testingService.javaWhileWithGrailsService(params.source, params.maxCount as int);
     }
 
-    def javaUserIter(){
-        render testingService.javaUserIter(params.source);
+    def javaForLoop(){
+        render testingService.javaForLoop(params.source);
 
      }
 
-    def groovyUserIter(){
-         render testingService.groovyUserIter(params.source);
+    def groovyEachLoop(){
+         render testingService.groovyEachLoop(params.source);
     }
+
+   def groovyEachLoopWithGrailsService(){
+        render testingService.groovyEachLoopWithGrailsService(params.source);
+   }
  
     
    def index(){
-
-      render "available actions <br>javaWhileType1 <br>javaWhileType2 <br>javaUserIter <br>groovyUserIter <br> with params.source"
-
+      render "available actions <br>javaWhileType1 <br>javaWhileType2 <br>javaUserIter <br>groovyEachLoop <br> groovyEachLoopWithGrailsService</br> with params.source"
+             
    }
  
 }

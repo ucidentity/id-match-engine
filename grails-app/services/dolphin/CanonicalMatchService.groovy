@@ -10,14 +10,14 @@ class CanonicalMatchService {
      * if rule set is ["ssn","dob,lname"], then sql filter should be 
      * (ssn = foo) OR (dob = foo AND lname = foo )
      */
-    def java.util.List  executeRules(java.util.Map jsonDataMap) {
+    def java.util.List  getMatches(java.util.Map jsonDataMap) {
       log.debug("Enter");
       def results = "";
       log.debug( "json map is "+ jsonDataMap );
       def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
       log.debug(canonicalMatchRuleSet); 
       def rulesCompositeStmt;
-      java.util.List filteredCanonicalRules; //remove rules that have missing attributes;
+      java.util.List filteredCanonicalRules = []; //remove rules that have missing attributes;
       //filter the rules and keep only those that have values in the request
       canonicalMatchRuleSet.each(){ rule ->
           log.debug(rule.size());
