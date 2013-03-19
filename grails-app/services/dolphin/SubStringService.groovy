@@ -29,5 +29,9 @@ class SubStringService {
      return result; 
 
     }
+
+
+    /* not yet implemented */ 
+    def findMatches(String s1, java.util.List users) {}
    
 }

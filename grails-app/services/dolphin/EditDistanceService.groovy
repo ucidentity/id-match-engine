@@ -32,6 +32,9 @@ http://ipira.berkeley.edu/software-copyright-notice-and-disclaimer
 
 import edu.ualr.oyster.utilities.OysterEditDistance;
 
+/*
+ * Also called Levenstein Edit Distance
+ */
 class EditDistanceService {
  
    static OysterEditDistance  singleton = new OysterEditDistance();
@@ -58,7 +61,7 @@ class EditDistanceService {
    }
 
    def findMatches(String inputValue, String registryColName, java.util.List users, Integer distance) {
-        log.debug("entering findMatches");
+        log.debug("entering findMatches for ${users.size()} users");
         java.util.List results = [];
         OysterEditDistance editDistance = new OysterEditDistance();
         users.each() { user ->

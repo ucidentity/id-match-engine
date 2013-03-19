@@ -5,18 +5,15 @@ import dolphin.User;
 
 class UserService {
  
-    def users;
+    java.util.List  users = [];
     def REFRESH_INTERVAL_TIME = 6*60*60*1000;
     def lastRefreshTime;
     
 
     def getCache() {
-      if(users?.size() == 0) { log.debug("users is null"); warmUpCache(); }
-      else {
-         def timeSinceRefresh = new Date().getTime() - lastRefreshTime;
-         if(timeSinceRefresh >= REFRESH_INTERVAL_TIME) { log.debug("${timeSinceRefresh} ${REFRESH_INTERVAL_TIME}"); renewCache();}
-      }
-      
+      if(users.size() == 0) { log.debug("users is null"); warmUpCache(); }
+      //the following two stmts are added for testing only, you may remove it
+      //i notice a difference in the size and count responses       
       log.debug("User.getAll() size is ${users.size()}");
       log.debug( "User.count() is "+User.count());
       return users;
@@ -36,5 +33,10 @@ class UserService {
        users = User.getAll();
        lastRefreshTime = new Date().getTime();
 
+   }
+
+   def pollForRefresh(){
+         def timeSinceRefresh = new Date().getTime() - lastRefreshTime;
+         if(timeSinceRefresh >= REFRESH_INTERVAL_TIME) { log.debug("${timeSinceRefresh} ${REFRESH_INTERVAL_TIME}"); renewCache();}
    }
 }

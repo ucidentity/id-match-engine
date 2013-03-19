@@ -43,4 +43,9 @@ class NYSIISService {
 
     def compare(String s1, String s2){ 
          return new NYSIISCode().compareNYSIISCodes(s1,s2);}
+
+    /* not yet implemented */
+    def findMatches(String s1, java.util.List users){
+
+    }
 }

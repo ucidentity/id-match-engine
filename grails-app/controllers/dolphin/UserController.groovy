@@ -8,6 +8,6 @@ class UserController {
 
     def renewCache(){
        userService.renewCache();
-
+       render "users size in cache is userService.users.size()";
     }
 }

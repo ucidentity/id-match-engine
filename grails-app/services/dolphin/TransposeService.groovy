@@ -35,13 +35,18 @@ class TransposeService {
      * currently oyster transpose always defaults to distance of 1 and hence this method is redundant  
      */
     def java.util.List findMatches(String inputValue, String registryColName, java.util.List users, Integer distance){
-        log.debug("entering findMatches");
+        log.debug("entering findMatches for ${users.size()} users");
         java.util.List results = [];
         OysterUtilityTranspose transpose = new OysterUtilityTranspose();
         users.each() { user ->
            String registryValue = user."${registryColName}"
-           //if same string or differing by 1, then add to results
-           if(inputValue.equalsIgnoreCase(registryValue) || transpose.differByTranspose(inputValue,registryValue)) results.add(user);
+           log.debug("transpose for ${inputValue} and ${registryValue}");
+           //transpose returns true only if alla and alal not for alla and alle, notice the chars should be same
+           //this is the difference between EditDistance and Transpose
+           boolean sameByTranspose = transpose.differByTranspose(inputValue,registryValue);
+           boolean sameString = inputValue.equalsIgnoreCase(registryValue);
+           log.debug("${sameByTranspose} and ${sameString}");
+           if( sameString || sameByTranspose) results.add(user);
          }
          log.debug("${results} users matched");
          return results;

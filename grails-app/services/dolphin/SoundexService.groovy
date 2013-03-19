@@ -56,7 +56,7 @@ class SoundexService {
         return singleton.getSoundex(s1);}
 
     def findMatches(String jsonValue, String registryColName, java.util.List users) {
-        log.debug("entering findMatches");
+        log.debug("entering findMatches for ${users.size()} users");
         java.util.List results = [];
         Soundex soundex = new Soundex();
         users.each() { user -> 

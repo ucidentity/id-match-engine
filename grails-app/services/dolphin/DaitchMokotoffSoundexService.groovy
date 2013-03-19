@@ -38,4 +38,9 @@ class DaitchMokotoffSoundexService {
 
     def getCode(String s1){
       return new DaitchMokotoffSoundex().getDMSoundex(s1); }
+
+    /*
+     * not yet implemented
+     */
+    def findMatches(String s1, java.util.List users) {}
 }
