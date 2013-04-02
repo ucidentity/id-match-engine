@@ -4,6 +4,11 @@ import grails.converters.JSON;
 import groovy.transform.CompileStatic;
 import javax.servlet.http.HttpServletRequest;
 
+
+/*
+ * this controller exposes CanonicalService and its methods for http request
+ * use this to initiate canonical match request
+ */
 class CanonicalController {
 
     def  canonicalMatchService;

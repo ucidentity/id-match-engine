@@ -35,7 +35,7 @@ class TransposeService {
      * currently oyster transpose always defaults to distance of 1 and hence this method is redundant  
      */
     def java.util.List findMatches(String inputValue, String registryColName, java.util.List users, Integer distance){
-        log.debug("entering findMatches for ${users.size()} users");
+        log.info("Enter: findMatches for ${users.size()} users");
         java.util.List results = [];
         OysterUtilityTranspose transpose = new OysterUtilityTranspose();
         users.each() { user ->
@@ -48,7 +48,7 @@ class TransposeService {
            log.debug("${sameByTranspose} and ${sameString}");
            if( sameString || sameByTranspose) results.add(user);
          }
-         log.debug("${results} users matched");
+         log.info("Exit: ${results} users matched");
          return results;
    }
 }

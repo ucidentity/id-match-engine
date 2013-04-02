@@ -56,7 +56,7 @@ class SoundexService {
         return singleton.getSoundex(s1);}
 
     def findMatches(String jsonValue, String registryColName, java.util.List users) {
-        log.debug("entering findMatches for ${users.size()} users");
+        log.info("Enter: findMatches for ${users.size()} users");
         java.util.List results = [];
         Soundex soundex = new Soundex();
         users.each() { user -> 
@@ -66,7 +66,7 @@ class SoundexService {
            //log.debug("comparing ${jsonValue} and ${registryValue}");
            if(soundex.compareSoundex(jsonValue,registryValue)) results.add(user);}
         }
-        log.debug("${results.size()} users matched");
+        log.info("Exit: ${results.size()} users matched");
         return results;
     
     }

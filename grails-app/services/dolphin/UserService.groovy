@@ -11,17 +11,17 @@ class UserService {
     
 
     def getCache() {
+      log.info("Enter getCache");
       if(users.size() == 0) { log.debug("users is null"); warmUpCache(); }
       //the following two stmts are added for testing only, you may remove it
       //i notice a difference in the size and count responses       
-      log.debug("User.getAll() size is ${users.size()}");
-      log.debug( "User.count() is "+User.count());
+      log.info("User.getAll() size is ${users.size()} and count is ${User.count()}");
       return users;
     }
 
    /* should we use findAll or getAll */
    def warmUpCache(){
-     log.debug("User.getAll called");
+     log.info("User.getAll called");
       users = User.getAll(); 
       lastRefreshTime = new Date().getTime();
    }
@@ -29,7 +29,7 @@ class UserService {
   
   /* should we user findAll or getAll */ 
    def renewCache(){
-      log.debug("renewCache called");
+      log.info("renewCache called");
        users = User.getAll();
        lastRefreshTime = new Date().getTime();
 

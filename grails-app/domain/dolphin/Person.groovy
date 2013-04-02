@@ -25,16 +25,21 @@ Other Notes: Insert year software was first published as well as any subsequent 
 
 package dolphin
 
+/*
+ * alternative schema for User domain class
+ * allows any number of attributes, without any dependency on table columns like in User class
+ */
+
+import dolphin.Attribute;
 
 class Person {
-    //attr1 column replaces the default grails id column
+
+    //uid column replaces the default grails id column
     static mapping = { 
-            id name: 'attr1'
+            id name: 'uid'
             version false
-     }
-    String attr1 //ssn
-    String attr2 //fname
-    String attr3 //lname
-    String attr4 //dob
-    
+    }
+    String uid;
+    static hasMany = [ attributes : Attribute ]
+     
 }

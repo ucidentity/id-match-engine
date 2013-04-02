@@ -1,5 +1,9 @@
 import org.apache.commons.lang.RandomStringUtils;
 
+import dolphin.User;
+import dolphin.Person;
+import dolphin.Attribute;
+
 class BootStrap {
   
     def userService;
@@ -7,11 +11,13 @@ class BootStrap {
 
     def init = { servletContext ->
         
-        log.debug(grailsApplication.config.idMatch); 
+        log.info(grailsApplication.config.idMatch); 
+        //if true then create users
         def createUsers = grailsApplication.config.idMatch.test.createUsers;
+        //create users equal to this size
         Integer userCount = grailsApplication.config.idMatch.test.size as int;
  
-        log.debug("${createUsers} and ${userCount}");
+        log.info("${createUsers} and ${userCount}");
 
         //only run this if set to true 
         if(createUsers) {        
@@ -29,12 +35,18 @@ class BootStrap {
                              attr2: lname, 
                              attr3: fname, 
                              attr4 : dob, 
-                             attr5: city ).save()
+                             attr5: city ).save(failOnError: true);
+            def person = new dolphin.Person();
+            person.addToAttributes(new Attribute(name: ssn, value: ssn));
+            person.addToAttributes(new Attribute(name: dob, value: dob));
+            
+            person.save(failOnError: true);
 
         }
+        
         long end = new Date().getTime();
-        log.debug( "created ${userCount} in ${end-start}");
-        log.debug( "total users in db now is ${dolphin.User.count()}")
+        log.info( "created ${userCount} in ${end-start}");
+        log.info( "total users in db now is ${dolphin.User.count()}")
         }
         userService.warmUpCache();
      }

@@ -2,6 +2,10 @@ package dolphin
 
 import grails.converters.JSON;
 
+/*
+ * this controller exposes fuzzyMatchService to http request
+ * use this controller to initiate fuzzy match requests
+ */
 class FuzzyController {
 
     dolphin.FuzzyMatchService  fuzzyMatchService;

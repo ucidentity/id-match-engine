@@ -11,7 +11,7 @@ class CanonicalMatchService {
      * (ssn = foo) OR (dob = foo AND lname = foo )
      */
     def java.util.List  getMatches(java.util.Map jsonDataMap) {
-      log.debug("Enter");
+      log.info("Enter getMatches");
       def results = "";
       log.debug( "json map is "+ jsonDataMap );
       def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
@@ -67,7 +67,7 @@ class CanonicalMatchService {
                     log.debug(result.attr1);
                     summaryResult.add(result.attr1);
                   }
-      log.debug(summaryResult);
+      log.info("Exiting getMatches");
       return summaryResult;
     }
 

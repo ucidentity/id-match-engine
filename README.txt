@@ -48,9 +48,9 @@ idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
 #Search
 1. Curl
 CANONICAL:
-curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/person/canonicalMatch
+curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/canonical/getMatches
 FUZZY:
-curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/person/fuzzyMatch
+curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/getMatches
 NOTE: pipe for formatting the response { | python -m json.tool }
 
 2.Response is similar to :

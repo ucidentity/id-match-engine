@@ -61,7 +61,7 @@ class EditDistanceService {
    }
 
    def findMatches(String inputValue, String registryColName, java.util.List users, Integer distance) {
-        log.debug("entering findMatches for ${users.size()} users");
+        log.info("Enter: findMatches for ${users.size()} users");
         java.util.List results = [];
         OysterEditDistance editDistance = new OysterEditDistance();
         users.each() { user ->
@@ -70,7 +70,7 @@ class EditDistanceService {
            log.debug("${inputValue} and ${registryValue} have ${distanceFound}");
            if(distanceFound <= distance.intValue()){ log.debug("$distanceFound} for ${inputValue} and ${registryValue}"); results.add(user)};
         }
-        log.debug("${results.size()} users matched");
+        log.info("Exit: ${results.size()} users matched");
         return results;
 
    }

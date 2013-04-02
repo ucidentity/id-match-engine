@@ -12,6 +12,8 @@ class MainAppController {
   
     /*
      * return canonical and fuzzy matches
+     * first check canonical matches, if no canonical matches found,
+     * then do a fuzzy match
      */ 
     def getMatches() {
    

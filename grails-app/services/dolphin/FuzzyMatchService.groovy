@@ -108,8 +108,8 @@ class FuzzyMatchService {
      * 
      */
     def getMatches(java.util.Map jsonDataMap){
+      log.info( "Enter: getMatches, json map is "+ jsonDataMap);
       java.util.List results = [];
-      log.debug( "json map is "+ jsonDataMap);
       def fuzzyRules = grailsApplication.config.idMatch.fuzzyMatchRuleSet;
       log.debug( "rules is "+fuzzyRules);
       def matchTypes = grailsApplication.config.idMatch.fuzzyMatchTypes;
@@ -152,7 +152,7 @@ class FuzzyMatchService {
          else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int);  }
         } 
       }
-      log.debug("listToMatch is the final result list");
+      log.info("Exit: listToMatch is the final result list");
       return listToMatch;
 
     }
