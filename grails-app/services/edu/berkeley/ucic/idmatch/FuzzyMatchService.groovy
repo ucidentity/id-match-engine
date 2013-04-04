@@ -12,7 +12,7 @@ class FuzzyMatchService {
   //get this from configuration
   private static final int NTHREDS = 8;//grailsApplication.config.idMatch.THREADS;
   //static scope = "request";
-  edu.berkeley.ucic.idmatch.TranspositionService  transpositionService;
+  edu.berkeley.ucic.idmatch.TransposeService  transposeService;
   edu.berkeley.ucic.idmatch.EditDistanceService editDistanceService;
   edu.berkeley.ucic.idmatch.SoundexService soundexService;
   edu.berkeley.ucic.idmatch.UserService userService;

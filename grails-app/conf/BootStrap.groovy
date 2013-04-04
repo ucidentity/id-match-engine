@@ -1,8 +1,8 @@
 import org.apache.commons.lang.RandomStringUtils;
 
-import dolphin.User;
-import dolphin.Person;
-import dolphin.Attribute;
+import edu.berkeley.ucic.idmatch.User;
+import edu.berkeley.ucic.idmatch.Person;
+import edu.berkeley.ucic.idmatch.Attribute;
 
 class BootStrap {
   
@@ -22,7 +22,7 @@ class BootStrap {
         //only run this if set to true 
         if(createUsers) {        
         //dont delete unless u want to reduce or existing user count
-        //def users = dolphin.User.list();
+        //def users = edu.berkeley.ucic.idmatch.User.list();
         //users.each{ it.delete(flush: true) } 
         long start = new Date().getTime();
         userCount.intValue().times { i ->
@@ -31,12 +31,12 @@ class BootStrap {
             def fname = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");
             def lname = RandomStringUtils.random(5,"ABCDEFGHIJKLMNOPGRSTUVXYZ");
             def city = RandomStringUtils.random(8,"ABCDEFGHIJKLMNOPGRSTUVXYZ");
-            new dolphin.User(attr1: ssn,
+            new edu.berkeley.ucic.idmatch.User(attr1: ssn,
                              attr2: lname, 
                              attr3: fname, 
                              attr4 : dob, 
                              attr5: city ).save(failOnError: true);
-            def person = new dolphin.Person();
+            def person = new edu.berkeley.ucic.idmatch.Person();
             person.addToAttributes(new Attribute(name: ssn, value: ssn));
             person.addToAttributes(new Attribute(name: dob, value: dob));
             
@@ -46,7 +46,7 @@ class BootStrap {
         
         long end = new Date().getTime();
         log.info( "created ${userCount} in ${end-start}");
-        log.info( "total users in db now is ${dolphin.User.count()}")
+        log.info( "total users in db now is ${edu.berkeley.ucic.idmatch.User.count()}")
         }
         userService.warmUpCache();
      }

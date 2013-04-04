@@ -4,9 +4,9 @@ import grails.converters.JSON;
 
 class MainAppController {
 
-    edu.berkeley.ucic.idmatchSecurityService securityService;
-    edu.berkeley.ucic.idmatchFuzzyMatchService  fuzzyMatchService;
-    edu.berkeley.ucic.idmatchCanonicalMatchService  canonicalMatchService
+    edu.berkeley.ucic.idmatch.SecurityService securityService;
+    edu.berkeley.ucic.idmatch.FuzzyMatchService  fuzzyMatchService;
+    edu.berkeley.ucic.idmatch.CanonicalMatchService  canonicalMatchService
 
     def index() { render "USAGE: getMatches" }
   
