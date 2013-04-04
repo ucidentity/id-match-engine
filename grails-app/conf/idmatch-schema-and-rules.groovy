@@ -65,4 +65,4 @@ idMatch.fuzzyMatchTypes = [
 
 //only for testing phase
 idMatch.test.createUsers = true
-idMatch.test.size = 200000
+idMatch.test.size = 200
