@@ -1,9 +1,12 @@
 package dolphin
 
+/**
+ * Domain Model to save User profile for Matching purposes
+ * @author venu.alla@berkeley.edu
+ * 
+ */
 class User {
 
-    //can i force any attribute to be not null
-    //uid can be one
     static constraints = {
       attr1 nullable: false
       attr2 nullable: true
@@ -17,8 +20,10 @@ class User {
       attr10 nullable: true
 
     }
-    
+   
+    /** attr1 corresponds to a unique identifier like uid or some other campus identifier */ 
     String attr1 //uid or some other unique generic identifier relevant to your campus
+    /** attr2 to attr10 are placeholders for all other profile attributes useful for matching */
     String attr2 //fname
     String attr3 //lname
     String attr4 //dob

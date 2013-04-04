@@ -25,13 +25,15 @@ Other Notes: Insert year software was first published as well as any subsequent 
 
 package dolphin
 
-/*
- * alternative schema for User domain class
- * allows any number of attributes, without any dependency on table columns like in User class
- */
 
 import dolphin.Attribute;
 
+/**
+ * alternative schema for User domain class
+ * allows any number of attributes, without any dependency on static number of  columns in the table,as seen in User class
+ *
+ * @author venu.alla@berkeley.edu
+ */
 class Person {
 
     //uid column replaces the default grails id column
