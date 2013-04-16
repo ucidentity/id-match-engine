@@ -57,7 +57,7 @@ idMatch.fuzzyMatchRuleSet = [
 
 idMatch.fuzzyMatchRuleSet2 = [
 
-[ blockingFilter : ["ssn","lName"] , matchAttributes : ["dob"] ],
+[ blockingFilter : ["ssn","dob"] , matchAttributes : ["dob"] ],
 [ blockingFilter : ["ssn"], matchAttributes : ["lName"] ]
 
 ]
