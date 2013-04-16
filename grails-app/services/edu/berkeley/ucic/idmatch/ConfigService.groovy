@@ -1,4 +1,4 @@
-package dolphin
+package edu.berkeley.ucic.idmatch;
 
 /*
  * the purpose of this class is to decouple configuration access

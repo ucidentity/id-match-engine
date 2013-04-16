@@ -55,6 +55,13 @@ idMatch.fuzzyMatchRuleSet = [
 ["ssn","fName","lName"]
 ]
 
+idMatch.fuzzyMatchRuleSet2 = [
+
+[ blockingFilter : ["ssn","lName"] , matchAttributes : ["dob"] ],
+[ blockingFilter : ["ssn"], matchAttributes : ["lName"] ]
+
+]
+
 //this is where the type of match algorithm to use for a given attribute is specified
 //if an attribute is not specified here but is present in the rules, then that rule will be ignored 
 idMatch.fuzzyMatchTypes = [
