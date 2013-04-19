@@ -1,6 +1,5 @@
 package edu.berkeley.ucic.idmatch;
 
-
 import edu.berkeley.ucic.idmatch.User;
 
 class UserService {
@@ -39,4 +38,10 @@ class UserService {
          def timeSinceRefresh = new Date().getTime() - lastRefreshTime;
          if(timeSinceRefresh >= REFRESH_INTERVAL_TIME) { log.debug("${timeSinceRefresh} ${REFRESH_INTERVAL_TIME}"); renewCache();}
    }
+
+   
+    def create(java.util.Map jsonDataMap){
+      log.debug(jsonDataMap);
+      return "created"
+    }
 }

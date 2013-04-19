@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 class CanonicalController {
 
+
+    //TODO: remove index after testing 
+    static allowedMethods = [getMatches:'POST',
+                             index:['POST', 'DELETE']]
+    
     def  canonicalMatchService;
     def securityService;
   

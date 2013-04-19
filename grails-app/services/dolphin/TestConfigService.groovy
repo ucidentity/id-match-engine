@@ -25,15 +25,16 @@ class TestConfigService {
           int emptyAttributeCount = 0;
           blockingFilter.each() { attr ->
           def modifiedAttr; //name of attr after removing flag prefixes
-          if(attr.contains(NOT_EQUALS_FLAG)) { log.debug(attr);  modifiedAttr = attr.substring(NOT_EQUALS_FLAG.length()); }
-          else modifiedAttr = attr;
+          if(attr.contains(NOT_EQUALS_FLAG)) { 
+             log.debug(attr);  modifiedAttr = attr.substring(NOT_EQUALS_FLAG.length()); 
+          } else modifiedAttr = attr;
           log.debug("checking to see if ${modifiedAttr} value is missing in request");
           if(!jsonDataMap.has(modifiedAttr)){
              log.debug("found ${attr} empty in request"); 
              emptyAttributeCount = emptyAttributeCount+1; }
           } //done checking if all attr have values in request payload
 
-        log.debug("returning if emptyAttributeCount is ${emptyAttributeCount}");
+        log.debug("returning if emptyAttributeCount is zero, and it is ${emptyAttributeCount}");
         //if an attribute has no value, then return empty list
         if(emptyAttributeCount != 0 ) return results;
         

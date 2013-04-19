@@ -1,6 +1,7 @@
 package dolphin
 
 import grails.converters.JSON;
+import edu.berkeley.ucic.idmatch.User;
 
 /**
  * testing only, discard after testing
@@ -28,6 +29,15 @@ class TestConfigController {
        def rules = grailsApplication.config.idMatch.fuzzyMatchRuleSet2;
        def blockingFilterAttrs = rules[0].blockingFilter;
        render testConfigService.getUsersForFilter(blockingFilterAttrs,jsonDataMap); 
+
+    }
+
+    def testSql(){
+
+       def mySql = "from User where attr4 != '12445'";
+       println mySql;
+       println User.findAll(mySql);
+       render "what is going on";
 
     }
     

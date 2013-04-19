@@ -8,6 +8,10 @@ import grails.converters.JSON;
  */
 class FuzzyController {
 
+   //remove index
+   static allowedMethods = [getMatches:'GET',
+                             index:['POST', 'DELETE']]
+
     edu.berkeley.ucic.idmatch.FuzzyMatchService  fuzzyMatchService;
     edu.berkeley.ucic.idmatch.SecurityService securityService;
   
