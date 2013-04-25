@@ -11,9 +11,9 @@ class TestConfigService {
 
     def grailsApplication;
 
-    final String NOT_EQUALS = "<>";
     final String EQUALS = "=";
-    final String NOT_EQUALS_FLAG="!=";
+    final String NOT_EQUALS="!=";
+    final String NOT_EQUALS_FLAG=NOT_EQUALS;
     final int PREFIX_LENGTH = 2;
 
     java.util.List  getUsersForFilter(java.util.List blockingFilter, java.util.Map jsonDataMap) {
@@ -37,9 +37,8 @@ class TestConfigService {
         log.debug("returning if emptyAttributeCount is zero, and it is ${emptyAttributeCount}");
         //if an attribute has no value, then return empty list
         if(emptyAttributeCount != 0 ) return results;
-        
-        //if rule has more than one attribute, construct AND statement
-        log.debug( blockingFilter.size() );
+       
+        //construct SQL stmt 
         def ruleStmt; //empty sql stmt
                 blockingFilter.each{ attr ->
                     log.debug( "got ${attr} to make sql");
@@ -62,8 +61,8 @@ class TestConfigService {
       //run sql
       def hqlStmt = "from User where ${ruleStmt}".trim();
       log.debug( hqlStmt );
-      //results = User.findAll("${hqlStmt}"); // uses HQL
-      results = User.findAll("from User where ssn <> '12345'");
+      results = User.findAll("${hqlStmt}"); // uses HQL
+      //results = User.findAll("from User where ssn <> '12345'");
       return results //return results
    }  
 }

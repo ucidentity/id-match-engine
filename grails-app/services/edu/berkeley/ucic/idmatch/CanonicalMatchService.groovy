@@ -2,64 +2,21 @@ package edu.berkeley.ucic.idmatch
 
 class CanonicalMatchService {
     def grailsApplication;
+   
+    final String EQUALS = "=";
+    final String NOT_EQUALS="!=";
+    final String NOT_EQUALS_FLAG=NOT_EQUALS;
+    final int PREFIX_LENGTH = 2;
+
 
     /*
-     * will build dynamic sql stmt for all the rules where attribute in the rule has incoming request value
-     * rule is skipped if there is no incoming request value for any of the attributes in the rule
-     * for example: say a rule "ssn,lname,dob", if incoming value has no ssn, then this rule is skipped
-     * if rule set is ["ssn","dob,lname"], then sql filter should be 
-     * (ssn = foo) OR (dob = foo AND lname = foo )
      */
     def java.util.List  getMatches(java.util.Map jsonDataMap) {
       log.info("Enter getMatches");
-      def results = "";
+      java.util.List  results = [];
       log.debug( "json map is "+ jsonDataMap );
-      def canonicalMatchRuleSet = grailsApplication.config.idMatch.canonicalMatchRuleSet;
-      log.debug(canonicalMatchRuleSet); 
-      def rulesCompositeStmt;
-      java.util.List filteredCanonicalRules = []; //remove rules that have missing attributes;
-      //filter the rules and keep only those that have values in the request
-      canonicalMatchRuleSet.each(){ rule ->
-          log.debug(rule.size());
-          int emptyAttributeCount = 0;
-          rule.each() { attr ->
-          if(!jsonDataMap.has(attr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
-          }
-          if(emptyAttributeCount == 0) filteredCanonicalRules.add(rule);
-      }
-      filteredCanonicalRules.each {
-           //if rule has only one attribute
-           log.debug("${it} and ${it.size()}");
-           if(it.size() == 1 ) {
-             def realColName = grailsApplication.config.idMatch.schemaMap.get(it[0]);
-             log.debug("real col name ${realColName}");
-             def jsonInputValue = jsonDataMap.get(it[0]);
-             log.debug("json value for this attr "+jsonInputValue);
-             def ruleStmt = "${realColName} = '${jsonInputValue}'"
-             log.debug("rule stmt is ${ruleStmt}"); 
-             if(rulesCompositeStmt == null) rulesCompositeStmt  =  "(${ruleStmt})";  else {rulesCompositeStmt = "${rulesCompositeStmt} OR (${ruleStmt})";}
-             log.debug(rulesCompositeStmt);
-           
-          }else{ 
-               //if rule has more than one attribute, construct AND statement
-                log.debug( it.size() );
-                def ruleStmt;
-                it.each{ attr ->
-                  log.debug( "got ${attr} to make sql");
-                    def jsonInputValue = jsonDataMap.get(attr);
-                    def realColName = grailsApplication.config.idMatch.schemaMap.get(attr);
-                    if((ruleStmt == null)) ruleStmt = "${realColName} = '${jsonInputValue}'";
-                    else ruleStmt = "${ruleStmt} AND ${realColName} = '${jsonInputValue}'";
-                    log.debug(ruleStmt);
-                } //for each attr loop
-                //append to composite stmt 
-                if(rulesCompositeStmt == null) rulesCompositeStmt  =  "(${ruleStmt})";  
-                else {rulesCompositeStmt = "${rulesCompositeStmt} OR (${ruleStmt})";}
-                log.debug(rulesCompositeStmt);
-         }
-      } // for each rule loop
-      def hqlStmt = "from User where ${rulesCompositeStmt}".trim();
-      log.debug( hqlStmt );
+      def validatedRules = getValidatedRules();
+      def hqlStmt = getSqlFromRules(validatedRules, jsonDataMap);
       results = User.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
       java.util.ArrayList summaryResult = [];
@@ -92,4 +49,77 @@ class CanonicalMatchService {
       return results;
 
     }
+
+
+    /**
+     * rule is skipped if there is no incoming request value for any of the attributes in the rule
+     */
+     def java.util.List getValidatedRules(){
+
+      def canonicalRules = grailsApplication.config.idMatch.canonicalMatchRuleSet;
+      log.debug( "rules is "+canonicalRules);
+      def matchTypeKeySet = matchTypes.keySet(); //get the attributes
+      log.debug( "matchTypeKeySet is" +matchTypeKeySet);
+      def schemaMap = grailsApplication.config.idMatch.schemaMap;
+      log.debug( "schemaMap is "+schemaMap);
+      def jsonDataMapKey = jsonDataMap.keySet();
+      log.debug( "json data key is "+jsonDataMapKey);
+      //filter the rules and keep only those that have attr values in the request
+      //also remove rules that have attrs which are not configured for Match type algorithms
+      java.util.List validatedFuzzyRules = [];
+      canonicalRules.each(){ rule ->
+          int emptyAttributeCount = 0;
+          rule.each() { attr ->
+            def properAttr;
+                    if(attr.contains(NOT_EQUALS_FLAG)) {
+                       properAttr = attr.substring(2);
+                    }else {
+                       properAttr = attr;
+                    }
+
+            log.debug("${jsonDataMap.has(properAttr)}");
+            if(!jsonDataMap.has(properAttr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
+          }
+          if(emptyAttributeCount == 0) validatedFuzzyRules.add(rule);
+      }
+
+      return validatedFuzzyRules;
+
+     }
+
+
+     /**
+     * build dynamic sql stmt for all the rules where attribute in the rule has incoming request value
+     * for example: say a rule "ssn,lname,dob", if incoming value has no ssn, then this rule is skipped
+     * if rule set is ["ssn","dob,lname"], then sql filter should be 
+     * (ssn = foo) OR (dob = foo AND lname = foo )
+      */
+      def String getSqlFromRules(java.util.List validatedRules, java.util.Map jsonDataMap){
+       validatedRules.each { rule ->
+           //if rule has only one attribute
+           log.debug("${rule} and ${rule.size()}");
+                def ruleStmt;
+                rule.each{ attr ->
+                  log.debug( "got ${attr} to make sql");
+                    def properAttr; //name of attr after removing flag prefixes
+                    def sqlOperator = EQUALS;
+          if(attr.contains(NOT_EQUALS_FLAG)) {
+             properAttr = attr.substring(NOT_EQUALS_FLAG.length());
+             sqlOperator = NOT_EQUALS;
+          } else { properAttr = attr; }
+                    def jsonInputValue = jsonDataMap.get(properAttr);
+                    def realColName = grailsApplication.config.idMatch.schemaMap.get(properAttr);
+                    if((ruleStmt == null)) ruleStmt = "${realColName} ${sqlOperator} '${jsonInputValue}'";
+                    else ruleStmt = "${ruleStmt} AND ${realColName} ${sqlOperator} '${jsonInputValue}'";
+                    log.debug(ruleStmt);
+                } //for each attr loop
+                //append to composite stmt
+                if(allRulesStmt == null) allRulesStmt  =  "(${ruleStmt})";
+                else {allRulesStmt = "${allRulesStmt} OR (${ruleStmt})";}
+                log.debug(allRulesStmt);
+      } // for each rule loop
+      def hqlStmt = "from User where ${allRulesStmt}".trim();
+      log.debug( hqlStmt );
+      return hqlStmt;
+     }
 }

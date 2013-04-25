@@ -27,8 +27,11 @@ class TestConfigController {
         
        def jsonDataMap = JSON.parse(request).data; 
        def rules = grailsApplication.config.idMatch.fuzzyMatchRuleSet2;
-       def blockingFilterAttrs = rules[0].blockingFilter;
-       render testConfigService.getUsersForFilter(blockingFilterAttrs,jsonDataMap); 
+       rules.each() { rule ->
+          def blockingFilterAttrs = rule.blockingFilter;
+         testConfigService.getUsersForFilter(blockingFilterAttrs,jsonDataMap); 
+       }
+       render "getUsers done"
 
     }
 
