@@ -11,8 +11,15 @@ class UrlMappings {
 		"500"(view:'/error')
 
                /* Pending Reconciler Tasks */
-               "/pendingTask"(controller : "pendingReconcilerTask", action : "list")
-               "/pendingTask/$id"(controller : "pendingReconcilerTask", action : "show" )
-               
+               "/pendingMatches"(controller : "pendingReconcilerTask", action : "getPendingMatches")
+               "/pendingMatches/$id?"(controller : "pendingReconcilerTask", action : "getPendingMatch" )
+
+              /* People API */
+              "/people/$sorId?/$id?" (controller : "people", action : "getUserBySor" )
+              "/people/$sorId?" (controller : "people", action : "getAllBySor" ); 
+              "/people/$id?" (controller : "people" , action : "getUser" );
+              "/people" (controller : "people" , action : "getUsers" );
+
+            
 	}
 }
