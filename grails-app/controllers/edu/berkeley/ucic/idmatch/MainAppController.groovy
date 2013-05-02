@@ -22,6 +22,7 @@ class MainAppController {
      * return canonical and fuzzy matches
      * first check canonical matches, if no canonical matches found,
      * then do a fuzzy match
+     * return 401 if un-authenticated (403 if un-authz )
      */ 
     def getMatches() {
    

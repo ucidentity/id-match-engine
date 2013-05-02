@@ -11,6 +11,7 @@ class Attribute {
    static belongsTo =  Person; 
    static constraints = {
     }
-    String name;
+    String key;
     String value;
+    String SOR; //source of this attribute ex: hr, sis, alumni etc?
 }
