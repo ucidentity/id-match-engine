@@ -13,11 +13,16 @@ class User {
      * see config for idMatch.schemaMap
      * Note: if you want unique constraints, I suggest it be enforced at db level as the domain class has no idea
      * which attributes need to be unique
+     * only attributes that have constraints declared here are attr2 and attr3
+     * attr2 = sorId, attr3 = SOR
+     * attr2(unique: 'attr3') = sorId is unique to SOR
+     * note: by default grails does not allow nullable values, hence set to true
     */
     static constraints = {
+      
       attr1 nullable: false
-      attr2 nullable: true
-      attr3 nullable: true
+      attr2(unique:'attr3', nullable: false)
+      attr3 nullable: false
       attr4 nullable: true
       attr5 nullable: true
       attr6 nullable: true

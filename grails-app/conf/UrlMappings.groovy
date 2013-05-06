@@ -10,16 +10,27 @@ class UrlMappings {
 		"/"(view:"/index")
 		"500"(view:'/error')
 
-               /* Pending Reconciler Tasks */
-               "/pendingMatches"(controller : "pendingReconcilerTask", action : "getPendingMatches")
-               "/pendingMatches/$id?"(controller : "pendingReconcilerTask", action : "getPendingMatch" )
+              
+                
+               /* Pending Matches */
+               "/v1/pendingMatches"(controller : "pendingMatch" ) {
+                  action = [GET : "list"] }
+               "/v1/pendingMatches/$id?"(controller : "pendingMatch") {
+                  action = [GET : "show"] }
+
+              /* People SOR API */
+              "/v1/people/$sorId?/$id?"(controller : "people") {
+                action = [GET : "getSorUser", PUT : "updateSorUser", POST : "saveSorUser" , DELETE : "deleteSorUser" ] }
+              "/v1/people/$sorId?" (controller : "people") {
+                action = [GET: "getSorUsers"]  }
 
               /* People API */
-              "/people/$sorId?/$id?" (controller : "people", action : "getUserBySor" )
-              "/people/$sorId?" (controller : "people", action : "getAllBySor" ); 
-              "/people/$id?" (controller : "people" , action : "getUser" );
-              "/people" (controller : "people" , action : "getUsers" );
+              "/v1/people/$id?" (controller : "people") {
+                 action = [GET : "getUser"] }
+              "/v1/people" (controller : "people") {
+                 action = [GET : "getUsers"] }
 
+             
             
 	}
 }

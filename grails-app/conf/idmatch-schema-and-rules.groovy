@@ -6,23 +6,24 @@
 
 
 //limited to 15 columns for this release
-//sorId is sis,hr,advcon , source of record id
+//sorId is empId,stuId,affId where SOR is one of sis,hr,advcon
 idMatch.schemaMap = [
        uid : 'attr1'
-     empId : 'attr2',
-     stuId : 'attr3',
-     affId : 'attr4',
-       ssn : 'attr5',
-     lname : 'attr6',
-     fname : 'attr7',
-    middle : 'attr8',
-  dobMonth : 'attr9',
-    dobDay : 'attr10',
-   dobYear : 'attr11',
-     email : 'attr12'
-  sisAffId : 'attr13',
-   hrAffId : 'attr14',
-     sorId : 'attr15
+     sorId : 'attr2',
+       SOR : 'attr3',
+       ssn : 'attr4',
+     lname : 'attr5',
+     fname : 'attr6',
+    middle : 'attr7',
+  dobMonth : 'attr8',
+    dobDay : 'attr9',
+   dobYear : 'attr10',
+     email : 'attr11'
+  sisAffId : 'attr12',
+   hrAffId : 'attr13',
+    attr14 : 'attr14',
+    attr15 : 'attr15'
+     
 ]
 
 //this is where the rules will go

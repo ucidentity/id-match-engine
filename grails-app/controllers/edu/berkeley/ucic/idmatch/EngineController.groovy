@@ -3,7 +3,7 @@ package edu.berkeley.ucic.idmatch;
 import grails.converters.JSON;
 import edu.berkeley.ucic.idmatch.*;
 
-class MainAppController {
+class EngineController {
 
     //TODO: remove index after testing 
     static allowedMethods = [getMatches:'GET',

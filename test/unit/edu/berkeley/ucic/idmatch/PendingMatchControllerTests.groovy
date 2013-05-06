@@ -8,8 +8,8 @@ import org.junit.*
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
-@TestFor(PendingReconcilerTaskController)
-class PendingReconcilerTaskControllerTests {
+@TestFor(PendingMatchController)
+class PendingMatchControllerTests {
 
     void testSomething() {
        fail "Implement me"

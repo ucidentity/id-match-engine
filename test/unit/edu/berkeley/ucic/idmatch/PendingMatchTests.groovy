@@ -8,8 +8,8 @@ import org.junit.*
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(PendingReconcilerTask)
-class PendingReconcilerTaskTests {
+@TestFor(PendingMatch)
+class PendingMatchTests {
 
     void testSomething() {
        fail "Implement me"
