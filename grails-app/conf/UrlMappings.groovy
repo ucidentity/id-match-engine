@@ -16,12 +16,12 @@ class UrlMappings {
                "/v1/pendingMatches"(controller : "pendingMatch" ) {
                   action = [GET : "list"] }
                "/v1/pendingMatches/$id?"(controller : "pendingMatch") {
-                  action = [GET : "show"] }
+                  action = [GET : "show", DELETE: "delete", PUT : "update"] }
 
               /* People SOR API */
-              "/v1/people/$sorId?/$id?"(controller : "people") {
-                action = [GET : "getSorUser", PUT : "updateSorUser", POST : "saveSorUser" , DELETE : "deleteSorUser" ] }
-              "/v1/people/$sorId?" (controller : "people") {
+              "/v1/people/$SOR?/$sorId?"(controller : "people") {
+                action = [GET : "getSorUser", PUT : "updateSorUser", POST : "createSorUser" , DELETE : "deleteSorUser" ] }
+              "/v1/people/$SOR?" (controller : "people") {
                 action = [GET: "getSorUsers"]  }
 
               /* People API */

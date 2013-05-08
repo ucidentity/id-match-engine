@@ -1,8 +1,6 @@
 import org.apache.commons.lang.RandomStringUtils;
 
 import edu.berkeley.ucic.idmatch.User;
-import edu.berkeley.ucic.idmatch.Person;
-import edu.berkeley.ucic.idmatch.Attribute;
 
 class BootStrap {
   
@@ -36,11 +34,7 @@ class BootStrap {
                              attr3: fname, 
                              attr4 : dob, 
                              attr5: city ).save(failOnError: true);
-            def person = new edu.berkeley.ucic.idmatch.Person();
-            person.addToAttributes(new Attribute(name: ssn, value: ssn));
-            person.addToAttributes(new Attribute(name: dob, value: dob));
             
-            person.save(failOnError: true);
 
         }
         
@@ -48,7 +42,8 @@ class BootStrap {
         log.info( "created ${userCount} in ${end-start}");
         log.info( "total users in db now is ${edu.berkeley.ucic.idmatch.User.count()}")
         }
-        userService.warmUpCache();
+         //uncomment it for golive
+        //userService.warmUpCache();
      }
     
     def destroy = {

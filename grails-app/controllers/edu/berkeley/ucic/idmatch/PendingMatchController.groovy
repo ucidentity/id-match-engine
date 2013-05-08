@@ -1,7 +1,7 @@
 package edu.berkeley.ucic.idmatch
 
 //auto marshalling of JSON
-import grails.convertors.JSON;
+import grails.converters.JSON;
 
 /**
  * controller to manage pendingMatch domain object
@@ -13,17 +13,20 @@ class PendingMatchController {
    
     /*
      * GET /v1/pendingMatches
+     * should return 200
      */ 
     def list() {
-        render(status: 300, text :  PendingMatch.list() as JSON);
+        render(status: 200, text :  PendingMatch.findAll() as JSON);
     }
 
     /*
      * GET /v1/pendingMatches/$id
+     * should return 300
      */
     def show() {
-        def p = PendingMatch.get(params.id)
-        render(status : 200, text : p as JSON )
+        println "got params $params.id ";
+        def p = PendingMatch.get(params.id);
+        render(status : 300, text : p as JSON )
     }
 
     /*

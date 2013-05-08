@@ -7,9 +7,11 @@
 
 //limited to 15 columns for this release
 //sorId is empId,stuId,affId where SOR is one of sis,hr,advcon
+//referenceId could be UID or UUID, more than one record can have it, 
+//referenceId helps identify all the records belonging to the same user
 idMatch.schemaMap = [
-       uid : 'attr1'
-     sorId : 'attr2',
+ referenceId : 'attr1',
+       sorId : 'attr2',
        SOR : 'attr3',
        ssn : 'attr4',
      lname : 'attr5',
@@ -18,7 +20,7 @@ idMatch.schemaMap = [
   dobMonth : 'attr8',
     dobDay : 'attr9',
    dobYear : 'attr10',
-     email : 'attr11'
+     email : 'attr11',
   sisAffId : 'attr12',
    hrAffId : 'attr13',
     attr14 : 'attr14',
@@ -57,17 +59,17 @@ idMatch.canonicalMatchRuleSet = [
 //if incoming request has no values for a given attribute in a rule, that rule is ignored 
 //rules with higher priority should be added first
 //not sure if all rules can be run, for performance sake.
-//for this release only one rule that is found to have values for all attributes in the request will be run
 idMatch.fuzzyMatchRuleSetOld = [
 ["dob","lName"],
 ["ssn","fName","lName"]
 ]
 
+//new format, notice the blockingFilter, this reduces the potential candidates for matching
+//where there is no filter, then run the match against all users
 idMatch.fuzzyMatchRuleSet = [
-
 [ blockingFilter : ["ssn","dob"] , matchAttributes : ["dob"] ],
-[ blockingFilter : ["ssn"], matchAttributes : ["lName"] ]
-
+[ blockingFilter : ["ssn"], matchAttributes : ["lName"] ],
+[ blockingFilter :[], matchAttributes : ["fName"] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified
@@ -80,7 +82,7 @@ idMatch.fuzzyMatchTypes = [
 
 //only for testing phase
 idMatch.test.createUsers = true
-idMatch.test.size = 200
+idMatch.test.size = 2
 
 //Used for authn via Http Basic
 idMatch.securityKeys = [
