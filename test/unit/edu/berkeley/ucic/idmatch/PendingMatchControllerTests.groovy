@@ -28,13 +28,19 @@ class PendingMatchControllerTests {
        mockDomain(PendingMatch)
        controller.list();
        assert response.status == 200;
+       assert response.getJson() == [];
     }
     
     /* GET /v1/pendingMatches/:id */
     void testPendingMatchesDetail() {
+
+        def p1 = new PendingMatch(SOR : '123', sorId  : '123', requestJson : '{}', lastRunTimeStamp : new Date());
+        def p2 = new PendingMatch(SOR : '123', sorId  : '124', requestJson : '{}', lastRunTimeStamp : new Date());
+        mockDomain(PendingMatch, [p1,p2]);
         this.controller.params.id = '1234';
         this.controller.show();
-        assert response.status == 300
+        assert response.status == 300;
+        //assert response.getJson() == [];
     }
  
 }

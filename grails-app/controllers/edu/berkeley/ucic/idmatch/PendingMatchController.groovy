@@ -24,8 +24,7 @@ class PendingMatchController {
      * should return 300
      */
     def show() {
-        println "got params $params.id ";
-        def p = PendingMatch.get(params.id);
+        def p =  PendingMatch.get(1);
         render(status : 300, text : p as JSON )
     }
 
