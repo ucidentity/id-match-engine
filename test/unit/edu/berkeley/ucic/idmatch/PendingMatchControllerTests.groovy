@@ -25,22 +25,42 @@ class PendingMatchControllerTests {
 
     /* GET /v1/pendingMatches */
     void testPendingMatchesList() {
-       mockDomain(PendingMatch)
+      def p1 = new PendingMatch(SOR : '123', sorId  : '123', requestJson : '{}', lastRunTimeStamp : new Date());
+      def p2 = new PendingMatch(SOR : '123', sorId  : '124', requestJson : '{}', lastRunTimeStamp : new Date());
+      mockDomain(PendingMatch, [p1,p2]);
        controller.list();
        assert response.status == 200;
-       assert response.getJson() == [];
+       assert response.getJson();
     }
     
     /* GET /v1/pendingMatches/:id */
     void testPendingMatchesDetail() {
+       
+        def date = new Date(); 
+        def p1 = new PendingMatch(SOR : '123', sorId  : '123', requestJson : '{}', lastRunTimeStamp : date);
+        def p2 = new PendingMatch(SOR : '123', sorId  : '124', requestJson : '{}', lastRunTimeStamp : date);
+        mockDomain(PendingMatch, [p1,p2]);
+        controller.params.id = '1';
+        controller.show();
+        assert response.status == 300;
+        assertTrue response.text.contains("123"); 
+
+    }
+
+    
+    /* GET /v1/pendingMatches/:id */
+    void testPendingMatchesDetailForMissingId() {
 
         def p1 = new PendingMatch(SOR : '123', sorId  : '123', requestJson : '{}', lastRunTimeStamp : new Date());
         def p2 = new PendingMatch(SOR : '123', sorId  : '124', requestJson : '{}', lastRunTimeStamp : new Date());
         mockDomain(PendingMatch, [p1,p2]);
-        this.controller.params.id = '1234';
-        this.controller.show();
-        assert response.status == 300;
-        //assert response.getJson() == [];
+        controller.params.id = '11';
+        controller.show();
+        assert response.status == 404;
+        assertFalse response.text.contains("SOR");
+
     }
+
+
  
 }

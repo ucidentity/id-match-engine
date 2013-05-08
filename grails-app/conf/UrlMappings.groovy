@@ -16,7 +16,7 @@ class UrlMappings {
                "/v1/pendingMatches"(controller : "pendingMatch" ) {
                   action = [GET : "list"] }
                "/v1/pendingMatches/$id?"(controller : "pendingMatch") {
-                  action = [GET : "show", DELETE: "delete", PUT : "update"] }
+                  action = [GET : "show", DELETE: "delete", PUT : "updateOrCreate"] }
 
               /* People SOR API */
               "/v1/people/$SOR?/$sorId?"(controller : "people") {
