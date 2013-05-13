@@ -3,6 +3,7 @@ package edu.berkeley.ucic.idmatch
 class CanonicalMatchService {
     def grailsApplication;
     def configService;
+    def schemaService;
    
     final String EQUALS = "=";
     final String NOT_EQUALS="!=";
@@ -16,7 +17,7 @@ class CanonicalMatchService {
       log.info("Enter getMatches");
       java.util.List  results = [];
       log.debug( "json map is "+ jsonDataMap );
-      def validatedRules = getValidatedRules(jsonDataMap);
+      def validatedRules = schemaService.getValidatedCanonicalRules(jsonDataMap);
       def hqlStmt = getSqlFromRules(validatedRules, jsonDataMap);
       results = User.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
@@ -50,42 +51,6 @@ class CanonicalMatchService {
       return results;
 
     }
-
-
-    /**
-     * rule is skipped if there is no incoming request value for any of the attributes in the rule
-     */
-     def java.util.List getValidatedRules(java.util.Map jsonDataMap){
-     
-      def canonicalRules = configService.getCanonicalRules();
-      //def canonicalRules = grailsApplication.config.idMatch.canonicalMatchRuleSet;
-      log.debug( "rules is "+canonicalRules);
-      def schemaMap = configService.getSchemaMap();
-      //def schemaMap = grailsApplication.config.idMatch.schemaMap;
-      log.debug( "schemaMap is "+schemaMap);
-      def jsonDataMapKey = jsonDataMap.keySet();
-      log.debug( "json data key is "+jsonDataMapKey);
-      //filter the rules and keep only those that have attr values in the request
-      java.util.List validatedFuzzyRules = [];
-      canonicalRules.each(){ rule ->
-          int emptyAttributeCount = 0;
-          rule.each() { attr ->
-            def properAttr; //attr name after removing prefixes like != etc
-                    if(attr.contains(NOT_EQUALS_FLAG)) {
-                       properAttr = attr.substring(2);
-                    }else {
-                       properAttr = attr;
-                    }
-
-            log.debug(properAttr+" is found "+jsonDataMap.has(properAttr));
-            if(!jsonDataMap.has(properAttr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
-          }
-          if(emptyAttributeCount == 0) validatedFuzzyRules.add(rule);
-      }
-
-      return validatedFuzzyRules;
-
-     }
 
 
      /**
@@ -126,7 +91,7 @@ class CanonicalMatchService {
                 log.debug(allRulesStmt);
       } // for each rule loop
       def hqlStmt = "from User where ${allRulesStmt}".trim();
-      log.debug( hqlStmt );
+      log.debug( "Exit getSqlFromRules with return of "+ hqlStmt );
       return hqlStmt;
      }
 }

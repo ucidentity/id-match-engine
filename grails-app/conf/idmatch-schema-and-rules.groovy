@@ -65,16 +65,16 @@ idMatch.fuzzyMatchRuleSetOld = [
 ]
 
 //new format, notice the blockingFilter, this reduces the potential candidates for matching
-//where there is no filter, then run the match against all users
+//where there is wild card, then run the match against all users
 idMatch.fuzzyMatchRuleSet = [
 [ blockingFilter : ["ssn","dob"] , matchAttributes : ["dob"] ],
 [ blockingFilter : ["ssn"], matchAttributes : ["lName"] ],
-[ blockingFilter :[], matchAttributes : ["fName"] ]
+[ blockingFilter :["*"], matchAttributes : ["fName"] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified
 //if an attribute is not specified here but is present in the rules, then that rule will be ignored 
-idMatch.fuzzyMatchTypes = [
+idMatch.matchAttributeFuzzyAlgorithmInfo = [
     ssn : [matchType : "EditDistance", distance : "1"],
   lName : [matchType : "Transpose", distance : "1"],
   fName : [matchType : "Soundex"]

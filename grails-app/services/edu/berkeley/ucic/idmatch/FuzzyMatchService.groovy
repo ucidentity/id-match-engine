@@ -7,7 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 class FuzzyMatchService {
  
   def grailsApplication;
-  edu.berkeley.ucic.idmatch.MatchingService  matchingService;
+  def configService;
+  def schemaService;
+  def matchingService;
    final String EQUALS = "=";
    final String NOT_EQUALS="!=";
    final String NOT_EQUALS_FLAG=NOT_EQUALS;
@@ -113,7 +115,7 @@ class FuzzyMatchService {
       log.info( "Enter: getMatches, json map is "+ jsonDataMap);
       java.util.List results = [];
       //get rules that have attributes with values in request and match types in configuration
-      java.util.List validatedFuzzyRules = getValidatedRules(jsonDataMap);
+      java.util.List validatedFuzzyRules = schemaService.getValidatedFuzzyRules(jsonDataMap);
       //for each rule, get matches
       validatedFuzzyRules.each { rule -> 
          java.util.List matchesByRule = getMatchesByRule(rule, jsonDataMap);
@@ -140,8 +142,39 @@ class FuzzyMatchService {
      * return users who match the rule
      */
     def java.util.List getMatchesByRule(java.util.Map rule, java.util.Map jsonDataMap){
+      log.debug("Enter getMatchesByRule");
       java.util.List results = [];
-      def blockingFilterAttrs = rule.blockingFilter;
+      java.util.List listToMatch = getBlockingFilterResults(rule,jsonDataMap);
+    
+      //now that you have users to match against, for each attr in the fuzzyRule, run a match 
+      //as you run match on each attribute, the candidate list keeps shrinking, hence the attributes later in the list 
+      //will only run matches on a list that is much shorter.
+      def matchTypes = configService.getMatchAttributeFuzzyAlgorithmInfo();
+      def fuzzyMatchAttrs = rule.matchAttributes;
+      fuzzyMatchAttrs.each() { fuzzyAttr ->
+      log.debug("getting algorithm from ${matchTypes.get(fuzzyAttr)}");
+         String serviceName = "edu.berkeley.ucic.idmatch."+matchTypes.get(fuzzyAttr).matchType+"Service";
+         log.debug("serviceName is ${serviceName}");
+         String distance = matchTypes.get(attr).distance;
+         String registryName = schemaMap.get(fuzzyAttr);
+         String inputValue = jsonDataMap.get(fuzzyAttr);
+         log.debug("doing a match for ${listToMatch.size()} with inputValue = ${inputValue} and registryName = ${registryName} and serviceName = ${serviceName} and distance = ${distance}");
+         def  myService = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
+         if(distance == null) { listToMatch =  myService.findMatches(inputValue,registryName,listToMatch); }
+         else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int);  }
+        }
+       log.debug("Exit: getMatchesByRule returns result of size "+listToMatch.size());
+       return listToMatch; //after matching all attr, return the results
+} //getMatchesForEachRule
+
+    
+    /**
+     * given a blocking filter, get the result set
+     * by constructing sql using the attrs in the filter
+     */
+     def java.util.List getBlockingFilterResults(java.util.Map rule, java.util.Map jsonDataMap){
+         log.debug("Enter: getBlockingFilterResults");
+         def blockingFilterAttrs = rule.blockingFilter;
       //construct SQL stmt
         def ruleStmt; //empty sql stmt
          blockingFilterAttrs.each{ attr ->
@@ -167,68 +200,8 @@ class FuzzyMatchService {
       def hqlStmt = "from User where ${ruleStmt}".trim();
       log.debug( hqlStmt );
       def listToMatch = User.findAll("${hqlStmt}"); // uses HQL
-    
-      //now that you have users to match against, for each attr in the fuzzyRule, run a match 
-      //as you run match on each attribute, the candidate list keeps shrinking, hence the attributes later in the list 
-      //will only run matches on a list that is much shorter.
-      def fuzzyMatchAttrs = rule.matchAttributes;
-      fuzzyMatchAttrs.each() { fuzzyAttr ->
-      log.debug("getting algorithm from ${matchTypes.get(fuzzyAttr)}");
-         String serviceName = "edu.berkeley.ucic.idmatch."+matchTypes.get(fuzzyAttr).matchType+"Service";
-         log.debug("serviceName is ${serviceName}");
-         String distance = matchTypes.get(attr).distance;
-         String registryName = schemaMap.get(fuzzyAttr);
-         String inputValue = jsonDataMap.get(fuzzyAttr);
-         log.debug("doing a match for ${listToMatch.size()} with inputValue = ${inputValue} and registryName = ${registryName} and serviceName = ${serviceName} and distance = ${distance}");
-         def  myService = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
-         if(distance == null) { listToMatch =  myService.findMatches(inputValue,registryName,listToMatch); }
-         else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int);  }
-        }
-
-       return listToMatch; //after matching all attr, return the results
-} //getMatchesForEachRule
-
-
-   /**
-    * remove rules that have attributes with no incoming values in the http request
-    * remove rules that have attributes with no correspoding matchType configuration
-    * return rules that pass both the above validation steps
-    */
-   def java.util.List getValidatedRules(java.util.Map jsonDataMap){
-
-      def fuzzyRules = grailsApplication.config.idMatch.fuzzyMatchRuleSet;
-      log.debug( "rules are "+fuzzyRules);
-      def matchTypes = grailsApplication.config.idMatch.fuzzyMatchTypes;
-      log.debug( "matchTypes are "+matchTypes);
-      def matchTypeKeySet = matchTypes.keySet(); //get the attributes
-      log.debug( "matchTypeKeySet is" +matchTypeKeySet);
-      def schemaMap = grailsApplication.config.idMatch.schemaMap;
-      log.debug( "schemaMap is "+schemaMap);
-      def jsonDataMapKey = jsonDataMap.keySet();
-      log.debug( "json data key is "+jsonDataMapKey);
-      //filter the rules and keep only those that have attr values in the request
-      //also remove rules that have attrs which are not configured for Match type algorithms
-      java.util.List validatedFuzzyRules = [];
-      fuzzyRules.each(){ rule ->
-          log.debug("rule is "+rule);
-          int emptyAttributeCount = 0;
-          rule.each() { attr ->
-            log.debug("attr is "+attr);
-            def properAttr;
-                    if(attr.contains(NOT_EQUALS_FLAG)) {
-                       properAttr = attr.substring(2);
-                    }else {
-                       properAttr = attr;
-                    }
-
-            log.debug("${jsonDataMap.has(properAttr)}  and ${matchTypes.get(properAttr)}");
-            if((!jsonDataMap.has(properAttr)) || (matchTypes.get(properAttr)==null)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
-          }
-          if(emptyAttributeCount == 0) validatedFuzzyRules.add(rule);
-      }
-
-      return validatedFuzzyRules;
-
-    } //getValidatedRules()
+      log.debug("Exit: with result size of "+listToMatch.size());
+      return listToMatch;
+     }
 
 } //end class

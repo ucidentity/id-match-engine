@@ -16,6 +16,7 @@ class ConfigService {
     def fuzzyRules;
     def schemaMap;
     def secCredentials;
+    def matchAttributeFuzzyAlgorithmInfo;
 
     /*
      * used to create a dynamic sql
@@ -55,4 +56,15 @@ class ConfigService {
     def setSecurityCredentials(java.util.Map credentials){
          secCredentials = credentials;
     }
+
+  
+   def getMatchAttributeFuzzyAlgorithmInfo(){
+      if(matchAttributeFuzzyAlgorithmInfo == null) return grailsApplication.config.idMatch.matchAttributeFuzzyAlgorithmInfo;
+      else return matchAttributeFuzzyAlgorithmInfo;
+   }
+ 
+   def setMatchAttributeFuzzyAlgorithmInfo(java.util.Map info){
+       matchAttributeFuzzyAlgorithmInfo = info;
+
+   }
 }

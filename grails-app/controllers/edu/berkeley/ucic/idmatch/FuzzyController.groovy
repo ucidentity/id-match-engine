@@ -14,28 +14,20 @@ class FuzzyController {
 
     edu.berkeley.ucic.idmatch.FuzzyMatchService  fuzzyMatchService;
     edu.berkeley.ucic.idmatch.SecurityService securityService;
+    def schemaService;
   
-    /*
-     * this is the main method that is called via this service 
-     */
-    def runOld(){
-      def failure = [reason : "failed authentication"];
-      if(securityService.login(request) == false) render failure as JSON;
-      def jsonDataMap = JSON.parse(request).data;
-      if(jsonDataMap) { render fuzzyMatchService.executeRules(jsonDataMap) as JSON; }
-      else render "[error: "json request payload is empty"]";
-    }
-
    def getMatches(){
-      def failure = [reason : "failed authentication"];
-      if(securityService.login(request) == false) render failure as JSON;
-      java.util.Map jsonDataMap = JSON.parse(request).data;
+      def failure = "failed authentication";
+      log.debug("the result of login "+securityService.login(request));
+      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      def jsonDataMap = JSON.parse(request).data;
+      if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
       if(jsonDataMap) { render fuzzyMatchService.getMatches(jsonDataMap) as JSON; }
-      else render "[error: "json request payload is empty"]";
+      else render(status : 401, text : "json is empty");
    }
  
     def index() {
-      render """USAGE: curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clien-H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/runMatches"""
+      render """USAGE: curl -v -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clien-H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/runMatches"""
     }
 
 }

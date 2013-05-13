@@ -8,6 +8,10 @@ class SchemaService {
 
     def grailsService;
     def configService;
+    final String EQUALS = "=";
+    final String NOT_EQUALS="!=";
+    final String NOT_EQUALS_FLAG=NOT_EQUALS;
+    final int PREFIX_LENGTH = 2;
 
     /*
      * if input has attributes that are not recognized by the schema
@@ -36,21 +40,34 @@ class SchemaService {
     * then remove this rule from the rules to execute
      * rule is skipped if there is no incoming request value for any of the attributes in the rule
      */
-     def java.util.List getValidatedRules(java.util.Map jsonDataMap){
-      def validatedRules = [];
+     def java.util.List getValidatedCanonicalRules(java.util.Map jsonDataMap){
+
       def canonicalRules = configService.getCanonicalRules();
-      //def canonicalRules = grailsApplication.config.idMatch.canonicalMatchRuleSet;
-      log.debug( "rules is "+canonicalRules);
+      return getValidatedRules(jsonDataMap, canonicalRules);
+
+     }
+
+    /**
+     * remove fuzzy rules that have attr with missing value in request 
+     */
+    def java.util.List getValidatedFuzzyRules(java.util.Map jsonDataMap){
+
+      def fuzzyRules = configService.getFuzzyRules();
+      return getValidatedRules(jsonDataMap, fuzzyRules);
+
+    }
+
+    def java.util.List getValidatedRules(java.util.Map jsonDataMap, java.util.List asIsRules){
+      log.debug("Enter getValidatedRules with asIsRules size of "+asIsRules.size());
+      java.util.List validatedRules = [];
       def schemaMap = configService.getSchemaMap();
-      //def schemaMap = grailsApplication.config.idMatch.schemaMap;
       log.debug( "schemaMap is "+schemaMap);
-      def jsonDataMapKey = jsonDataMap.keySet();
-      log.debug( "json data key is "+jsonDataMapKey);
+      log.debug( "json data is "+jsonDataMap);
       //filter the rules and keep only those that have attr values in the request
-      java.util.List validatedFuzzyRules = [];
-      canonicalRules.each(){ rule ->
+      asIsRules.each(){ rule ->
           int emptyAttributeCount = 0;
-          rule.each() { attr ->
+          rule.matchAttributes.each() { attr ->
+            log.debug("checking prefix in "+attr);
             def properAttr; //attr name after removing prefixes like != etc
                     if(attr.contains(NOT_EQUALS_FLAG)) {
                        properAttr = attr.substring(2);
@@ -63,11 +80,10 @@ class SchemaService {
           }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
       }
-
+      log.debug("Exit getValidatedRules with validatedRules size of "+validatedRules.size());
       return validatedRules;
-
-     }
-
+    }
+     
 
      /**
       * validate rule schema, if rules are constructed using attributes not present in the attr schema
