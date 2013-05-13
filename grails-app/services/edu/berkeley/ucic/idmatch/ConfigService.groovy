@@ -1,5 +1,7 @@
 package edu.berkeley.ucic.idmatch;
 
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+
 /*
  * the purpose of this class is to decouple configuration access
  * so the other services that need access to configuration do not need to know how it is
@@ -7,14 +9,24 @@ package edu.berkeley.ucic.idmatch;
  */
 
 class ConfigService {
- 
-    def grailsApplication;
+
+    def  grailsApplication;
+
+    def canonicalRules;
+    def fuzzyRules;
+    def schemaMap;
+    def secCredentials;
 
     /*
      * used to create a dynamic sql
      */
     def getCanonicalRules() {
-       return grailsApplication.config.idMatch.canonicalMatchRuleSet;
+       if(canonicalRules == null) return grailsApplication.config.idMatch.canonicalMatchRuleSet;
+       else return canonicalRules;
+    }
+
+    def setCanonicalRules(java.util.Map rules){
+        canonicalRules = rules;
     }
 
 
@@ -22,36 +34,25 @@ class ConfigService {
      * will pick only one rule out a set of rules configured here
      */
     def getFuzzyRules(){
-       return grailsApplication.config.idMatch.fuzzyMatchRuleSet;
+       if(fuzzyRules == null) return grailsApplication.config.idMatch.fuzzyMatchRuleSet;
+       else return fuzzyRules;
+    }
+    def setFuzzyRules(java.util.Map rules){
+        fuzzyRules = rules;
     }
 
 
     def getSchemaMap(){
-        return grailsApplication.config.idMatch.schemaMap;
+        if(schemaMap == null) return grailsApplication.config.idMatch.schemaMap;
+        else return schemaMap;
     }
 
-
-   /*
-    * fetch the blocking filter rules and then construct a dynamic sql stmt 
-    */
-    def getBlockingFilter(){
-        
-    }
   
-    /*
-     * for a given attribute, return the Fuzzy algorithm type to be used 
-     */
-    def getFuzzyMatchType(String attribute){
-      def rules = grailsApplication.config.idMatch.attributeFuzzyMatchType;
-      println "rules is "+rules;
-      def ruleKeySet = rules.keySet(); //get keys for the rules
-      def ruleConfigMap = rules.get(attribute);
-      def algorithm = ruleConfigMap.algorithm;
-      def distance = ruleConfigMap.distance;
-      return algorithm;
-    } 
-
-    
-
-    
+    def getSecurityCredentials(){
+        if(secCredentials == null) return grailsApplication.config.idMatch.security;
+        else return secCredentials;
+    }
+    def setSecurityCredentials(java.util.Map credentials){
+         secCredentials = credentials;
+    }
 }

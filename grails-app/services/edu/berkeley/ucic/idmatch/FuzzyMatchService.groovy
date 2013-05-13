@@ -8,6 +8,10 @@ class FuzzyMatchService {
  
   def grailsApplication;
   edu.berkeley.ucic.idmatch.MatchingService  matchingService;
+   final String EQUALS = "=";
+   final String NOT_EQUALS="!=";
+   final String NOT_EQUALS_FLAG=NOT_EQUALS;
+   final int PREFIX_LENGTH = 2;
 
   //get this from configuration
   private static final int NTHREDS = 8;//grailsApplication.config.idMatch.THREADS;
@@ -109,7 +113,7 @@ class FuzzyMatchService {
       log.info( "Enter: getMatches, json map is "+ jsonDataMap);
       java.util.List results = [];
       //get rules that have attributes with values in request and match types in configuration
-      java.util.List validatedFuzzyRules = getValidatedFuzzyRules();
+      java.util.List validatedFuzzyRules = getValidatedRules(jsonDataMap);
       //for each rule, get matches
       validatedFuzzyRules.each { rule -> 
          java.util.List matchesByRule = getMatchesByRule(rule, jsonDataMap);
@@ -190,12 +194,12 @@ class FuzzyMatchService {
     * remove rules that have attributes with no correspoding matchType configuration
     * return rules that pass both the above validation steps
     */
-   def java.util.List getValidatedRules(){
+   def java.util.List getValidatedRules(java.util.Map jsonDataMap){
 
       def fuzzyRules = grailsApplication.config.idMatch.fuzzyMatchRuleSet;
-      log.debug( "rules is "+fuzzyRules);
+      log.debug( "rules are "+fuzzyRules);
       def matchTypes = grailsApplication.config.idMatch.fuzzyMatchTypes;
-      log.debug( "matchTypes is "+matchTypes);
+      log.debug( "matchTypes are "+matchTypes);
       def matchTypeKeySet = matchTypes.keySet(); //get the attributes
       log.debug( "matchTypeKeySet is" +matchTypeKeySet);
       def schemaMap = grailsApplication.config.idMatch.schemaMap;
@@ -206,8 +210,10 @@ class FuzzyMatchService {
       //also remove rules that have attrs which are not configured for Match type algorithms
       java.util.List validatedFuzzyRules = [];
       fuzzyRules.each(){ rule ->
+          log.debug("rule is "+rule);
           int emptyAttributeCount = 0;
           rule.each() { attr ->
+            log.debug("attr is "+attr);
             def properAttr;
                     if(attr.contains(NOT_EQUALS_FLAG)) {
                        properAttr = attr.substring(2);

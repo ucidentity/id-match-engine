@@ -13,7 +13,7 @@ import grails.test.mixin.domain.DomainClassUnitTestMixin
  */
 @TestFor(PendingMatchController)
 @TestMixin(DomainClassUnitTestMixin)
-class PendingMatchControllerTests {
+class PendingMatchControllerUnitTests {
 
     void setUp() {
  
@@ -30,7 +30,7 @@ class PendingMatchControllerTests {
       mockDomain(PendingMatch, [p1,p2]);
        controller.list();
        assert response.status == 200;
-       assert response.getJson();
+       assert response.text.contains("SOR");
     }
     
     /* GET /v1/pendingMatches/:id */
@@ -43,7 +43,7 @@ class PendingMatchControllerTests {
         controller.params.id = '1';
         controller.show();
         assert response.status == 300;
-        assertTrue response.text.contains("123"); 
+        assertTrue response.text.contains("SOR"); 
 
     }
 

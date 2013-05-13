@@ -16,7 +16,7 @@ class PeopleController {
 
     def renewCache(){
        userService.renewCache();
-       render "users size in cache is ${userService.users.size()}";
+       render "users size in cache is ${userService.people.size()}";
     }
 
 

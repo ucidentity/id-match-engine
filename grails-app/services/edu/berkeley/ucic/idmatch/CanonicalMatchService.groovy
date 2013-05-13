@@ -2,6 +2,7 @@ package edu.berkeley.ucic.idmatch
 
 class CanonicalMatchService {
     def grailsApplication;
+    def configService;
    
     final String EQUALS = "=";
     final String NOT_EQUALS="!=";
@@ -15,7 +16,7 @@ class CanonicalMatchService {
       log.info("Enter getMatches");
       java.util.List  results = [];
       log.debug( "json map is "+ jsonDataMap );
-      def validatedRules = getValidatedRules();
+      def validatedRules = getValidatedRules(jsonDataMap);
       def hqlStmt = getSqlFromRules(validatedRules, jsonDataMap);
       results = User.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
@@ -54,30 +55,29 @@ class CanonicalMatchService {
     /**
      * rule is skipped if there is no incoming request value for any of the attributes in the rule
      */
-     def java.util.List getValidatedRules(){
-
-      def canonicalRules = grailsApplication.config.idMatch.canonicalMatchRuleSet;
+     def java.util.List getValidatedRules(java.util.Map jsonDataMap){
+     
+      def canonicalRules = configService.getCanonicalRules();
+      //def canonicalRules = grailsApplication.config.idMatch.canonicalMatchRuleSet;
       log.debug( "rules is "+canonicalRules);
-      def matchTypeKeySet = matchTypes.keySet(); //get the attributes
-      log.debug( "matchTypeKeySet is" +matchTypeKeySet);
-      def schemaMap = grailsApplication.config.idMatch.schemaMap;
+      def schemaMap = configService.getSchemaMap();
+      //def schemaMap = grailsApplication.config.idMatch.schemaMap;
       log.debug( "schemaMap is "+schemaMap);
       def jsonDataMapKey = jsonDataMap.keySet();
       log.debug( "json data key is "+jsonDataMapKey);
       //filter the rules and keep only those that have attr values in the request
-      //also remove rules that have attrs which are not configured for Match type algorithms
       java.util.List validatedFuzzyRules = [];
       canonicalRules.each(){ rule ->
           int emptyAttributeCount = 0;
           rule.each() { attr ->
-            def properAttr;
+            def properAttr; //attr name after removing prefixes like != etc
                     if(attr.contains(NOT_EQUALS_FLAG)) {
                        properAttr = attr.substring(2);
                     }else {
                        properAttr = attr;
                     }
 
-            log.debug("${jsonDataMap.has(properAttr)}");
+            log.debug(properAttr+" is found "+jsonDataMap.has(properAttr));
             if(!jsonDataMap.has(properAttr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
           }
           if(emptyAttributeCount == 0) validatedFuzzyRules.add(rule);
@@ -95,20 +95,27 @@ class CanonicalMatchService {
      * (ssn = foo) OR (dob = foo AND lname = foo )
       */
       def String getSqlFromRules(java.util.List validatedRules, java.util.Map jsonDataMap){
+       log.debug("enter getSqlFromRules");
+       def schemaMap = configService.getSchemaMap();
+       log.debug("got schema from configService ${schemaMap}");
+       def allRulesStmt;
        validatedRules.each { rule ->
            //if rule has only one attribute
            log.debug("${rule} and ${rule.size()}");
                 def ruleStmt;
                 rule.each{ attr ->
-                  log.debug( "got ${attr} to make sql");
+                    log.debug( "got ${attr} to make sql");
                     def properAttr; //name of attr after removing flag prefixes
                     def sqlOperator = EQUALS;
           if(attr.contains(NOT_EQUALS_FLAG)) {
              properAttr = attr.substring(NOT_EQUALS_FLAG.length());
              sqlOperator = NOT_EQUALS;
           } else { properAttr = attr; }
+                    log.debug("properAttr is ${properAttr}");
                     def jsonInputValue = jsonDataMap.get(properAttr);
-                    def realColName = grailsApplication.config.idMatch.schemaMap.get(properAttr);
+                    def realColName = schemaMap.get(properAttr);
+                    log.debug(jsonInputValue +" and "+realColName);
+                    //def realColName = grailsApplication.config.idMatch.schemaMap.get(properAttr);
                     if((ruleStmt == null)) ruleStmt = "${realColName} ${sqlOperator} '${jsonInputValue}'";
                     else ruleStmt = "${ruleStmt} AND ${realColName} ${sqlOperator} '${jsonInputValue}'";
                     log.debug(ruleStmt);

@@ -12,22 +12,26 @@ import javax.servlet.http.HttpServletRequest;
 class CanonicalController {
 
 
-    //TODO: remove index after testing 
-    static allowedMethods = [getMatches:'POST',
-                             index:['POST', 'DELETE']]
+    //TODO: is this in urlMappings or here?
+    //static allowedMethods = [getMatches:'GET', index:['POST', 'DELETE']]
     
     def  canonicalMatchService;
     def securityService;
+    def configService;
+    def schemaService;
   
     /*
      * this is the main method that is called via this service 
      */
     def getMatches(){
-      def failure = [reason : "failed authentication"];
-      if(securityService.login(request) == false) render failure as JSON;
+      def failure = "failed authentication";
+      log.debug("the result of login "+securityService.login(request));
+      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      log.debug "passed authn";
       def jsonDataMap = JSON.parse(request).data;
+      if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
       if(jsonDataMap) { render canonicalMatchService.getMatches(jsonDataMap) as JSON; }
-      else render "json is empty";
+      else render(status : 401, text : "json is empty");
     }
  
      /*
