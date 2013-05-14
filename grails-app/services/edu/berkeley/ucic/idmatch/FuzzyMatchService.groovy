@@ -10,6 +10,9 @@ class FuzzyMatchService {
   def configService;
   def schemaService;
   def matchingService;
+  def userService;
+
+   final String WILD_CARD = "*";
    final String EQUALS = "=";
    final String NOT_EQUALS="!=";
    final String NOT_EQUALS_FLAG=NOT_EQUALS;
@@ -21,8 +24,6 @@ class FuzzyMatchService {
   edu.berkeley.ucic.idmatch.TransposeService  transposeService;
   edu.berkeley.ucic.idmatch.EditDistanceService editDistanceService;
   edu.berkeley.ucic.idmatch.SoundexService soundexService;
-  edu.berkeley.ucic.idmatch.UserService userService;
-  //def users = User.list();
 
 
 
@@ -150,12 +151,13 @@ class FuzzyMatchService {
       //as you run match on each attribute, the candidate list keeps shrinking, hence the attributes later in the list 
       //will only run matches on a list that is much shorter.
       def matchTypes = configService.getMatchAttributeFuzzyAlgorithmInfo();
+      def schemaMap = configService.getSchemaMap();
       def fuzzyMatchAttrs = rule.matchAttributes;
       fuzzyMatchAttrs.each() { fuzzyAttr ->
       log.debug("getting algorithm from ${matchTypes.get(fuzzyAttr)}");
          String serviceName = "edu.berkeley.ucic.idmatch."+matchTypes.get(fuzzyAttr).matchType+"Service";
          log.debug("serviceName is ${serviceName}");
-         String distance = matchTypes.get(attr).distance;
+         String distance = matchTypes.get(fuzzyAttr).distance;
          String registryName = schemaMap.get(fuzzyAttr);
          String inputValue = jsonDataMap.get(fuzzyAttr);
          log.debug("doing a match for ${listToMatch.size()} with inputValue = ${inputValue} and registryName = ${registryName} and serviceName = ${serviceName} and distance = ${distance}");
@@ -175,10 +177,13 @@ class FuzzyMatchService {
      def java.util.List getBlockingFilterResults(java.util.Map rule, java.util.Map jsonDataMap){
          log.debug("Enter: getBlockingFilterResults");
          def blockingFilterAttrs = rule.blockingFilter;
-      //construct SQL stmt
+         def schemaMap = configService.getSchemaMap();
+         //construct SQL stmt
         def ruleStmt; //empty sql stmt
-         blockingFilterAttrs.each{ attr ->
+        for(attr in  blockingFilterAttrs) {
                     log.debug( "got ${attr} to make sql");
+                    //return all users if it is a WILD_CARD
+                    if(attr.equals(WILD_CARD)){ log.debug(attr+" is "+WILD_CARD); return userService.getCache(); }
                     def properAttr;
                     def sqlOperator;
                     if(attr.contains(NOT_EQUALS_FLAG)) {
@@ -188,17 +193,18 @@ class FuzzyMatchService {
                        properAttr = attr;
                        sqlOperator = EQUALS;
                     }
+                    
                     def jsonInputValue = jsonDataMap.get(properAttr);
-                    def realColName = grailsApplication.config.idMatch.schemaMap.get(properAttr);
+                    def realColName = schemaMap.get(properAttr);
                     //if sqlStmt is empty
                     if((ruleStmt == null)) ruleStmt = "${realColName} ${sqlOperator} '${jsonInputValue}'";
                     else ruleStmt = "${ruleStmt} AND ${realColName} ${sqlOperator} '${jsonInputValue}'";
-                    log.debug(ruleStmt);
+                    log.debug("new ruleStmt "+ruleStmt);
                 } //for each attr loop
-
       //run blockingFilter sql to get users to run match against
+      log.debug("final ruleStmt is "+ruleStmt);
       def hqlStmt = "from User where ${ruleStmt}".trim();
-      log.debug( hqlStmt );
+      log.debug( "hqlStmt is "+hqlStmt );
       def listToMatch = User.findAll("${hqlStmt}"); // uses HQL
       log.debug("Exit: with result size of "+listToMatch.size());
       return listToMatch;

@@ -40,24 +40,41 @@ class SchemaService {
     * then remove this rule from the rules to execute
      * rule is skipped if there is no incoming request value for any of the attributes in the rule
      */
-     def java.util.List getValidatedCanonicalRules(java.util.Map jsonDataMap){
+   def java.util.List getValidatedCanonicalRules(java.util.Map jsonDataMap){
+      def asIsRules = configService.getCanonicalRules();
+      log.debug("Enter getValidatedRules with asIsRules size of "+asIsRules.size());
+      java.util.List validatedRules = [];
+      def schemaMap = configService.getSchemaMap();
+      log.debug( "schemaMap is "+schemaMap);
+      log.debug( "json data is "+jsonDataMap);
+      //filter the rules and keep only those that have attr values in the request
+      asIsRules.each(){ rule ->
+          int emptyAttributeCount = 0;
+          rule.each() { attr ->
+            log.debug("checking prefix in "+attr);
+            def properAttr; //attr name after removing prefixes like != etc
+                    if(attr.contains(NOT_EQUALS_FLAG)) {
+                       properAttr = attr.substring(2);
+                    }else {
+                       properAttr = attr;
+                    }
 
-      def canonicalRules = configService.getCanonicalRules();
-      return getValidatedRules(jsonDataMap, canonicalRules);
-
-     }
+            log.debug("${jsonDataMap.has(properAttr)}");
+            if(!jsonDataMap.has(properAttr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
+          }
+          if(emptyAttributeCount == 0) validatedRules.add(rule);
+      }
+      log.debug("Exit getValidatedRules with validatedRules size of "+validatedRules.size());
+      return validatedRules;
+    }
+  
 
     /**
-     * remove fuzzy rules that have attr with missing value in request 
-     */
+     * remove fuzzy rules that have no attr values in the request
+     *
+     */ 
     def java.util.List getValidatedFuzzyRules(java.util.Map jsonDataMap){
-
-      def fuzzyRules = configService.getFuzzyRules();
-      return getValidatedRules(jsonDataMap, fuzzyRules);
-
-    }
-
-    def java.util.List getValidatedRules(java.util.Map jsonDataMap, java.util.List asIsRules){
+      def asIsRules = configService.getFuzzyRules();
       log.debug("Enter getValidatedRules with asIsRules size of "+asIsRules.size());
       java.util.List validatedRules = [];
       def schemaMap = configService.getSchemaMap();

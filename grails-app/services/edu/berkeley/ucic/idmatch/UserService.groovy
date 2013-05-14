@@ -14,7 +14,7 @@ class UserService {
       if(users.size() == 0) { log.debug("users is null"); warmUpCache(); }
       //the following two stmts are added for testing only, you may remove it
       //i notice a difference in the size and count responses       
-      log.info("User.getAll() size is ${users.size()} and count is ${User.count()}");
+      log.info("Exit getCache with  ${users.size()} users"); //TODO: users.size is different from Users.count!!
       return users;
     }
 
