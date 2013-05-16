@@ -14,13 +14,14 @@ class UrlMappings {
                 
                /* Pending Matches */
                "/v1/pendingMatches"(controller : "pendingMatch" ) {
-                  action = [GET : "list"] }
+                  action = [GET : "list", PUT : "createOrUpdate"] }
                "/v1/pendingMatches/$id?"(controller : "pendingMatch") {
-                  action = [GET : "show", DELETE: "delete", PUT : "updateOrCreate"] }
+                  action = [GET : "show", DELETE: "delete"] }
 
+              
               /* People SOR API */
               "/v1/people/$SOR?/$sorId?"(controller : "people") {
-                action = [GET : "getSorUser", PUT : "updateSorUser", POST : "createSorUser" , DELETE : "deleteSorUser" ] }
+                action = [GET : "getSorUser", PUT : "createOrUpdate", DELETE : "deleteSorUser" ] }
               "/v1/people/$SOR?" (controller : "people") {
                 action = [GET: "getSorUsers"]  }
 

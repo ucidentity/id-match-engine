@@ -2,7 +2,13 @@ package edu.berkeley.ucic.idmatch;
 
 import edu.berkeley.ucic.idmatch.User;
 
+
+/**
+ * service to manage User
+ */
 class UserService {
+
+    def configService;
  
     java.util.List  users = [];
     def REFRESH_INTERVAL_TIME = 6*60*60*1000;
@@ -39,21 +45,39 @@ class UserService {
          if(timeSinceRefresh >= REFRESH_INTERVAL_TIME) { log.debug("${timeSinceRefresh} ${REFRESH_INTERVAL_TIME}"); renewCache();}
    }
 
-   
-    def User create(java.util.Map jsonDataMap){
-      log.debug("Enter create");
-      def referenceId = jsonDataMap.referenceId;
-      def SOR = jsonDataMap.SOR;
-      def sorId = jsonDataMap.sorId;
-      log.debug("passed in values are "+referenceId+","+SOR+","+sorId);
-      def user =  new User();
-      user.referenceId = referenceId;
-      user.SOR = SOR;
-      user.sorId = sorId;
-      user.save(flush: true, failOnError : true);
-      log.debug("EXIT create with user object "+user);
+ 
+    /**
+     * creates or updates the User 
+     */  
+    def User createOrUpdate(String SOR, String sorId, java.util.Map jsonDataMap){
+      log.debug("Enter createOrUpdate");
+      log.debug("passed in values are "+jsonDataMap+","+SOR+","+sorId);
+      def user  = User.findWhere(SOR : SOR, sorId : sorId);
+      java.util.Map params = schemaAdapter(jsonDataMap);
+      params.SOR = SOR;
+      params.sorId = sorId;
+      if(user == null) { user =  new User(params); }
+      else{ user.properties = params; }
+      try { user.save(flush: true, failOnError : true); }catch(e){log.debug(e.getMessage()); user = null; }
+      log.debug("EXIT createOrUpdate with user object "+user?.id);
       return user;
     }
 
-   
-}
+    /**
+     * converts json input into User map
+     * based on the config.schemaMap in config file
+     */
+    def java.util.Map schemaAdapter(java.util.Map jsonDataMap){
+        log.debug("Enter: schemaAdapter");
+        java.util.Map params = [:];
+        def schemaMap = configService.getSchemaMap();
+        schemaMap.each(){ key,value ->
+             log.debug("key value in schemaMap are "+key+":"+value);
+             if(jsonDataMap.has(key)) params."${value}" = jsonDataMap.get(key);                
+             log.debug("params.value is "+value+" and "+params."${value}");
+        }
+        return params;
+      }
+
+
+ }

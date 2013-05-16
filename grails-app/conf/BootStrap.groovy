@@ -19,31 +19,9 @@ class BootStrap {
 
         //only run this if set to true 
         if(createUsers) {        
-        //dont delete unless u want to reduce or existing user count
-        //def users = edu.berkeley.ucic.idmatch.User.list();
-        //users.each{ it.delete(flush: true) } 
-        long start = new Date().getTime();
-        userCount.intValue().times { i ->
-            def ssn = RandomStringUtils.random(9,"0123456789");
-            def dob = RandomStringUtils.random(8,"0123456789"); 
-            def fname = RandomStringUtils.random(5, "ABCDEFGHIJKLMNOPGRSTUVXYZ");
-            def lname = RandomStringUtils.random(5,"ABCDEFGHIJKLMNOPGRSTUVXYZ");
-            def city = RandomStringUtils.random(8,"ABCDEFGHIJKLMNOPGRSTUVXYZ");
-            new edu.berkeley.ucic.idmatch.User(attr1: ssn,
-                             attr2: lname, 
-                             attr3: fname, 
-                             attr4 : dob, 
-                             attr5: city ).save(failOnError: true);
-            
-
-        }
-        
-        long end = new Date().getTime();
-        log.info( "created ${userCount} in ${end-start}");
-        log.info( "total users in db now is ${edu.berkeley.ucic.idmatch.User.count()}")
         }
          //uncomment it for golive
-        //userService.warmUpCache();
+        userService.warmUpCache();
      }
     
     def destroy = {

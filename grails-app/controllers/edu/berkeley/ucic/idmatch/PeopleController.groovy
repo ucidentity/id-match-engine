@@ -11,6 +11,7 @@ class PeopleController {
 
 
     def userService;
+    def securityService;
 
     //static  scaffold = true;
 
@@ -34,6 +35,7 @@ class PeopleController {
     def getSorUsers(){
        if(!params.SOR){ render(status : 400, text : "missing required attr"); return; }
        else {
+           log.debug("found SOR "+params.SOR);
            def sorUsers = User.findAll { SOR == params.SOR };
            render(status : 300, text : sorUsers as JSON );
        }
@@ -51,12 +53,12 @@ class PeopleController {
     
     //PUT /v1/SOR/sorId 
     //need to have referenceId inorder to create a new entry
-    def createOrUpdateSORUser(){
+    def createOrUpdate(){
       log.debug("the result of login "+securityService.login(request));
       if(!securityService.login(request)) {render(status : 401, text : "invalid credentials" ); return; }
       log.debug "passed authn";
       def jsonDataMap = JSON.parse(request).data;
-      def user = userService.create(jsonDataMap);
+      def user = userService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
       if(user == null) { render(status : 400, text : "Failed to create user"); return;}
       render(status : 200, text : "success fully created "+user.referenceId);
     }

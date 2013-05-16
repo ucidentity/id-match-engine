@@ -12,15 +12,16 @@ class User {
      * we do not know which properties go into which columns and is decided outside of the domain class
      * see config for idMatch.schemaMap
      * Note: if you want unique constraints, I suggest it be enforced at db level as the domain class has no idea
-     * which attributes need to be unique
-     * SOR(unique: 'sorId') is grails way of saying sorId+SOR are unique 
+     * which attributes need to be unique beyond what is configured here
      * note: by default grails does not allow nullable values, hence set to true
+     * sorId in SOR should be unique (sorId unique:SOR)
+     * referenceId in SOR should be unique (referenceId unique:SOR)
     */
     static constraints = {
       
-      referenceId nullable: false
-      SOR(unique:'sorId', nullable: false)
-      sorId nullable: false
+      referenceId (unique : 'SOR', nullable: false)
+      SOR (nullable: false)
+      sorId (unique: 'SOR', nullable: false)
       attr4 nullable: true
       attr5 nullable: true
       attr6 nullable: true

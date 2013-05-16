@@ -48,9 +48,18 @@ idMatch.cutOffScoreMap = [ exact : '100', recon : '80' ]
 #Search
 1. Curl
 CANONICAL:
-curl -X GET -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/canonical/getMatches
+curl -v -X GET -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/canonical/getMatches
+
+curl -v -X GET -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/canonical/getMatches
+
+PEOPLE API
+curl -v -X PUT -d "{"data": {"referenceId" : "uid123", 'fName' : 'venu', 'lName' : 'alla' }}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/v1/people/SIS/12345
+
+#GET /v1/people/HR/123
+curl -v -X GET  -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/v1/people/HR/123
+
 FUZZY:
-curl -X GET -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/getMatches
+curl -v -X GET -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/fuzzy/getMatches
 NOTE: pipe for formatting the response { | python -m json.tool }
 
 2.Response is similar to :

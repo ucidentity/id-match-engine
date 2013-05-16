@@ -9,6 +9,9 @@ import grails.converters.JSON;
  * pendingMatch will not the result set for the given match input
  */
 class PendingMatchController {
+ 
+    def pendingMatchService;
+    def securityService;
 
     static scaffold = true
     def index() { forward action: "list" }
@@ -38,11 +41,15 @@ class PendingMatchController {
      * PUT /v1/pendingMatch
      * create PendingMatch and return status 200
      */
-    def create() {
+    def createOrUpdate() {
       //get json payload, assign it to requestJsonVal;
-      def requestJsonVal = [];
-      def p = new PendingMatch(SOR : params.sor, sorId : params.sorId, requestJson: [], lastRunTimeStamp: new Date());
-      render(status : 200, id: p.id);
+      def failure = "failed authentication";
+      log.debug("the result of login "+securityService.login(request));
+      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      log.debug "passed authn";
+      def jsonDataMap = JSON.parse(request).data ; 
+      def p = pendingMatchService.createOrUpdate(jsonDataMap);
+      render(status : 200, text: p.id);
     }
    
 }

@@ -15,14 +15,14 @@ class PendingMatch {
     String SOR;
     String sorId;
     String requestJson;
-    Date lastRunTimeStamp;
+    Date createDate;
 
 
     static constraints = {
       SOR(nullable: false)
       sorId(unique : 'SOR', nullable: false)
       requestJson nullable: false;
-      lastRunTimeStamp nullable: false;
+      createDate nullable: false;
     }
 
 }
