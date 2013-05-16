@@ -9,22 +9,24 @@
 //sorId is empId,stuId,affId where SOR is one of sis,hr,advcon
 //referenceId could be UID or UUID, more than one record can have it, 
 //referenceId helps identify all the records belonging to the same user
+//referenceId, sorId and SOR are not customizable, they are allotted to columns with same name
+//referenceId,sorId,SOR
 idMatch.schemaMap = [
- referenceId : 'attr1',
-       sorId : 'attr2',
-       SOR : 'attr3',
-       ssn : 'attr4',
-     lName : 'attr5',
-     fName : 'attr6',
-    middle : 'attr7',
-  dobMonth : 'attr8',
-    dobDay : 'attr9',
-   dobYear : 'attr10',
-     email : 'attr11',
-  sisAffId : 'attr12',
-   hrAffId : 'attr13',
-    attr14 : 'attr14',
-    attr15 : 'attr15'
+ referenceId : 'referenceId',
+       sorId : 'sorId',
+         SOR : 'SOR',
+         ssn : 'attr4',
+       lName : 'attr5',
+       fName : 'attr6',
+      middle : 'attr7',
+       dobMM : 'attr8',
+       dobDD : 'attr9',
+     dobYYYY : 'attr10',
+       email : 'attr11',
+      attr12 : 'attr12',
+      attr13 : 'attr13',
+      attr14 : 'attr14',
+      attr15 : 'attr15'
      
 ]
 
@@ -67,9 +69,9 @@ idMatch.fuzzyMatchRuleSetOld = [
 //new format, notice the blockingFilter, this reduces the potential candidates for matching
 //where there is wild card, then run the match against all users
 idMatch.fuzzyMatchRuleSet = [
-[ blockingFilter : ["ssn","dob"] , matchAttributes : ["dob"] ],
-[ blockingFilter : ["ssn"], matchAttributes : ["lName"] ],
-[ blockingFilter :["*"], matchAttributes : ["fName"] ]
+[ blockingFilter : ["ssn","dob"] , matchAttributes : ["lName"] ],
+[ blockingFilter : ["ssn"], matchAttributes : ["lName","dob"] ],
+[ blockingFilter :["*"], matchAttributes : ["dob","fName","lName"] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified

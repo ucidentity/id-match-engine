@@ -40,8 +40,20 @@ class UserService {
    }
 
    
-    def create(java.util.Map jsonDataMap){
-      log.debug(jsonDataMap);
-      return "created"
+    def User create(java.util.Map jsonDataMap){
+      log.debug("Enter create");
+      def referenceId = jsonDataMap.referenceId;
+      def SOR = jsonDataMap.SOR;
+      def sorId = jsonDataMap.sorId;
+      log.debug("passed in values are "+referenceId+","+SOR+","+sorId);
+      def user =  new User();
+      user.referenceId = referenceId;
+      user.SOR = SOR;
+      user.sorId = sorId;
+      user.save(flush: true, failOnError : true);
+      log.debug("EXIT create with user object "+user);
+      return user;
     }
+
+   
 }

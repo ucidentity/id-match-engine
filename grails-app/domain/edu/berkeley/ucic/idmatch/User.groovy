@@ -13,16 +13,14 @@ class User {
      * see config for idMatch.schemaMap
      * Note: if you want unique constraints, I suggest it be enforced at db level as the domain class has no idea
      * which attributes need to be unique
-     * only attributes that have constraints declared here are attr2 and attr3
-     * attr2 = sorId, attr3 = SOR
-     * attr2(unique: 'attr3') is grails way of saying sorId+SOR are unique 
+     * SOR(unique: 'sorId') is grails way of saying sorId+SOR are unique 
      * note: by default grails does not allow nullable values, hence set to true
     */
     static constraints = {
       
-      attr1 nullable: false
-      attr2(unique:'attr3', nullable: false)
-      attr3 nullable: false
+      referenceId nullable: false
+      SOR(unique:'sorId', nullable: false)
+      sorId nullable: false
       attr4 nullable: true
       attr5 nullable: true
       attr6 nullable: true
@@ -40,11 +38,11 @@ class User {
    
     /** attr1 corresponds to a unique identifier like uid or some other campus identifier */ 
     //CIFER API refers to this as reference ID
-    String attr1
+    String referenceId 
 
     /* reserved for SOR and sorId */
-    String attr2 
-    String attr3
+    String SOR
+    String sorId 
 
     /** generic and configured in idMatch.schemaMap */
     String attr4

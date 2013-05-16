@@ -41,14 +41,20 @@ class SchemaService {
      * rule is skipped if there is no incoming request value for any of the attributes in the rule
      */
    def java.util.List getValidatedCanonicalRules(java.util.Map jsonDataMap){
+      log.debug("Enter getValidatedCanonicalRules");
+      log.debug( "json data is "+jsonDataMap);
+
       def asIsRules = configService.getCanonicalRules();
-      log.debug("Enter getValidatedRules with asIsRules size of "+asIsRules.size());
-      java.util.List validatedRules = [];
+      log.debug("asIsRules found as "+asIsRules);
+
       def schemaMap = configService.getSchemaMap();
       log.debug( "schemaMap is "+schemaMap);
-      log.debug( "json data is "+jsonDataMap);
+
+      java.util.List validatedRules = [];
+
       //filter the rules and keep only those that have attr values in the request
       asIsRules.each(){ rule ->
+          log.debug("validating rule "+rule);
           int emptyAttributeCount = 0;
           rule.each() { attr ->
             log.debug("checking prefix in "+attr);
@@ -58,9 +64,8 @@ class SchemaService {
                     }else {
                        properAttr = attr;
                     }
-
-            log.debug("${jsonDataMap.has(properAttr)}");
-            if(!jsonDataMap.has(properAttr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
+            if(jsonDataMap.get(properAttr) == null){log.debug("found ${properAttr} empty in request"); 
+                                                    emptyAttributeCount = emptyAttributeCount+1; }
           }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
       }
@@ -74,14 +79,16 @@ class SchemaService {
      *
      */ 
     def java.util.List getValidatedFuzzyRules(java.util.Map jsonDataMap){
-      def asIsRules = configService.getFuzzyRules();
-      log.debug("Enter getValidatedRules with asIsRules size of "+asIsRules.size());
-      java.util.List validatedRules = [];
+      log.debug("Enter getValidatedFuzzyRules");
+      log.debug( "json data is "+jsonDataMap);
       def schemaMap = configService.getSchemaMap();
       log.debug( "schemaMap is "+schemaMap);
-      log.debug( "json data is "+jsonDataMap);
+      def asIsRules = configService.getFuzzyRules();
+      log.debug("fuzzy rules as found are "+asIsRules);
+      java.util.List validatedRules = [];
       //filter the rules and keep only those that have attr values in the request
       asIsRules.each(){ rule ->
+          log.debug("rule being validated is "+rule);
           int emptyAttributeCount = 0;
           rule.matchAttributes.each() { attr ->
             log.debug("checking prefix in "+attr);
@@ -92,12 +99,11 @@ class SchemaService {
                        properAttr = attr;
                     }
 
-            log.debug("${jsonDataMap.has(properAttr)}");
-            if(!jsonDataMap.has(properAttr)){log.debug("found ${attr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
+            if(jsonDataMap.get(properAttr) == null){log.debug("found ${properAttr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
           }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
       }
-      log.debug("Exit getValidatedRules with validatedRules size of "+validatedRules.size());
+      log.debug("Exit getValidatedFuzzyRules with validatedRules size of "+validatedRules.size());
       return validatedRules;
     }
      

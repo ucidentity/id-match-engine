@@ -35,14 +35,9 @@ class CanonicalController {
     }
  
      /*
-      * redirect to usage
-      */
-       def index() { forward action: "usage"}
-
-     /*
       * usage
       */ 
-     def usage() {
+     def index() {
 
       render """USAGE: curl -X POST -d "{"data": {"fName": "venu", "lName": "alla", "ssn": "111222333", "dob" : "123456", "city" : "Berkeley"}}" -H "clien-H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/canonical/run"""
     }

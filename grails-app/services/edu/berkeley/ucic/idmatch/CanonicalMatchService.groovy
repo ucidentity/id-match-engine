@@ -18,9 +18,12 @@ class CanonicalMatchService {
       java.util.List  results = [];
       log.debug( "json map is "+ jsonDataMap );
       def validatedRules = schemaService.getValidatedCanonicalRules(jsonDataMap);
+      if(validatedRules.size() > 0) {
       def hqlStmt = getSqlFromRules(validatedRules, jsonDataMap);
+      log.debug("do User.findAll on "+hqlStmt);
       results = User.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
+      }
       java.util.ArrayList summaryResult = [];
       results.each{ result -> 
                     log.debug(result.attr1);
