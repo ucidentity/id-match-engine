@@ -24,7 +24,8 @@ class PeopleController {
     //GET /v1/SOR/sorId
     def getSorUser(){
         if(!params.SOR && !params.sorId){ render(status : 400, text : "missing required attr"); return; }
-        def sorUser = User.findWhere(SOR : params.SOR, sorId : params.sorId);
+        log.debug("found SOR and sorId in request "+params.SOR+" and "+params.sorId);
+        def sorUser = userService.getUser(params.SOR, params.sorId);
         if(sorUser == null){ render(status : 404, text : "user not found"); return; }
         render(status : 200, text: sorUser as JSON);
 

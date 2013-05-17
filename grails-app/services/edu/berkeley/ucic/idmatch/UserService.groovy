@@ -51,8 +51,11 @@ class UserService {
      */  
     def User createOrUpdate(String SOR, String sorId, java.util.Map jsonDataMap){
       log.debug("Enter createOrUpdate");
+      java.util.Map queryParams = [:];
+      queryParams.SOR = SOR;
+      queryParams.sorId = sorId;
       log.debug("passed in values are "+jsonDataMap+","+SOR+","+sorId);
-      def user  = User.findWhere(SOR : SOR, sorId : sorId);
+      def user  = User.findWhere(queryParams);
       java.util.Map params = schemaAdapter(jsonDataMap);
       params.SOR = SOR;
       params.sorId = sorId;
@@ -78,6 +81,21 @@ class UserService {
         }
         return params;
       }
+
+     /**
+      * get a user for a given SOR and sorId
+      */
+      def User getUser(String SOR, String sorId){
+         log.debug("Enter: getUser with SOR and sorId set to"+SOR+"-"+sorId);
+         java.util.Map queryParams = [:];
+         queryParams.SOR = SOR;
+         queryParams.sorId = sorId;
+         log.debug("queryParams is "+queryParams);
+         def user  = User.findWhere(queryParams);
+         log.debug("Exit: getUser with user "+user);
+         return user;
+
+       }
 
 
  }

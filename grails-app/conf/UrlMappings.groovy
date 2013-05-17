@@ -25,13 +25,10 @@ class UrlMappings {
               "/v1/people/$SOR?" (controller : "people") {
                 action = [GET: "getSorUsers"]  }
 
-              /* People API */
-              "/v1/people/$id?" (controller : "people") {
-                 action = [GET : "getUser"] }
-              "/v1/people" (controller : "people") {
-                 action = [GET : "getUsers"] }
-
-             
+              /*Matching API */
+             "/v1/engine"(controller : "engine") {
+                action = [GET : "findMatches"] }
+              }
             
 	}
 }
