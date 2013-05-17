@@ -14,14 +14,14 @@ class PendingMatch {
     //dont add another pending match entry for same SOR-sorId combo
     String SOR;
     String sorId;
-    String requestJson;
+    String matchFilterJson;
     Date createDate;
 
 
     static constraints = {
       SOR(nullable: false)
       sorId(unique : 'SOR', nullable: false)
-      requestJson nullable: false;
+      matchFilterJson nullable: false;
       createDate nullable: false;
     }
 

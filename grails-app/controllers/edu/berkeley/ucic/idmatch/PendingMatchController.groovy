@@ -47,9 +47,10 @@ class PendingMatchController {
       log.debug("the result of login "+securityService.login(request));
       if(!securityService.login(request)) {render(status : 401, text : failure); return; }
       log.debug "passed authn";
-      def jsonDataMap = JSON.parse(request).data ; 
+      def jsonDataMap = JSON.parse(request).pendingMatch ; 
       def p = pendingMatchService.createOrUpdate(jsonDataMap);
-      render(status : 200, text: p.id);
+      if(p == null) render(status : 400, text: "Create/Update Failed");
+      render(status : 200, text : "Request Successful for ${p.id}");
     }
    
 }

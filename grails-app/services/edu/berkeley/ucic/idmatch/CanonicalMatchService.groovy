@@ -20,8 +20,8 @@ class CanonicalMatchService {
       def validatedRules = schemaService.getValidatedCanonicalRules(jsonDataMap);
       if(validatedRules.size() > 0) {
       def hqlStmt = getSqlFromRules(validatedRules, jsonDataMap);
-      log.debug("do User.findAll on "+hqlStmt);
-      results = User.findAll("${hqlStmt}"); // uses HQL
+      log.debug("do Person.findAll on "+hqlStmt);
+      results = Person.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
       }
       java.util.ArrayList summaryResult = [];
@@ -47,9 +47,9 @@ class CanonicalMatchService {
      */
     String hqlTest(){
       String hqlStmt = 
-        "from User where (attr1 = '111222333') OR (attr4 = '123456' AND attr3 = 'alla') OR (attr2 = 'venu' AND attr3 = 'alla' AND attr5 = 'Berkeley')";
+        "from Person where (attr1 = '111222333') OR (attr4 = '123456' AND attr3 = 'alla') OR (attr2 = 'venu' AND attr3 = 'alla' AND attr5 = 'Berkeley')";
       log.debug("hql stmt is ${hqlStmt}");
-      java.util.List results = User.findAll(hqlStmt);
+      java.util.List results = Person.findAll(hqlStmt);
       log.debug("results are "+results);
       return results;
 
@@ -93,7 +93,7 @@ class CanonicalMatchService {
                 else {allRulesStmt = "${allRulesStmt} OR (${ruleStmt})";}
                 log.debug(allRulesStmt);
       } // for each rule loop
-      def hqlStmt = "from User where ${allRulesStmt}".trim();
+      def hqlStmt = "from Person where ${allRulesStmt}".trim();
       log.debug( "Exit getSqlFromRules with return of "+ hqlStmt );
       return hqlStmt;
      }

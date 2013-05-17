@@ -1,6 +1,6 @@
 import org.apache.commons.lang.RandomStringUtils;
 
-import edu.berkeley.ucic.idmatch.User;
+import edu.berkeley.ucic.idmatch.Person;
 
 class BootStrap {
   
@@ -11,14 +11,14 @@ class BootStrap {
         
         log.info(grailsApplication.config.idMatch); 
         //if true then create users
-        def createUsers = grailsApplication.config.idMatch.test.createUsers;
+        def createPersons = grailsApplication.config.idMatch.test.createPersons;
         //create users equal to this size
         Integer userCount = grailsApplication.config.idMatch.test.size as int;
  
-        log.info("${createUsers} and ${userCount}");
+        log.info("${createPersons} and ${userCount}");
 
         //only run this if set to true 
-        if(createUsers) {        
+        if(createPersons) {        
         }
          //uncomment it for golive
         userService.warmUpCache();

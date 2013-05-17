@@ -3,20 +3,25 @@ package edu.berkeley.ucic.idmatch;
 import grails.converters.JSON;
 import edu.berkeley.ucic.idmatch.*;
 
+
+/**
+ * primary API of this application
+ * expose API to run matches, both canonical and fuzzy
+ */
 class EngineController {
 
-    //TODO: remove index after testing 
-    static allowedMethods = [getMatches:'GET',
-                             reconcile:'PUT',
-                             index:['GET', 'POST']]
+    /*
+        see URLMappings instead 
+        static allowedMethods = [getMatches:'GET',
+                                 index:['GET', 'POST']]
+    */
 
+    def securityService;
+    def fuzzyMatchService;
+    def canonicalMatchService;
+    def schemaService;
 
-    edu.berkeley.ucic.idmatch.SecurityService securityService;
-    edu.berkeley.ucic.idmatch.FuzzyMatchService  fuzzyMatchService;
-    edu.berkeley.ucic.idmatch.CanonicalMatchService  canonicalMatchService;
-    UserService userService;
-
-    def index() { render "USAGE: GET:getMatches, PUT:reconcileNow" }
+    def index() { render "USAGE: GET:getMatches, GET:getCanonicalMatches, GET:getFuzzyMatches" }
   
     /*
      * return canonical and fuzzy matches
@@ -24,10 +29,10 @@ class EngineController {
      * then do a fuzzy match
      * return 401 if un-authenticated (403 if un-authz )
      */ 
-    def getMatches() {
+    def findMatches() {
    
       if(securityService.login(request) == false) render(status: 401, text: "Authentication failed");
-      java.util.Map jsonDataMap = JSON.parse(request).data;
+      java.util.Map jsonDataMap = JSON.parse(request).person;
       if(jsonDataMap == null) render(status: 400, text:"Bad Request: json request payload is empty");
       else println "proceed further"
       //run matches if request has json payload
@@ -38,19 +43,39 @@ class EngineController {
      } 
 
 
-     /**
-      * if a PUT request comes through, then add the user in the request
-      */
-     def reconcile() {
 
-      if(securityService.login(request) == false) render(status: 401, text: "Authentication failed");
-      java.util.Map jsonDataMap = JSON.parse(request).data;
-      if(jsonDataMap == null) render(status: 400, text:"Bad Request: json request payload is empty");
-      //if authn passed, and payload found, proceed to create the user
-      println userService.create(jsonDataMap); 
-      render(status: 200, text: "added user successfully");
+    /**
+     * only returns canonical matches
+     */
+    def findCanonicalMatches() {
+     def failure = "failed authentication";
+      log.debug("the result of login "+securityService.login(request));
+      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      log.debug "passed authn";
+      def jsonDataMap = JSON.parse(request).person;
+      if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
+      if(jsonDataMap) { render canonicalMatchService.getMatches(jsonDataMap) as JSON; }
+      else render(status : 401, text : "json is empty");
+
+
+    }
+
+    /**
+     * only returns fuzzy matches
+     */
+    def findFuzzyMatches(){
+
+       def failure = "failed authentication";
+      log.debug("the result of login "+securityService.login(request));
+      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      log.debug "passed authn";
+      def jsonDataMap = JSON.parse(request).person;
+      if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
+      if(jsonDataMap) { render fuzzyMatchService.getMatches(jsonDataMap) as JSON; }
+      else render(status : 401, text : "json is empty");
+
+
      }
-
 
     
 }

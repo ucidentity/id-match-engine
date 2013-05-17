@@ -20,15 +20,18 @@ class UrlMappings {
 
               
               /* People SOR API */
-              "/v1/people/$SOR?/$sorId?"(controller : "people") {
+              "/v1/people/$SOR?/$sorId?"(controller : "person") {
                 action = [GET : "getSorUser", PUT : "createOrUpdate", DELETE : "deleteSorUser" ] }
-              "/v1/people/$SOR?" (controller : "people") {
+              "/v1/people/$SOR?" (controller : "person") {
                 action = [GET: "getSorUsers"]  }
 
               /*Matching API */
              "/v1/engine"(controller : "engine") {
                 action = [GET : "findMatches"] }
-              }
-            
-	}
+             "/v1/engine/canonical"(controller : "engine") {
+                action = [GET : "findCanonicalMatches"] }
+             "/v1/engine/fuzzy"(controller : "engine") {
+                action = [GET : "findFuzzyMatches"] }
+         }
 }
+

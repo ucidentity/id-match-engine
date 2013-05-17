@@ -15,13 +15,17 @@ class PendingMatchService {
       def pendingMatch  = PendingMatch.findWhere(SOR : jsonDataMap.SOR, sorId : jsonDataMap.sorId);
       params.SOR = jsonDataMap.SOR;
       params.sorId = jsonDataMap.sorId;
-      params.requestJson = jsonDataMap.toString();
+      params.matchFilterJson = jsonDataMap.matchFilterJson;
       params.createDate = new Date();
       if(pendingMatch == null) { pendingMatch =  new PendingMatch(params); }
       else{ pendingMatch.properties = params; }
       try { pendingMatch.save(flush: true, failOnError : true); }catch(e){log.debug(e.getMessage()); pendingMatch = null; }
       log.debug("EXIT createOrUpdate with pendingMatch object "+pendingMatch?.id);
       return pendingMatch;
+    }
+
+    def delete(String id){
+      PendingMatch.delete(id);
     }
 
  }

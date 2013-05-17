@@ -203,9 +203,9 @@ class FuzzyMatchService {
                 } //for each attr loop
       //run blockingFilter sql to get users to run match against
       log.debug("final ruleStmt is "+ruleStmt);
-      def hqlStmt = "from User where ${ruleStmt}".trim();
+      def hqlStmt = "from Person where ${ruleStmt}".trim();
       log.debug( "hqlStmt is "+hqlStmt );
-      def listToMatch = User.findAll("${hqlStmt}"); // uses HQL
+      def listToMatch = Person.findAll("${hqlStmt}"); // uses HQL
       log.debug("Exit: with result size of "+listToMatch.size());
       return listToMatch;
      }

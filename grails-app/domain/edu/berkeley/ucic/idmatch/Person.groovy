@@ -5,7 +5,7 @@ package edu.berkeley.ucic.idmatch
  * @author venu.alla@berkeley.edu
  * 
  */
-class User {
+class Person {
 
     /**
      * notice that all attrs are nullable : true, that is because

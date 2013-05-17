@@ -7,17 +7,17 @@ import grails.converters.*;
  * provides service to interact with People resource
  *
  */
-class PeopleController {
+class PersonController {
 
 
-    def userService;
+    def personService;
     def securityService;
 
     //static  scaffold = true;
 
     def renewCache(){
-       userService.renewCache();
-       render "users size in cache is ${userService.people.size()}";
+       personService.renewCache();
+       render "persons size in cache is ${personService.people.size()}";
     }
 
 
@@ -25,8 +25,8 @@ class PeopleController {
     def getSorUser(){
         if(!params.SOR && !params.sorId){ render(status : 400, text : "missing required attr"); return; }
         log.debug("found SOR and sorId in request "+params.SOR+" and "+params.sorId);
-        def sorUser = userService.getUser(params.SOR, params.sorId);
-        if(sorUser == null){ render(status : 404, text : "user not found"); return; }
+        def sorUser = personService.getUser(params.SOR, params.sorId);
+        if(sorUser == null){ render(status : 404, text : "person not found"); return; }
         render(status : 200, text: sorUser as JSON);
 
      }
@@ -47,7 +47,7 @@ class PeopleController {
         if(!params.SOR || !params.sorId){render(status: 400, text : "missing required attr"); return; }
         else {
           def sorUser = User.findWhere(SOR : params.SOR, sorId : params.sorId);
-          if(!sorUser){render(status: 404, text : "user not found"); return};
+          if(!sorUser){render(status: 404, text : "person not found"); return};
           sorUser.delete();
         }
      }
@@ -59,9 +59,9 @@ class PeopleController {
       if(!securityService.login(request)) {render(status : 401, text : "invalid credentials" ); return; }
       log.debug "passed authn";
       def jsonDataMap = JSON.parse(request).data;
-      def user = userService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
-      if(user == null) { render(status : 400, text : "Failed to create user"); return;}
-      render(status : 200, text : "success fully created "+user.referenceId);
+      def person = personService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
+      if(person == null) { render(status : 400, text : "Failed to create person"); return;}
+      render(status : 200, text : "success fully created "+person.referenceId);
     }
 
 

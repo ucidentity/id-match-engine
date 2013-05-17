@@ -64,7 +64,7 @@ class SchemaService {
                     }else {
                        properAttr = attr;
                     }
-            if(jsonDataMap.get(properAttr) == null){log.debug("found ${properAttr} empty in request"); 
+            if(jsonDataMap."${properAttr}" == null){log.debug("found ${properAttr} empty in request"); 
                                                     emptyAttributeCount = emptyAttributeCount+1; }
           }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
