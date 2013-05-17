@@ -31,15 +31,15 @@ class EngineController {
      */ 
     def findMatches() {
    
-      if(securityService.login(request) == false) render(status: 401, text: "Authentication failed");
+      if(securityService.login(request) == false){render(status: 401, text: "Authentication failed"); return;}
       java.util.Map jsonDataMap = JSON.parse(request).person;
-      if(jsonDataMap == null) render(status: 400, text:"Bad Request: json request payload is empty");
-      else println "proceed further"
+      if(jsonDataMap == null){ render(status: 400, text:"Bad Request: json request payload is empty"); return;}
       //run matches if request has json payload
          java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
-         if(canonicalMatches.size() > 0) render(status: 300, results: canonicalMatches);
+         if(canonicalMatches.size() > 0) {render(status: 300, results: canonicalMatches); return;};
          def fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
-         if(fuzzyMatches.size() == 0) render(status: 404);
+         if(fuzzyMatches.size() == 0){render(status: 404, text : "no results found"); return;}
+         render(status: 300, results: fuzztMatches);
      } 
 
 
@@ -49,13 +49,13 @@ class EngineController {
      */
     def findCanonicalMatches() {
       log.debug("Enter: findCanonicalMatches");
-      if(!securityService.login(request)) {render(status : 401, text : "failed authn"); return; }
-      log.debug "passed authn";
-      def jsonDataMap = JSON.parse(request).person;
-      if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
-      if(jsonDataMap) { render canonicalMatchService.getMatches(jsonDataMap) as JSON; }
-      else render(status : 401, text : "json is empty");
-
+      if(securityService.login(request) == false){render(status: 401, text: "Authentication failed"); return;}
+      java.util.Map jsonDataMap = JSON.parse(request).person;
+      if(jsonDataMap == null){ render(status: 400, text:"Bad Request: json request payload is empty"); return;}
+      //run matches if request has json payload
+         java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
+         if(canonicalMatches.size() == 0) {render(status: 404, text : "no results found"); return;}
+         render(status: 300, results: canonicalMatches); 
 
     }
 
@@ -65,12 +65,13 @@ class EngineController {
     def findFuzzyMatches(){
 
       log.debug("Enter: findFuzzyMatches");
-      if(!securityService.login(request)) {render(status : 401, text : "failed authn"); return; }
-      def jsonDataMap = JSON.parse(request).person;
-      if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
-      if(jsonDataMap) { render fuzzyMatchService.getMatches(jsonDataMap) as JSON; }
-      else render(status : 401, text : "json is empty");
-
+      if(securityService.login(request) == false){render(status: 401, text: "Authentication failed"); return;}
+      java.util.Map jsonDataMap = JSON.parse(request).person;
+      if(jsonDataMap == null){ render(status: 400, text:"Bad Request: json request payload is empty"); return;}
+      //run matches if request has json payload
+         java.util.List fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
+         if(fuzzyMatches.size() == 0) {render(status: 404, text : "no results found"); return;}
+         render(status: 300, results: fuzzyMatches);
 
      }
 
