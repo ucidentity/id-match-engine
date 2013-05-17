@@ -48,9 +48,8 @@ class EngineController {
      * only returns canonical matches
      */
     def findCanonicalMatches() {
-     def failure = "failed authentication";
-      log.debug("the result of login "+securityService.login(request));
-      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      log.debug("Enter: findCanonicalMatches");
+      if(!securityService.login(request)) {render(status : 401, text : "failed authn"); return; }
       log.debug "passed authn";
       def jsonDataMap = JSON.parse(request).person;
       if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
@@ -65,10 +64,8 @@ class EngineController {
      */
     def findFuzzyMatches(){
 
-       def failure = "failed authentication";
-      log.debug("the result of login "+securityService.login(request));
-      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
-      log.debug "passed authn";
+      log.debug("Enter: findFuzzyMatches");
+      if(!securityService.login(request)) {render(status : 401, text : "failed authn"); return; }
       def jsonDataMap = JSON.parse(request).person;
       if(!schemaService.isInputSchemaValid(jsonDataMap)) { render(status : 400, text : "Input Attr not valid schema"); return;}
       if(jsonDataMap) { render fuzzyMatchService.getMatches(jsonDataMap) as JSON; }

@@ -10,7 +10,7 @@ class FuzzyMatchService {
   def configService;
   def schemaService;
   def matchingService;
-  def userService;
+  def personService;
 
    final String WILD_CARD = "*";
    final String EQUALS = "=";
@@ -50,7 +50,7 @@ class FuzzyMatchService {
 
       //get all persons in the registry
       log.debug( "pre-fetch "+new Date());
-      def persons = userService.getCache(); //return users from the cache
+      def persons = personService.getCache(); //return users from the cache
       log.debug( "post fetch "+new Date());
       //for each person in the person list
       persons.each(){ person ->
@@ -146,7 +146,8 @@ class FuzzyMatchService {
       log.debug("Enter getMatchesByRule");
       java.util.List results = [];
       java.util.List listToMatch = getBlockingFilterResults(rule,jsonDataMap);
-    
+      if(listToMatch.size() == 0) return results;
+ 
       //now that you have users to match against, for each attr in the fuzzyRule, run a match 
       //as you run match on each attribute, the candidate list keeps shrinking, hence the attributes later in the list 
       //will only run matches on a list that is much shorter.
@@ -183,7 +184,7 @@ class FuzzyMatchService {
         for(attr in  blockingFilterAttrs) {
                     log.debug( "got ${attr} to make sql");
                     //return all users if it is a WILD_CARD
-                    if(attr.equals(WILD_CARD)){ log.debug(attr+" is "+WILD_CARD); return userService.getCache(); }
+                    if(attr.equals(WILD_CARD)){ log.debug(attr+" is "+WILD_CARD); return personService.getCache(); }
                     def properAttr;
                     def sqlOperator;
                     if(attr.contains(NOT_EQUALS_FLAG)) {

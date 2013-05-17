@@ -51,9 +51,9 @@ idMatch.algorithmSet = ["Soundex","NYSIIS","EditDistance","DaitchMakotoff"]
 //do not execute rules that have no request values
 //example: if ssn is missing in request, do not run rules that have ssn
 idMatch.canonicalMatchRuleSet = [
-["dob","lName"],
+["dobYYYY","lName"],
 ["ssn"],
-["fName","lName","city" ]
+["fName","lName"]
 ]
 
 //run these rules to find similar person entries
@@ -69,9 +69,9 @@ idMatch.fuzzyMatchRuleSetOld = [
 //new format, notice the blockingFilter, this reduces the potential candidates for matching
 //where there is wild card, then run the match against all users
 idMatch.fuzzyMatchRuleSet = [
-[ blockingFilter : ["ssn","dob"] , matchAttributes : ["lName"] ],
-[ blockingFilter : ["ssn"], matchAttributes : ["lName","dob"] ],
-[ blockingFilter :["*"], matchAttributes : ["dob","fName","lName"] ]
+[ blockingFilter : ["ssn","dobYYYY"] , matchAttributes : ["lName"] ],
+[ blockingFilter : ["ssn"], matchAttributes : ["lName","dobYYYY"] ],
+[ blockingFilter :["*"], matchAttributes : ["dobYYYY","fName","lName"] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified

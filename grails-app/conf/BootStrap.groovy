@@ -4,7 +4,7 @@ import edu.berkeley.ucic.idmatch.Person;
 
 class BootStrap {
   
-    def userService;
+    def personService;
     def grailsApplication;
 
     def init = { servletContext ->
@@ -21,7 +21,7 @@ class BootStrap {
         if(createPersons) {        
         }
          //uncomment it for golive
-        userService.warmUpCache();
+        personService.warmUpCache();
      }
     
     def destroy = {

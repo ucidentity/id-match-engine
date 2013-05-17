@@ -79,10 +79,10 @@ class CanonicalMatchService {
              properAttr = attr.substring(NOT_EQUALS_FLAG.length());
              sqlOperator = NOT_EQUALS;
           } else { properAttr = attr; }
-                    log.debug("properAttr is ${properAttr}");
+                    log.debug("after prefix cleanup, attr is ${properAttr}");
                     def jsonInputValue = jsonDataMap.get(properAttr);
                     def realColName = schemaMap.get(properAttr);
-                    log.debug(jsonInputValue +" and "+realColName);
+                    log.debug("building sql for column "+realColName+" with value "+jsonInputValue);
                     //def realColName = grailsApplication.config.idMatch.schemaMap.get(properAttr);
                     if((ruleStmt == null)) ruleStmt = "${realColName} ${sqlOperator} '${jsonInputValue}'";
                     else ruleStmt = "${ruleStmt} AND ${realColName} ${sqlOperator} '${jsonInputValue}'";

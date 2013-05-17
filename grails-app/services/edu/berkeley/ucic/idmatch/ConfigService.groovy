@@ -15,7 +15,7 @@ class ConfigService {
     def canonicalRules;
     def fuzzyRules;
     def schemaMap;
-    def secCredentials;
+    def secKeys;
     def matchAttributeFuzzyAlgorithmInfo;
 
     /*
@@ -49,12 +49,12 @@ class ConfigService {
     }
 
   
-    def getSecurityCredentials(){
-        if(secCredentials == null) return grailsApplication.config.idMatch.security;
-        else return secCredentials;
+    def getSecurityKeys(){
+        if(secKeys == null) return grailsApplication.config.idMatch.securityKeys;
+        else return secKeys;
     }
-    def setSecurityCredentials(java.util.Map credentials){
-         secCredentials = credentials;
+    def setSecurityKeys(java.util.Map keys){
+         secKeys = keys;
     }
 
   
