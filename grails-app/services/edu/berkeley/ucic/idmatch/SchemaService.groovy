@@ -115,4 +115,21 @@ class SchemaService {
       */
       def isRuleSchemaValid(){ def result = false; return result;}
 
+   
+     /**
+      * validate if fuzzy rule attrs have corresponding Fuzzy Algorithms set
+      * return false even if one attribute in the list has mising Algorithm setup
+      */
+      def isFuzzyAttributeAlgorithmConfigured(java.util.List fuzzyAttributes){
+           log.debug("Enter: isFuzzyAttributeAlgorithmConfigured for "+fuzzyAttributes);
+            def result = true;
+            def fuzzyAttributeAlgorithmMap = configService.getFuzzyAttributeAlgorithmMap();
+            fuzzyAttributes.each(){ attr ->
+                if( fuzzyAttributeAlgorithmMap.attr.matchType == null) result = false;
+            }
+            log.debug("Enter: isFuzzyAttributeAlgorithmConfigured returning with "+result);
+            return result;
+
+      }
+
 }

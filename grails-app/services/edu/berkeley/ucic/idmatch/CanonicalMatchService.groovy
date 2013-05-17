@@ -26,8 +26,8 @@ class CanonicalMatchService {
       }
       java.util.ArrayList summaryResult = [];
       results.each{ result -> 
-                    log.debug(result.attr1);
-                    summaryResult.add(result.attr1);
+                    log.debug("filtering result entry to have referenceId"+result.referenceId);
+                    summaryResult.add(result.referenceId);
                   }
       log.info("Exiting getMatches");
       return summaryResult;
@@ -47,7 +47,7 @@ class CanonicalMatchService {
      */
     String hqlTest(){
       String hqlStmt = 
-        "from Person where (attr1 = '111222333') OR (attr4 = '123456' AND attr3 = 'alla') OR (attr2 = 'venu' AND attr3 = 'alla' AND attr5 = 'Berkeley')";
+        "from Person where (referenceId = '111222333') OR (attr4 = '123456' AND attr5 = 'alla') OR (attr4 = 'venu' AND attr5 = 'alla' AND attr7 = 'Berkeley')";
       log.debug("hql stmt is ${hqlStmt}");
       java.util.List results = Person.findAll(hqlStmt);
       log.debug("results are "+results);

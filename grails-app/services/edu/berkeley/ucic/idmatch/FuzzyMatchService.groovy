@@ -154,8 +154,12 @@ class FuzzyMatchService {
       def matchTypes = configService.getMatchAttributeFuzzyAlgorithmInfo();
       def schemaMap = configService.getSchemaMap();
       def fuzzyMatchAttrs = rule.matchAttributes;
+      //if the fuzzyAttrs do not have Fuzzy Algorithms setup, then return empty list, do not proceed
+      if(!schemaService.isFuzzyAttributeAlgorithmConfigured(fuzzyMatchAttrs)) return results;
+      //proceed only if you know that all fuzzy attrs are configured with Algorithms
       fuzzyMatchAttrs.each() { fuzzyAttr ->
-      log.debug("getting algorithm from ${matchTypes.get(fuzzyAttr)}");
+       log.debug("lets get algorithm for fuzzyAttr:  "+fuzzyAttr);
+       log.debug("getting algorithm from ${matchTypes.get(fuzzyAttr)}");
          String serviceName = "edu.berkeley.ucic.idmatch."+matchTypes.get(fuzzyAttr).matchType+"Service";
          log.debug("serviceName is ${serviceName}");
          String distance = matchTypes.get(fuzzyAttr).distance;
@@ -207,7 +211,7 @@ class FuzzyMatchService {
       def hqlStmt = "from Person where ${ruleStmt}".trim();
       log.debug( "hqlStmt is "+hqlStmt );
       def listToMatch = Person.findAll("${hqlStmt}"); // uses HQL
-      log.debug("Exit: with result size of "+listToMatch.size());
+      log.debug("Exit: getBlockingFilterResults with result size of "+listToMatch.size());
       return listToMatch;
      }
 

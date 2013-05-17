@@ -37,7 +37,7 @@ class PersonController {
        if(!params.SOR){ render(status : 400, text : "missing required attr"); return; }
        else {
            log.debug("found SOR "+params.SOR);
-           def sorUsers = User.findAll { SOR == params.SOR };
+           def sorUsers = Person.findAll { SOR == params.SOR };
            render(status : 300, text : sorUsers as JSON );
        }
      }
@@ -46,7 +46,7 @@ class PersonController {
     def deleteSorUser(){
         if(!params.SOR || !params.sorId){render(status: 400, text : "missing required attr"); return; }
         else {
-          def sorUser = User.findWhere(SOR : params.SOR, sorId : params.sorId);
+          def sorUser = Person.findWhere(SOR : params.SOR, sorId : params.sorId);
           if(!sorUser){render(status: 404, text : "person not found"); return};
           sorUser.delete();
         }
@@ -58,7 +58,7 @@ class PersonController {
       log.debug("the result of login "+securityService.login(request));
       if(!securityService.login(request)) {render(status : 401, text : "invalid credentials" ); return; }
       log.debug "passed authn";
-      def jsonDataMap = JSON.parse(request).data;
+      def jsonDataMap = JSON.parse(request).person;
       def person = personService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
       if(person == null) { render(status : 400, text : "Failed to create person"); return;}
       render(status : 200, text : "success fully created "+person.referenceId);

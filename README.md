@@ -56,7 +56,7 @@ curl -v -X GET -d "{"person": {"fName": "venu", "lName": "alla", "ssn": "1112223
 NOTE: pipe for formatting the response { | python -m json.tool }
 
 #PEOPLE API
-curl -v -X PUT -d "{"person": {"referenceId" : "uid123", 'fName' : 'venu', 'lName' : 'alla' }}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/v1/people/SIS/12345
+curl -v -X PUT -d "{"person": {"referenceId" : "uid123", "ssn" : "111222333", "dobYYYY" : "1234", 'fName' : 'venu', 'lName' : 'alla' }}" -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/v1/people/SIS/12345
 
 #GET /v1/people/HR/123
 curl -v -X GET  -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" http://localhost:8080/dolphin/v1/people/HR/123
