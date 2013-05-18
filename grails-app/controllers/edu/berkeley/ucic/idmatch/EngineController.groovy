@@ -36,10 +36,10 @@ class EngineController {
       if(jsonDataMap == null){ render(status: 400, text:"Bad Request: json request payload is empty"); return;}
       //run matches if request has json payload
          java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
-         if(canonicalMatches.size() > 0) {render(status: 300, results: canonicalMatches); return;};
+         if(canonicalMatches.size() > 0) {render(status: 300, text: canonicalMatches as JSON); return;};
          def fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
          if(fuzzyMatches.size() == 0){render(status: 404, text : "no results found"); return;}
-         render(status: 300, results: fuzztMatches);
+         render(status: 300, text: fuzzyMatches as JSON);
      } 
 
 
@@ -55,7 +55,8 @@ class EngineController {
       //run matches if request has json payload
          java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
          if(canonicalMatches.size() == 0) {render(status: 404, text : "no results found"); return;}
-         render(status: 300, results: canonicalMatches); 
+         render(status: 300, text: canonicalMatches as JSON); 
+        // render canonicalMatches as JSON;
 
     }
 
@@ -70,8 +71,8 @@ class EngineController {
       if(jsonDataMap == null){ render(status: 400, text:"Bad Request: json request payload is empty"); return;}
       //run matches if request has json payload
          java.util.List fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
-         if(fuzzyMatches.size() == 0) {render(status: 404, text : "no results found"); return;}
-         render(status: 300, results: fuzzyMatches);
+         if(fuzzyMatches?.size() == 0) {render(status: 404, text : "no results found"); return;}
+         render(status: 300, text: fuzzyMatches as JSON);
 
      }
 

@@ -24,13 +24,8 @@ class CanonicalMatchService {
       results = Person.findAll("${hqlStmt}"); // uses HQL
       log.debug( "results are "+results);
       }
-      java.util.ArrayList summaryResult = [];
-      results.each{ result -> 
-                    log.debug("filtering result entry to have referenceId"+result.referenceId);
-                    summaryResult.add(result.referenceId);
-                  }
-      log.info("Exiting getMatches");
-      return summaryResult;
+      log.info("Exiting getMatches with result size "+results.size());
+      return schemaService.personSummaryAdapter(results); 
     }
 
 

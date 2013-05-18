@@ -122,21 +122,13 @@ class FuzzyMatchService {
          java.util.List matchesByRule = getMatchesByRule(rule, jsonDataMap);
          results.addAll(matchesByRule); //add the matches for this rule to the total results
         } 
-      log.info("Exit: listToMatch is the final result list");
-      return results;
+      log.info("Exit: getMatches returns with results "+results);
+      //transform the entries into summary entries as configured in Config.groovy
+      return schemaService.personSummaryAdapter(results);
 
     } //getMatches() done
 
     
-    
-    def blockingFilter(String filterName){
-     //construct the sql stmt based on the configuration of the blocking filter 
-      
-
-    }
-
-
-
     /**
      * for a given rule, get users to match using blocking Filter
      * use this result set to run through fuzzy match logic as configured in matchTypes
@@ -151,7 +143,9 @@ class FuzzyMatchService {
       //now that you have users to match against, for each attr in the fuzzyRule, run a match 
       //as you run match on each attribute, the candidate list keeps shrinking, hence the attributes later in the list 
       //will only run matches on a list that is much shorter.
-      def matchTypes = configService.getMatchAttributeFuzzyAlgorithmInfo();
+      def matchTypes = configService.getFuzzyAttributeAlgorithmMap();
+      log.debug("matchTypes is "+matchTypes);
+      log.debug("fuzzyAttributeAlgorithmMap is"+matchTypes);
       def schemaMap = configService.getSchemaMap();
       def fuzzyMatchAttrs = rule.matchAttributes;
       //if the fuzzyAttrs do not have Fuzzy Algorithms setup, then return empty list, do not proceed

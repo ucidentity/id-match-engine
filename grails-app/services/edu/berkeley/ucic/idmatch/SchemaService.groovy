@@ -124,12 +124,34 @@ class SchemaService {
            log.debug("Enter: isFuzzyAttributeAlgorithmConfigured for "+fuzzyAttributes);
             def result = true;
             def fuzzyAttributeAlgorithmMap = configService.getFuzzyAttributeAlgorithmMap();
+            log.debug("fuzzyAttributeAlgorithmMap is"+fuzzyAttributeAlgorithmMap);
             fuzzyAttributes.each(){ attr ->
-                if( fuzzyAttributeAlgorithmMap.attr.matchType == null) result = false;
+                log.debug("finding matchType for "+attr);
+                log.debug(fuzzyAttributeAlgorithmMap.get(attr));
+                if( fuzzyAttributeAlgorithmMap.get(attr)?.matchType == null) result = false;
             }
             log.debug("Enter: isFuzzyAttributeAlgorithmConfigured returning with "+result);
             return result;
 
       }
+
+     /**
+      * transforms entries in the results into entries that have only visible attributes
+      * 
+      */
+      def java.util.List personSummaryAdapter(java.util.List results){
+         def summaryResults = [];
+         results.each(){ person ->
+               java.util.Map summaryPerson = [:];
+               summaryPerson.id = person.id;
+               summaryPerson.SOR = person.SOR;
+               summaryPerson.sorId = person.sorId;
+               summaryResults << summaryPerson;
+
+        }
+        return summaryResults;
+
+     }
+
 
 }

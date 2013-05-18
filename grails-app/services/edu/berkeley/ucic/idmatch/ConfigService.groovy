@@ -59,12 +59,11 @@ class ConfigService {
 
   
    def getFuzzyAttributeAlgorithmMap(){
-      if(matchAttributeFuzzyAlgorithmMap == null) return grailsApplication.config.idMatch.matchAttributeFuzzyAlgorithmMap;
+      if(fuzzyAttributeAlgorithmMap == null) return grailsApplication.config.idMatch.fuzzyAttributeAlgorithmMap;
       else return matchAttributeFuzzyAlgorithmMap;
    }
  
    def setFuzzyAttributeAlgorithmMap(java.util.Map info){
        fuzzyAttributeAlgorithmMap = info;
-
    }
 }
