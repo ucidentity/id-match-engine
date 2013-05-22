@@ -10,10 +10,11 @@ class SecurityService {
       def clientId = request.getHeader("clientId");
       def password = request.getHeader("password");
       if((clientId == null)|| (password == null)) return result;
-      println "clientId and password are " +clientId+" "+password;
-      def securityKeySet = configService.getSecurityKeys();
-      def realPassword = securityKeySet.get(clientId.trim());
-      log.debug("realPassword and password are "+realPassword+"-"+password);
+      log.debug("clientId and password in request are " +clientId+" "+password);
+      def securityKeyMap = configService.getSecurityKeys();
+      log.debug("securityKeyMap is ${securityKeyMap}");
+      def realPassword = securityKeyMap.get(clientId.trim()); //get the password
+      log.debug("real password for ${clientId} is ${realPassword}");
       if((realPassword == null) || (!realPassword.equals(password)) ) result = false;
       else result = true;
       log.debug("Exit: login with result "+result);

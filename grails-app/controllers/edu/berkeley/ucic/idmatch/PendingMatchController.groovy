@@ -45,11 +45,16 @@ class PendingMatchController {
       //get json payload, assign it to requestJsonVal;
       def failure = "failed authentication";
       log.debug("the result of login "+securityService.login(request));
-      if(!securityService.login(request)) {render(status : 401, text : failure); return; }
+      if(!securityService.login(request)) {render(status : 401, text : failure); return;
+      }
       log.debug "passed authn";
-      def jsonDataMap = JSON.parse(request).pendingMatch ; 
+      def jsonDataMap = JSON.parse(request); 
+      if(jsonDataMap.SOR == null || jsonDataMap.sorId == null || jsonDataMap.matchAttrs == null) {
+        render(status : 400, text : "Missing required args in request"); return;
+      }
       def p = pendingMatchService.createOrUpdate(jsonDataMap);
-      if(p == null) render(status : 400, text: "Create/Update Failed");
+      if(p == null){ render(status : 400, text: "Create/Update Failed"); return;
+      }
       render(status : 200, text : "Request Successful for ${p.id}");
     }
    

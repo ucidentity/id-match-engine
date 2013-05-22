@@ -29,7 +29,7 @@ environments {
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:postgresql://localhost/postgres"
+            url = "jdbc:postgresql://localhost/idmatch"
             username = "postgres"
             password = ""
             driverClassName = "org.postgresql.Driver"

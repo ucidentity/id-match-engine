@@ -59,7 +59,7 @@ idMatch.fuzzyAttributeAlgorithmMap = [
 
 
 //Used for authn via Http Basic
-idMatch.securityKeyMap = [
+idMatch.securityKeys = [
    tester1 : '123456',
    tester2 : '234567',
    tester3 : '345678'

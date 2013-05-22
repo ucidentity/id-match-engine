@@ -140,6 +140,7 @@ class SchemaService {
       * 
       */
       def java.util.List personSummaryAdapter(java.util.List results){
+         log.debug("Enter: personSummaryAdapter with input list of size "+results?.size());
          def summaryResults = [];
          results.each(){ person ->
                java.util.Map summaryPerson = [:];
@@ -149,6 +150,7 @@ class SchemaService {
                summaryResults << summaryPerson;
 
         }
+        log.debug("Exit: personSummaryAdapter with return list of size "+summaryResults?.size());
         return summaryResults;
 
      }

@@ -50,7 +50,7 @@ class ConfigService {
 
   
     def getSecurityKeys(){
-        if(secKeys == null) return grailsApplication.config.idMatch.securityKeyMap;
+        if(secKeys == null) return grailsApplication.config.idMatch.securityKeys;
         else return secKeys;
     }
     def setSecurityKeys(java.util.Map keys){
