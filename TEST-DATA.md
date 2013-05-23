@@ -25,7 +25,7 @@ curl -v -X PUT -H "clientId:tester1" -H "password:123456" -H "content-type: appl
 {"person" : {"referenceId" : "4", "lName" : "Lee", "fName" : "John", "ssn" : "12049" , "dobMM" : "07", "dobDD" : "11", "sorId" : "0121038475", "SOR" : "HR" }}
 {"person" : {"referenceId" : "5", "lName" : "MBEBE", "fName" : "Joseph", "dobMM" : "01", "dobDD" : "02", "sorId" : "011763541", "SOR" : "HR" }}
 {"person" : {"referenceId" : "6", "lName" : "Wunderbar", "fName" : "Kelly", "ssn" : "54019" , "dobMM" : "11", "dobDD" : "06", "sorId" : "20664748", "SOR" : "SIS" }}
-{"person" : {"referenceId" : "7", "lName" : "Granite", "fName" : "Abigail", "ssn" : "" , "dobMM" : "05", "dobDD" : "12", "sorId" : "20914408", "SOR" : "SIS" }}
+{"person" : {"referenceId" : "7", "lName" : "Granite", "fName" : "Abigail", "dobMM" : "05", "dobDD" : "12", "sorId" : "20914408", "SOR" : "SIS" }}
 {"person" : {"referenceId" : "8", "lName" : "Haas", "fName" : "Mary", "ssn" : "12345" , "dobMM" : "04", "dobDD" : "09", "sorId" : "012391824", "SOR" : "HR" }}
 {"person" : {"referenceId" : "12", "lName" : "Marais", "fName" : "Yvette", "ssn" : "40041" , "dobMM" : "04", "dobDD" : "22", "sorId" : "0126122093", "SOR" : "HR" }}
 

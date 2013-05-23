@@ -26,83 +26,6 @@ class FuzzyMatchService {
   edu.berkeley.ucic.idmatch.SoundexService soundexService;
 
 
-
-    /* 
-     * run fuzzy Match rules
-     * this is deprecated as FuzzyRuleConfiguration is changed
-     */
-    def executeRules(java.util.Map jsonDataMap) {
-      log.debug( "json map is "+ jsonDataMap);
-      def rules = grailsApplication.config.idMatch.ruleSet;
-      log.debug( "rules is "+rules);
-      def ruleKeySet = rules.keySet(); //get keys for the rules
-      def schemaMap = grailsApplication.config.idMatch.schemaMap;
-      log.debug( "schemaMap is "+schemaMap);
-      def cutOffScoreMap = grailsApplication.config.idMatch.cutOffScoreMap;
-      log.debug( "cutOffScoreMap is "+cutOffScoreMap);
-      def exactCutOffScore = cutOffScoreMap.get("exact") as int;
-      def reconCutOffScore = cutOffScoreMap.get("recon") as int;
-      def jsonDataMapKey = jsonDataMap.keySet();
-      log.debug( "json data key is "+jsonDataMapKey);
-      def exactResults = [];
-      def reconResults = [];
-      //
-
-      //get all persons in the registry
-      log.debug( "pre-fetch "+new Date());
-      def persons = personService.getCache(); //return users from the cache
-      log.debug( "post fetch "+new Date());
-      //for each person in the person list
-      persons.each(){ person ->
-            log.debug( "person is "+person);
-            def personMatchScore = 0;
-            def personProfile = [:];
-            //for each attribute in jsonDataMap
-            jsonDataMapKey.each() { ruleKey ->
-             log.debug( "rule Key is " + ruleKey);
-             def jsonDataValue = jsonDataMap.get(ruleKey).toString(); //get value from json
-             log.debug( "json data value is "+jsonDataValue);
-             def dbColName = schemaMap.get(ruleKey); //get real col name from schema map
-             log.debug( "schemaMap value for ruleKey is ${dbColName}");
-             def registryValue = person."${dbColName}";
-             log.debug( "person col value for this key is ${registryValue}");
-             def ruleConfigMap = rules.get(ruleKey); //get the rule configuration for a given key
-             log.debug( "rule config is "+ruleConfigMap);
-             if(ruleConfigMap != null){
-             def ruleScore = matchingService.executeRule(ruleConfigMap, jsonDataValue,registryValue);
-             log.debug( "ruleScore is "+ruleScore);
-             personMatchScore = personMatchScore + ruleScore;
-             personProfile.put(ruleKey, registryValue)};
-
-         }
-
-            log.debug( "personMatchScore is "+personMatchScore);
-             if (personMatchScore == exactCutOffScore.intValue() ) {
-                personProfile.put("person", person);
-                personProfile.put("personMatchScore", personMatchScore);
-                exactResults.add(personProfile);
-                log.debug( "exact match results are "+exactResults);
-             }
-             else if ((personMatchScore >= reconCutOffScore.intValue())
-                       &&
-                       (personMatchScore <  exactCutOffScore.intValue() )
-                      )
-                     {  personProfile.put("person", person);
-                        personProfile.put("personMatchScore", personMatchScore);
-                        reconResults.add(personProfile);
-                        log.debug( "recon match results are "+reconResults);
-                     }
-      }
-       def response = [:];
-       response.put("input", jsonDataMap)
-       response.put("exact" , exactResults);
-       response.put("recon" , reconResults);
-       log.debug( "Date match complete "+new Date());
-       return response;
-
-     }
-
-
     /*
      * newer version of rule execution
      * based on newer configuration for fuzzyRules
@@ -113,7 +36,8 @@ class FuzzyMatchService {
      * 
      */
     def java.util.List getMatches(java.util.Map jsonDataMap){
-      log.info( "Enter: getMatches, json map is "+ jsonDataMap);
+      String actionName = "getMatches";
+      log.info( "Enter:${actionName} json map is "+ jsonDataMap);
       java.util.List results = [];
       //get rules that have attributes with values in request and match types in configuration
       java.util.List validatedFuzzyRules = schemaService.getValidatedFuzzyRules(jsonDataMap);
@@ -122,7 +46,7 @@ class FuzzyMatchService {
          java.util.List matchesByRule = getMatchesByRule(rule, jsonDataMap);
          results.addAll(matchesByRule); //add the matches for this rule to the total results
         } 
-      log.info("Exit: getMatches returns with results "+results);
+      log.info("Exit:${actionName} returns with results "+results);
       //transform the entries into summary entries as configured in Config.groovy
       return schemaService.personSummaryAdapter(results);
 
@@ -135,7 +59,8 @@ class FuzzyMatchService {
      * return users who match the rule
      */
     def java.util.List getMatchesByRule(java.util.Map rule, java.util.Map jsonDataMap){
-      log.debug("Enter getMatchesByRule");
+      String actionName = "getMatchesByRule";
+      log.debug("Enter:${actionName}");
       java.util.List results = [];
       java.util.List listToMatch = getBlockingFilterResults(rule,jsonDataMap);
       if(listToMatch.size() == 0) return results;
@@ -164,7 +89,7 @@ class FuzzyMatchService {
          if(distance == null) { listToMatch =  myService.findMatches(inputValue,registryName,listToMatch); }
          else{ listToMatch = myService.findMatches(inputValue,registryName,listToMatch,distance as int);  }
         }
-       log.debug("Exit: getMatchesByRule returns result of size "+listToMatch.size());
+       log.debug("Exit:${actionName} returns result of size "+listToMatch.size());
        return listToMatch; //after matching all attr, return the results
 } //getMatchesForEachRule
 
@@ -174,15 +99,19 @@ class FuzzyMatchService {
      * by constructing sql using the attrs in the filter
      */
      def java.util.List getBlockingFilterResults(java.util.Map rule, java.util.Map jsonDataMap){
-         log.debug("Enter: getBlockingFilterResults");
+         def actionName = "getBlockingFilterResults";
+         log.debug("Enter:${actionName}");
          def blockingFilterAttrs = rule.blockingFilter;
          def schemaMap = configService.getSchemaMap();
          //construct SQL stmt
         def ruleStmt; //empty sql stmt
         for(attr in  blockingFilterAttrs) {
                     log.debug( "got ${attr} to make sql");
-                    //return all users if it is a WILD_CARD
-                    if(attr.equals(WILD_CARD)){ log.debug(attr+" is "+WILD_CARD); return personService.getCache(); }
+                    //return all users if it is a WILD_CARD or if blockingFilterAttr not in jsonDataMap
+                    if(attr.equals(WILD_CARD) || !jsonDataMap.containsKey(attr)){ 
+                      log.debug("Exit:${actionName} because ${attr} is either ${WILD_CARD} or empty");
+                      return personService.getCache(); }
+
                     def properAttr;
                     def sqlOperator;
                     if(attr.contains(NOT_EQUALS_FLAG)) {
@@ -205,7 +134,7 @@ class FuzzyMatchService {
       def hqlStmt = "from Person where ${ruleStmt}".trim();
       log.debug( "hqlStmt is "+hqlStmt );
       def listToMatch = Person.findAll("${hqlStmt}"); // uses HQL
-      log.debug("Exit: getBlockingFilterResults with result size of "+listToMatch.size());
+      log.debug("Exit:${actionName} with result size of "+listToMatch.size());
       return listToMatch;
      }
 

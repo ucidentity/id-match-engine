@@ -10,18 +10,14 @@ import edu.berkeley.ucic.idmatch.*;
  */
 class EngineController {
 
-    /*
-        see URLMappings instead 
-        static allowedMethods = [getMatches:'GET',
-                                 index:['GET', 'POST']]
-    */
+    //TODO: see allowedMethods annotation
 
     def securityService;
     def fuzzyMatchService;
     def canonicalMatchService;
     def schemaService;
 
-    def index() { render "USAGE: GET:getMatches, GET:getCanonicalMatches, GET:getFuzzyMatches" }
+    //def index() { render "USAGE: GET:/v1/engine, GET:v1/engine/canonical, GET:v1/engine/fuzzy" }
   
     /*
      * return canonical and fuzzy matches
@@ -30,7 +26,7 @@ class EngineController {
      * return 401 if un-authenticated (403 if un-authz )
      */ 
     def findMatches() {
-   
+      log.debug("Enter findMatches"); 
       if(securityService.login(request) == false){render(status: 401, text: "Authentication failed"); return;}
       java.util.Map jsonDataMap = JSON.parse(request).person;
       if(jsonDataMap == null){ render(status: 400, text:"Bad Request: json request payload is empty"); return;}

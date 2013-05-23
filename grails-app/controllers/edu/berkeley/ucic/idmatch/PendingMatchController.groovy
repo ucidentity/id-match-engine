@@ -44,12 +44,13 @@ class PendingMatchController {
     def createOrUpdate() {
       //get json payload, assign it to requestJsonVal;
       def failure = "failed authentication";
-      log.debug("the result of login "+securityService.login(request));
-      if(!securityService.login(request)) {render(status : 401, text : failure); return;
+      boolean loginResult = securityService.login(request);
+      log.debug("the result of login "+loginResult);
+      if(!loginResult) {render(status : 401, text : failure); return;
       }
-      log.debug "passed authn";
       def jsonDataMap = JSON.parse(request); 
       if(jsonDataMap.SOR == null || jsonDataMap.sorId == null || jsonDataMap.matchAttrs == null) {
+        log.debug("missing one of SOR, sorId, matchAttrs in "+jsonDataMap);
         render(status : 400, text : "Missing required args in request"); return;
       }
       def p = pendingMatchService.createOrUpdate(jsonDataMap);

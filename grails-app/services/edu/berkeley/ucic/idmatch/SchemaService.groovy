@@ -57,16 +57,19 @@ class SchemaService {
           log.debug("validating rule "+rule);
           int emptyAttributeCount = 0;
           rule.each() { attr ->
-            log.debug("checking prefix in "+attr);
+            log.debug("checking prefix in attr "+attr);
             def properAttr; //attr name after removing prefixes like != etc
                     if(attr.contains(NOT_EQUALS_FLAG)) {
                        properAttr = attr.substring(2);
                     }else {
                        properAttr = attr;
                     }
-            if(jsonDataMap."${properAttr}" == null){log.debug("found ${properAttr} empty in request"); 
-                                                    emptyAttributeCount = emptyAttributeCount+1; }
-          }
+            log.debug("attr before and after prefix clearing is "+attr+"-"+properAttr);
+            log.debug("is ${properAttr} in jsonDataMap "+jsonDataMap.containsKey(properAttr));
+            if(!jsonDataMap.containsKey(properAttr)){
+                     log.debug("found ${properAttr} empty in request"); 
+                     emptyAttributeCount = emptyAttributeCount+1; }
+           }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
       }
       log.debug("Exit getValidatedRules with validatedRules size of "+validatedRules.size());
@@ -91,15 +94,14 @@ class SchemaService {
           log.debug("rule being validated is "+rule);
           int emptyAttributeCount = 0;
           rule.matchAttributes.each() { attr ->
-            log.debug("checking prefix in "+attr);
+            log.debug("checking prefix in matchAttribute "+attr);
             def properAttr; //attr name after removing prefixes like != etc
                     if(attr.contains(NOT_EQUALS_FLAG)) {
                        properAttr = attr.substring(2);
                     }else {
                        properAttr = attr;
                     }
-
-            if(jsonDataMap.get(properAttr) == null){log.debug("found ${properAttr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
+            if(!jsonDataMap.containsKey(properAttr)){log.debug("found ${properAttr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
           }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
       }

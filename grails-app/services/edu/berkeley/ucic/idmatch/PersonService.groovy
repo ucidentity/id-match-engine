@@ -58,7 +58,7 @@ class PersonService {
       if(person == null) { newParams.SOR = SOR; newParams.sorId = sorId; person =  new Person(newParams); }
       else{ person.properties = newParams; }
       try { person.save(flush: true, failOnError : true); }catch(e){log.debug(e.getMessage()); person = null; }
-      log.debug("EXIT createOrUpdate with person object "+person?.id);
+      log.debug("EXIT createOrUpdate with person id "+person?.id);
       return person;
     }
 
