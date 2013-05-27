@@ -12,6 +12,10 @@ class PendingMatchController {
  
     def pendingMatchService;
     def securityService;
+    
+    String http401Message = "Invalid Credentials";
+    String http400Message = "Missing request params";
+    String http404Message = "Request Resource not found";
 
     static scaffold = true
     def index() { forward action: "list" }
@@ -21,6 +25,7 @@ class PendingMatchController {
      * should return 200
      */ 
     def list() {
+      if(!securityService.login(request)) {render(status : 401, text : http401Message); return; }
         render(status: 200, text :  PendingMatch.findAll() as JSON);
     }
 
@@ -31,9 +36,10 @@ class PendingMatchController {
      */
     def show() {
         println "here is the id sent as params.id $params.id"
-        if(!params.id) render (status : 400, text : "missing required input params.id" );
-        def p =  PendingMatch.get(params.id);
-        if(p == null) render(status : 404, text : "resource with $params.id not found" )
+      if(!securityService.login(request)) {render(status : 401, text : http401Message); return; }
+        if(!params.id) render (status : 400, text : http400Message );
+        def p =  pendingMatchService.get(params.id);
+        if(p == null) render(status : 404, text : http404Message )
         else render(status : 300, text : p as JSON);
     }
 
@@ -43,15 +49,12 @@ class PendingMatchController {
      */
     def createOrUpdate() {
       //get json payload, assign it to requestJsonVal;
-      def failure = "failed authentication";
-      boolean loginResult = securityService.login(request);
-      log.debug("the result of login "+loginResult);
-      if(!loginResult) {render(status : 401, text : failure); return;
-      }
+      if(!securityService.login(request)) {render(status : 401, text : http401Message); return; }
       def jsonDataMap = JSON.parse(request); 
-      if(jsonDataMap.SOR == null || jsonDataMap.sorId == null || jsonDataMap.matchAttrs == null) {
-        log.debug("missing one of SOR, sorId, matchAttrs in "+jsonDataMap);
-        render(status : 400, text : "Missing required args in request"); return;
+      //need SOR and sorId to create/update a pendingMatch entry
+      if(jsonDataMap.SOR == null || jsonDataMap.sorId == null) {
+        log.debug("missing one of SOR, sorId "+jsonDataMap);
+        render(status : 400, text : http400Message); return;
       }
       def p = pendingMatchService.createOrUpdate(jsonDataMap);
       if(p == null){ render(status : 400, text: "Create/Update Failed"); return;

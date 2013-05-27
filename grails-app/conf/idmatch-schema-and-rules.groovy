@@ -32,29 +32,43 @@ idMatch.schemaMap = [
 
 //a list of rules, each rule by itself is canonical
 //execute all the rules and collate the results
-//do not execute rules that have no request values
-//example: if ssn is missing in request, do not run rules that have ssn
+//TODO: should each rule have a confidence score, if so, how can it be used?
 idMatch.canonicalMatchRuleSet = [
-["dobYYYY","lName"],
-["ssn"],
-["fName","lName"]
+["ssn","lName","dobMM","dobDD"],
+["sorId","lName"]
 ]
 
 
 //new format, notice the blockingFilter, this reduces the potential candidates for matching
 //where there is wild card, then run the match against all users
+//where there is no matchAttributes, then return the blockingFilter results as fuzzy candidates
+//TODO: should each rule have confidence score, if so, how can it be used?
 idMatch.fuzzyMatchRuleSet = [
-[ blockingFilter : ["ssn","dobYYYY"] , matchAttributes : ["lName"] ],
-[ blockingFilter : ["ssn"], matchAttributes : ["lName","dobYYYY"] ],
-[ blockingFilter :["*"], matchAttributes : ["dobYYYY","fName","lName"] ]
+[ blockingFilter : ["ssn","lName"] , matchAttributes : ["dobMM","dobDD"] ],
+[ blockingFilter : ["lName","dobMM","dobDD"], matchAttributes : ["ssn"] ],
+[ blockingFilter : ["ssn","dodMM","dobDD"], matchAttributes : [] ],
+[ blockingFilter : ["sorId"], matchAttributes : [] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified
 //if an attribute is not specified here but is present in the rules, then that rule will be ignored 
 idMatch.fuzzyAttributeAlgorithmMap = [
     ssn : [matchType : "EditDistance", distance : "1"],
+    dobMM : [matchType : "EditDistance", distance : "1"],
+    dobDD : [matchType : "EditDistance", distance : "1"],
   lName : [matchType : "Transpose", distance : "1"],
   fName : [matchType : "Soundex"]
+]
+
+//TODO:
+//the following property is not yet consumed by the engine
+//this is just a placeholder for feature planned for next releases
+//is spec-ed via jira-idmatch-41
+idMatch.ignoreValues = [
+ssn : ["00-000-0000", "11-111-1111"],
+dobDD : ["00"],
+dobMM : ["00"],
+dobYYYY : ["0000"]
 ]
 
 
@@ -66,5 +80,6 @@ idMatch.securityKeys = [
 ]
 
 //only for testing phase
+//TODO: remove for Production
 idMatch.test.createUsers = true //true or false
 idMatch.test.size = 2
