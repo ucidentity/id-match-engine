@@ -47,8 +47,11 @@ class PersonController {
            render(status : 300, text : sorUsers as JSON );
        }
      }
-
-    //DELETE /v1/SOR/sorId
+   
+    /**
+     * DELETE /v1/SOR/sorId
+     *
+     */
     def deleteSorUser(){
         if(!securityService.login(request)) {render(status : 401, text : http401Message ); return; }
         if(!params.SOR || !params.sorId){render(status: 400, text : http400Message); return; }
@@ -59,14 +62,15 @@ class PersonController {
         }
      }
     
-    //PUT /v1/SOR/sorId 
-    //Note: need to have referenceId inorder to create/update
+    /**
+     * PUT /v1/SOR/sorId 
+     * Note: need to have referenceId and SOR and sorId,  inorder to create/update
+     */
     def createOrUpdate(){
       if(!securityService.login(request)) {render(status : 401, text : http401Message ); return; }
-      log.debug "passed authn";
       def jsonDataMap = JSON.parse(request);
       //need referenceId, SOR and sorId to create or update
-      if(!jsonDataMap.containsKey("referenceId") || params.SOR==null || params.sorId == null) {render(status: 400, text : http400Message); return; }
+      if(!jsonDataMap?.containsKey("referenceId") || params.SOR==null || params.sorId == null) {render(status: 400, text : http400Message); return; }
       def person = personService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
       if(person == null) { render(status : 400, text : "Failed to create person"); return;}
       render(status : 200, text : "success fully created "+person.referenceId);

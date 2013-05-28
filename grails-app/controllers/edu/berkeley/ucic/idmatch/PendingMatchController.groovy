@@ -33,12 +33,14 @@ class PendingMatchController {
      * GET /v1/pendingMatches/$id
      * should return 300
      * return 400 if params.id missing
+     * TODO: remove class and other non-user friendly properties from JSON
      */
     def show() {
-        println "here is the id sent as params.id $params.id"
+       log.debug("Enter: show");
       if(!securityService.login(request)) {render(status : 401, text : http401Message); return; }
         if(!params.id) render (status : 400, text : http400Message );
         def p =  pendingMatchService.get(params.id);
+        log.debug("pendingMatch in  hand has candidates ${p.candidates} and ${p.sorPerson}");
         if(p == null) render(status : 404, text : http404Message )
         else render(status : 300, text : p as JSON);
     }
@@ -48,6 +50,7 @@ class PendingMatchController {
      * create PendingMatch and return status 200
      */
     def createOrUpdate() {
+      log.debug("Enter: createOrUpdate with payload ${JSON.parse(request)}");
       //get json payload, assign it to requestJsonVal;
       if(!securityService.login(request)) {render(status : 401, text : http401Message); return; }
       def jsonDataMap = JSON.parse(request); 

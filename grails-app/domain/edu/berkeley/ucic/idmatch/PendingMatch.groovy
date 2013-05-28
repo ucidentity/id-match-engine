@@ -16,6 +16,12 @@ class PendingMatch {
     String sorId;
     String sorPerson;
     Date createDate;
+    
+    //transients, not stored in database
+    //TODO: this did not work as controller still returned json response without this property
+    java.util.List candidates;
+    static transients = ['candidates']
+    java.util.List getCandidates(){return candidates;}
 
     //TODO: make matchFilterJson nullable : false
     static constraints = {
