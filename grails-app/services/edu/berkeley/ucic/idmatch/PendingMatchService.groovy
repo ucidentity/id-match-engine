@@ -65,10 +65,13 @@ class PendingMatchService {
        else { java.util.List fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
               if(fuzzyMatches.size() > 0) result.candidates = fuzzyMatches;
        }
+       //TODO: remove this after testing
+       //needed atleast one pendingMatch that resulted in candidates for testing purposes only
+       if(!result.candidates.size() >0)result.candidates = Person.findAll();
+
        //TODO:
        //transient properties on domain class do not get returned as part of JSON response
        //hence had to recreate a new Map.
-       result.candidates = Person.findAll(); //TODO: remove this after testing
        result.id = pendingMatch.id;
        result.SOR = pendingMatch.SOR;
        result.sorId = pendingMatch.sorId;

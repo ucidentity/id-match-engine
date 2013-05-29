@@ -5,12 +5,13 @@
 //api users do not need to change anything, admin needs to just update this map.
 
 
+//mapping of external schema -> internal schema
 //limited to 15 columns for this release
-//sorId is empId,stuId,affId where SOR is one of sis,hr,advcon
+//sorId is typically something like empId,stuId,affId where SOR is one of sis,hr,advcon
 //referenceId could be UID or UUID, more than one record can have it, 
 //referenceId helps identify all the records belonging to the same user
 //referenceId, sorId and SOR are not customizable, they are allotted to columns with same name
-//referenceId,sorId,SOR
+//i think we should consider fName,lName,MI as standard attributes too
 idMatch.schemaMap = [
  referenceId : 'referenceId',
        sorId : 'sorId',

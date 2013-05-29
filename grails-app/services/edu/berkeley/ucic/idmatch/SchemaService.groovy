@@ -41,11 +41,11 @@ class SchemaService {
      * rule is skipped if there is no incoming request value for any of the attributes in the rule
      */
    def java.util.List getValidatedCanonicalRules(java.util.Map jsonDataMap){
-      log.debug("Enter getValidatedCanonicalRules");
-      log.debug( "json data is "+jsonDataMap);
+      String method = "getValidatedCanonicalRules"
+      log.debug("Enter: ${method} with ${jsonDataMap}");
 
       def asIsRules = configService.getCanonicalRules();
-      log.debug("asIsRules found as "+asIsRules);
+      log.debug("asIsRules found are "+asIsRules);
 
       def schemaMap = configService.getSchemaMap();
       log.debug( "schemaMap is "+schemaMap);
@@ -54,22 +54,22 @@ class SchemaService {
 
       //filter the rules and keep only those that have attr values in the request
       asIsRules.each(){ rule ->
-          log.debug("validating rule "+rule);
+          log.debug("validating rule ${rule}");
           int emptyAttributeCount = 0;
           rule.each() { attr ->
-            log.debug("checking prefix in attr "+attr);
+            log.debug("validating ${attr}");
             def properAttr; //attr name after removing prefixes like != etc
-                    if(attr.contains(NOT_EQUALS_FLAG)) {
-                       properAttr = attr.substring(2);
-                    }else {
-                       properAttr = attr;
-                    }
-            log.debug("attr before and after prefix clearing is "+attr+"-"+properAttr);
-            log.debug("is ${properAttr} in jsonDataMap "+jsonDataMap.containsKey(properAttr));
+            if(attr.contains(NOT_EQUALS_FLAG)) {
+                  properAttr = attr.substring(2);
+            }else {
+                  properAttr = attr;
+            }
+            log.debug("is ${properAttr} in jsonDataMap -> ${jsonDataMap.containsKey(properAttr)}");
             if(!jsonDataMap.containsKey(properAttr)){
-                     log.debug("found ${properAttr} empty in request"); 
-                     emptyAttributeCount = emptyAttributeCount+1; }
-           }
+                     log.debug("${properAttr} is missing in jsonDataMap, will skip this rule"); 
+                     emptyAttributeCount = emptyAttributeCount+1; 
+            }
+          }
           if(emptyAttributeCount == 0) validatedRules.add(rule);
       }
       log.debug("Exit getValidatedRules with validatedRules size of "+validatedRules.size());
@@ -82,16 +82,19 @@ class SchemaService {
      *
      */ 
     def java.util.List getValidatedFuzzyRules(java.util.Map jsonDataMap){
-      log.debug("Enter getValidatedFuzzyRules");
-      log.debug( "json data is "+jsonDataMap);
+      String method = "getValidatedFuzzyRules";
+      log.debug("Enter: ${method} with jsonDataMap ${jsonDataMap}");
+
+      def asIsRules = configService.getFuzzyRules();
+      log.debug("${asIsRules.size()} fuzzy rules found ->  ${asIsRules}");
+
       def schemaMap = configService.getSchemaMap();
       log.debug( "schemaMap is "+schemaMap);
-      def asIsRules = configService.getFuzzyRules();
-      log.debug("fuzzy rules as found are "+asIsRules);
-      java.util.List validatedRules = [];
+
       //filter the rules and keep only those that have attr values in the request
+      java.util.List validatedRules = [];
       asIsRules.each(){ rule ->
-          log.debug("rule being validated is "+rule);
+          log.debug("rule being validated is ${rule}");
           int emptyAttributeCount = 0;
           rule.matchAttributes.each() { attr ->
             log.debug("checking prefix in matchAttribute "+attr);
@@ -101,11 +104,15 @@ class SchemaService {
                     }else {
                        properAttr = attr;
                     }
-            if(!jsonDataMap.containsKey(properAttr)){log.debug("found ${properAttr} empty in request"); emptyAttributeCount = emptyAttributeCount+1; }
-          }
+            if(!jsonDataMap.containsKey(properAttr)){
+               log.debug("found ${properAttr} empty in request"); 
+               emptyAttributeCount = emptyAttributeCount+1; 
+               rule.matchAttributes = [] //empty the rule so .each can exit
+             }
+          }//matchAttributes.each
           if(emptyAttributeCount == 0) validatedRules.add(rule);
-      }
-      log.debug("Exit getValidatedFuzzyRules with validatedRules size of "+validatedRules.size());
+      }//asIsRules.each
+      log.debug("Exit: ${method} with ${validatedRules.size()} validatedRules");
       return validatedRules;
     }
      
@@ -123,7 +130,8 @@ class SchemaService {
       * return false even if one attribute in the list has mising Algorithm setup
       */
       def isFuzzyAttributeAlgorithmConfigured(java.util.List fuzzyAttributes){
-           log.debug("Enter: isFuzzyAttributeAlgorithmConfigured for "+fuzzyAttributes);
+           String method = "isFuzzyAttributeAlgorithmConfigured";
+           log.debug("Enter: ${method} for ${fuzzyAttributes}");
             def result = true;
             def fuzzyAttributeAlgorithmMap = configService.getFuzzyAttributeAlgorithmMap();
             log.debug("fuzzyAttributeAlgorithmMap is"+fuzzyAttributeAlgorithmMap);
@@ -132,7 +140,7 @@ class SchemaService {
                 log.debug(fuzzyAttributeAlgorithmMap.get(attr));
                 if( fuzzyAttributeAlgorithmMap.get(attr)?.matchType == null) result = false;
             }
-            log.debug("Enter: isFuzzyAttributeAlgorithmConfigured returning with "+result);
+            log.debug("Exit: ${method} returning with ${result}");
             return result;
 
       }
@@ -142,17 +150,23 @@ class SchemaService {
       * 
       */
       def java.util.List personSummaryAdapter(java.util.List results){
-         log.debug("Enter: personSummaryAdapter with input list of size "+results?.size());
+         String method = "personSummaryAdapter"
+         log.debug("Enter: ${method} with input list of size "+results?.size());
          def summaryResults = [];
          results.each(){ person ->
                java.util.Map summaryPerson = [:];
                summaryPerson.id = person.id;
                summaryPerson.SOR = person.SOR;
                summaryPerson.sorId = person.sorId;
+               //TODO: remove the following lines and add code to pull from schame mapping
+               summaryPerson.lName = person.attr5; //TODO: change attr5 to lName in domain class
+               summaryPerson.fName = person.attr6; //TODO : change attr6 to fName in domain class
+               summaryPerson.dobMM = person.attr8;
+               summaryPerson.dobDD = person.attr9;
                summaryResults << summaryPerson;
 
         }
-        log.debug("Exit: personSummaryAdapter with return list of size "+summaryResults?.size());
+        log.debug("Exit: ${method} with return list of size "+summaryResults?.size());
         return summaryResults;
 
      }

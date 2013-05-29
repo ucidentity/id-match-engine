@@ -40,9 +40,9 @@ class PendingMatchController {
       if(!securityService.login(request)) {render(status : 401, text : http401Message); return; }
         if(!params.id) render (status : 400, text : http400Message );
         def p =  pendingMatchService.get(params.id);
-        log.debug("pendingMatch in  hand has candidates ${p.candidates} and ${p.sorPerson}");
-        if(p == null) render(status : 404, text : http404Message )
-        else render(status : 300, text : p as JSON);
+        if(p == null){ render(status : 404, text : http404Message ); return; }
+        log.debug("pendingMatch returned has candidates -> ${p.candidates} and sorPerson -> ${p.sorPerson}");
+        render(status : 300, text : p as JSON);
     }
 
     /*
