@@ -15,7 +15,9 @@ class EngineController {
     def securityService;
     def fuzzyMatchService;
     def canonicalMatchService;
+    def personService;
     def schemaService;
+    def grailsApplication;
 
     String http401Message = "Invalid Credentials";
     String http400Message = "Missing json payload";
@@ -31,15 +33,26 @@ class EngineController {
      */ 
     def findMatches() {
       log.debug("Enter findMatches"); 
-      if(securityService.login(request) == false){render(status: 401, text: http401Message); return;}
+      if(securityService.login(request) == false){
+          render(status: 401, text: http401Message); return;}
       java.util.Map jsonDataMap = JSON.parse(request);
-      if(jsonDataMap == null){ render(status: 400, text: http400Message); return;}
-      //run matches if request has json payload
+      if(jsonDataMap == null){ 
+         render(status: 400, text: http400Message); return;}
+      def SOR = jsonDataMap.get("SOR");
+      def sorId = jsonDataMap.get("sorId");
+      java.util.Map queryParams = [:];
+      queryParams.SOR = SOR;
+      queryParams.sorId = sorId;
+      def p = Person.findWhere(queryParams);
+      if(p != null){ render(status: 200, text : p as JSON ); }
+      //go here only if person not found for SOR/sorId
          java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
-         if(canonicalMatches.size() > 0) {render(status: 300, text: canonicalMatches.toSet() as JSON); 
-                                          return;};
+         if(canonicalMatches.size() > 0) {
+              render(status: 300, text: canonicalMatches.toSet() as JSON); 
+              return;};
          def fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
-         if(fuzzyMatches.size() == 0){render(status: 404, text : http404Message); return;}
+         if(fuzzyMatches.size() == 0){
+              render(status: 404, text : http404Message); return;}
          render(status: 300, text: fuzzyMatches.toSet() as JSON);
      } 
 
@@ -50,9 +63,11 @@ class EngineController {
      */
     def findCanonicalMatches() {
       log.debug("Enter: findCanonicalMatches");
-      if(securityService.login(request) == false){render(status: 401, text: http401Message); return;}
+      if(securityService.login(request) == false){
+         render(status: 401, text: http401Message); return;}
       java.util.Map jsonDataMap = JSON.parse(request);
-      if(jsonDataMap == null){ render(status: 400, text: http400Message); return;}
+      if(jsonDataMap == null){ 
+         render(status: 400, text: http400Message); return;}
       //run matches if request has json payload
          java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
          if(canonicalMatches.size() == 0) {render(status: 404, text : http404Message); return;}
@@ -76,6 +91,6 @@ class EngineController {
          render(status: 300, text: fuzzyMatches.toSet() as JSON);
 
      }
-
+ 
     
 }

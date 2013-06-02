@@ -8,6 +8,7 @@ class SchemaService {
 
     def grailsService;
     def configService;
+
     final String EQUALS = "=";
     final String NOT_EQUALS="!=";
     final String NOT_EQUALS_FLAG=NOT_EQUALS;
@@ -81,12 +82,11 @@ class SchemaService {
      * remove fuzzy rules that have no attr values in the request
      *
      */ 
-    def java.util.List getValidatedFuzzyRules(java.util.Map jsonDataMap){
+    def java.util.List getValidatedFuzzyRules(java.util.List asIsRules,java.util.Map jsonDataMap){
       String method = "getValidatedFuzzyRules";
-      log.debug("Enter: ${method} with jsonDataMap ${jsonDataMap}");
+      log.debug("Enter: ${method} with asIsRules and jsonDataMap");
+      log.debug("${asIsRules} and ${jsonDataMap}");
 
-      def asIsRules = configService.getFuzzyRules();
-      log.debug("${asIsRules.size()} fuzzy rules found ->  ${asIsRules}");
 
       def schemaMap = configService.getSchemaMap();
       log.debug( "schemaMap is "+schemaMap);
@@ -107,7 +107,6 @@ class SchemaService {
             if(!jsonDataMap.containsKey(properAttr)){
                log.debug("found ${properAttr} empty in request"); 
                emptyAttributeCount = emptyAttributeCount+1; 
-               rule.matchAttributes = [] //empty the rule so .each can exit
              }
           }//matchAttributes.each
           if(emptyAttributeCount == 0) validatedRules.add(rule);
@@ -146,30 +145,61 @@ class SchemaService {
       }
 
      /**
-      * transforms entries in the results into entries that have only visible attributes
+      * same as personFriendlySchemaAdapter but deals with bulk persons
+      * transforms registry Person schema into UI Person schema, see schemaMapping. 
       * 
       */
-      def java.util.List personSummaryAdapter(java.util.List results){
-         String method = "personSummaryAdapter"
-         log.debug("Enter: ${method} with input list of size "+results?.size());
+      def java.util.List bulkPersonFriendlySchemaAdapter(java.util.List persons){
+         String method = "bulkPersonFriendlySummaryAdapter"
+         log.debug("Enter: ${method} with input list of size "+persons?.size());
          def summaryResults = [];
-         results.each(){ person ->
-               java.util.Map summaryPerson = [:];
-               summaryPerson.id = person.id;
-               summaryPerson.SOR = person.SOR;
-               summaryPerson.sorId = person.sorId;
-               //TODO: remove the following lines and add code to pull from schame mapping
-               summaryPerson.lName = person.attr5; //TODO: change attr5 to lName in domain class
-               summaryPerson.fName = person.attr6; //TODO : change attr6 to fName in domain class
-               summaryPerson.dobMM = person.attr8;
-               summaryPerson.dobDD = person.attr9;
+         persons.each(){ person ->
+               log.debug("Converting ${person} to summaryPerson");
+               def summaryPerson = personFriendlySchemaAdapter(person);
                summaryResults << summaryPerson;
-
         }
         log.debug("Exit: ${method} with return list of size "+summaryResults?.size());
         return summaryResults;
 
      }
 
+     /**
+     * converts json input into Person map
+     * based on the config.schemaMap in config file
+     */
+     def java.util.Map personRegistrySchemaAdapter(java.util.Map jsonDataMap){
+        String method = "personRegistrySchemaAdapter";
+        log.debug("Enter: ${method} with ${jsonDataMap}");
+        java.util.Map params = [:];
+        def schemaMap = configService.getSchemaMap();
+        schemaMap.each(){ key,value ->
+             if(jsonDataMap.containsKey(key) && !key.contains("sorId") && !key.contains("SOR") ){
+                 log.debug("${key} and ${value}");
+                 params."${value}" = jsonDataMap.get(key);
+              }
+        }
+        log.debug("Exit ${method} with ${params}");
+        return params;
+      }
+
+     
+     /**
+     * converts registry schema into UI friendly schema
+     * based on the config.schemaMap in config file
+     * TODO: Not yet tested
+     */
+     def java.util.Map personFriendlySchemaAdapter(Person personMap){
+        String method = "personFriendlySchemaAdapter";
+        log.debug("Enter: ${method} with ${personMap}");
+        java.util.Map params = [:];
+        def schemaMap = configService.getSchemaMap();
+        schemaMap.each(){ key,value ->
+             log.debug("key and value in schemaMap is "+key+":"+value);
+             log.debug(personMap."${value}");
+             if(personMap."${value}" != null) params."${key}" = personMap."${value}";
+         }
+        log.debug("Exit :${method} with ${params}");
+        return params;
+      }
 
 }

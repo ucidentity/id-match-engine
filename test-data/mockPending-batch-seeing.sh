@@ -4,7 +4,7 @@
 #05/2013
 #venu alla
 #
-CMD=./put-pendingMatches.sh
+CMD=./put-mockPending.sh
 
 T1='{"SOR" : "SIS", "sorId" : "23421935", "lName" : "Madrid", "fName" : "Anne Jilliane Lising", "ssn" : "24983" , "dobMM" : "04", "dobDD" : "24"}'
 T2='{"SOR" : "HR", "sorId" : "012274916", "lName" : "Chen", "fName" : "Yiwen", "ssn" : "29643" , "dobMM" : "12", "dobDD" : "13" }'

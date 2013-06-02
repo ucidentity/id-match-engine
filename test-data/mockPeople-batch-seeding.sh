@@ -4,7 +4,7 @@
 #05/2013
 #venu alla
 #
-CMD="sh ./put-people.sh"
+CMD="sh ./put-mockPeople.sh"
 
 P1='{"referenceId" : "1","SOR" : "SIS", "sorId" : "23412344", "lName" : "Madrid", "fName" : "Anne Jilliene Lising", "ssn" : "23456" , "dobMM" : "04", "dobDD" : "24"}'
 P2='{"referenceId" : "2","SOR" : "SIS", "sorId" : "22912304", "lName" : "Smith", "fName" : "Richard", "ssn" : "12349" , "dobMM" : "03", "dobDD" : "17" }'

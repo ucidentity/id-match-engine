@@ -1,6 +1,7 @@
 package edu.berkeley.ucic.idmatch;
 
 import edu.berkeley.ucic.idmatch.Person;
+import org.apache.commons.lang.RandomStringUtils;
 
 
 /**
@@ -9,6 +10,7 @@ import edu.berkeley.ucic.idmatch.Person;
 class PersonService {
 
     def configService;
+    def schemaService;
  
     java.util.List  persons = [];
     def REFRESH_INTERVAL_TIME = 6*60*60*1000;
@@ -51,16 +53,16 @@ class PersonService {
       */
       def Person getPerson(String SOR, String sorId){
          log.debug("Enter: getPerson with SOR and sorId set to"+SOR+"-"+sorId);
-
+         def result = [:];
          java.util.Map queryParams = [:];
          queryParams.SOR = SOR;
          queryParams.sorId = sorId;
          log.debug("queryParams is "+queryParams);
-
          def person  = Person.findWhere(queryParams);
-         log.debug("Exit: getPerson with person "+person);
-
-         return person;
+         if(person != null ) result = schemaService.personFriendlySchemaAdapter(person);
+         log.debug(person);
+         log.debug("Exit: getPerson with person "+result);
+         return result;
        }
 
     /**
@@ -69,47 +71,39 @@ class PersonService {
     def Person createOrUpdate(String SOR, String sorId, java.util.Map jsonDataMap){
       String method = "createOrUpdate";
       log.debug("Enter: ${method} with passed in values as ${jsonDataMap} ${SOR} ${sorId}");
-      def person  = getPerson(SOR,sorId);
+      java.util.Map queryParams = [:];
+         queryParams.SOR = SOR;
+         queryParams.sorId = sorId;
+         log.debug("queryParams is "+queryParams);
+         def person  = Person.findWhere(queryParams);
 
-      //the following takes keys from json,transforms them to registry column names using schemaMapping
-      java.util.Map newParams = registrySchemaAdapter(jsonDataMap);
-      if(person == null) { newParams.SOR = SOR; newParams.sorId = sorId; person =  new Person(newParams); }
-      else{ person.properties = newParams; }
-      try { person.save(flush: true, failOnError : true); }catch(e){log.debug(e.getMessage()); person = null; }
+      if(person == null) { 
+           log.debug("Creating new user");
+           java.util.Map newParams = schemaService.personRegistrySchemaAdapter(jsonDataMap);
+            def incomingReferenceId = jsonDataMap.get("referenceId");
+            if((incomingReferenceId == null) ||(incomingReferenceId.contains("New"))){
+                newParams.referenceId = RandomStringUtils.randomNumeric(3);
+            }else{ 
+           newParams.referenceId = jsonDataMap.get("referenceId"); } 
+           newParams.referenceId = RandomStringUtils.randomNumeric(10); 
+           newParams.SOR = SOR; 
+           newParams.sorId = sorId; 
+           person =  new Person(newParams);}
+      else{  
+            log.debug("Updating a user");
+            java.util.Map newParams = schemaService.personRegistrySchemaAdapter(jsonDataMap);
+            newParams.referenceId = jsonDataMap.get("referenceId"); 
+            person.properties = newParams; }
+      try { 
+           person.save(flush: true, failOnError : true); }
+      catch(e){
+           log.debug(e.getMessage()); person = null; }
       log.debug("EXIT: ${method} with person id "+person?.id);
       return person;
     }
 
-    /**
-     * converts json input into Person map  
-     * based on the config.schemaMap in config file
-     */
-    def java.util.Map registrySchemaAdapter(java.util.Map jsonDataMap){
-        log.debug("Enter: schemaAdapter");
-        java.util.Map params = [:];
-        def schemaMap = configService.getSchemaMap();
-        schemaMap.each(){ key,value ->
-             log.debug("key and value in schemaMap is "+key+":"+value);
-             if(jsonDataMap.containsKey(key)) params."${value}" = jsonDataMap.get(key);                                    log.debug("params.value is "+value+" and "+params."${value}");
-        }
-        return params;
-      }
-
-    /**
-     * converts registry schema into UI friendly schema 
-     * based on the config.schemaMap in config file
-     * TODO: Not yet tested
-     */
-    def java.util.Map friendlySchemaAdapter(java.util.Map personMap){
-        log.debug("Enter: schemaAdapter");
-        java.util.Map params = [:];
-        def schemaMap = configService.getSchemaMap();
-        schemaMap.each(){ key,value ->
-             log.debug("key and value in schemaMap is "+key+":"+value);
-             if(personMap.containsKey(key)) params."${value}" = personMap.get(key);                                    log.debug("params.value is "+value+" and "+params."${value}");
-        }
-        return params;
-      }
-
-
+     
+     def deleteAll(){
+         Person.executeUpdate("delete FROM  Person")
+     }
  }

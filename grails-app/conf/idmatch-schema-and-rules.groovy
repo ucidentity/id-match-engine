@@ -16,10 +16,10 @@ idMatch.schemaMap = [
  referenceId : 'referenceId',
        sorId : 'sorId',
          SOR : 'SOR',
-         ssn : 'attr4',
-       lName : 'attr5',
-       fName : 'attr6',
-      middle : 'attr7',
+       lName : 'lastName',
+       fName : 'firstName',
+      middle : 'middleInitial',
+         ssn : 'attr7',
        dobMM : 'attr8',
        dobDD : 'attr9',
      dobYYYY : 'attr10',
@@ -44,17 +44,22 @@ idMatch.canonicalMatchRuleSet = [
 //where there is wild card, then run the match against all users
 //where there is no matchAttributes, then return the blockingFilter results as fuzzy candidates
 //TODO: should each rule have confidence score, if so, how can it be used?
+//NOTE: the rule keys can be anything, preferably something that is legible for Data analyst
+//NOTE: rule4 is for advcon users who come with stuId or empId in addition to sorId
+//client should send empId in advcon user as sorId in an extra request for this release
+//till we move to empId=sorId format
 idMatch.fuzzyMatchRuleSet = [
-[ blockingFilter : ["ssn","lName"] , matchAttributes : ["dobMM","dobDD"] ],
-[ blockingFilter : ["lName","dobMM","dobDD"], matchAttributes : ["ssn"] ],
-[ blockingFilter : ["ssn","dodMM","dobDD"], matchAttributes : [] ],
-[ blockingFilter : ["sorId"], matchAttributes : [] ]
+  rule1 : [ blockingFilter : ["ssn","lName"], matchAttributes : ["dobMM","dobDD"] ],
+  rule2 : [ blockingFilter : ["lName","dobMM","dobDD"] , matchAttributes : ["ssn"] ],
+  rule3 : [ blockingFilter : ["ssn","dobMM","dobDD"] , matchAttributes : [] ],
+  rule4 : [ blockingFilter : ["sorId","lName"] , matchAttributes : [] ],
+  rule5 : [ blockingFilter : ["lName","fName","dobMM","dobDD"] , matchAttributes : [] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified
 //if an attribute is not specified here but is present in the rules, then that rule will be ignored 
 idMatch.fuzzyAttributeAlgorithmMap = [
-    ssn : [matchType : "EditDistance", distance : "1"],
+    ssn : [matchType : "EditDistance", distance : "2"],
     dobMM : [matchType : "EditDistance", distance : "1"],
     dobDD : [matchType : "EditDistance", distance : "1"],
   lName : [matchType : "Transpose", distance : "1"],

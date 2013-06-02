@@ -6,5 +6,5 @@ SOR=$1
 sorId=$2
 
 echo "$1 $2 $3 ";
-curl -v -X GET -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" $HOST/$SOR
+curl -v -X GET -H "clientId:tester1" -H "password:123456" -H "content-type: application/json" $HOST/$SOR/$sorId
 

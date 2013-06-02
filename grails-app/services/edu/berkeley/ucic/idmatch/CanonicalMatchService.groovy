@@ -26,7 +26,8 @@ class CanonicalMatchService {
       def hqlStmt = getSqlFromRules(validatedRules, jsonDataMap);
       results = Person.findAll("${hqlStmt}"); // uses HQL
       log.info("Exit: ${method} with result size "+results.size());
-      return schemaService.personSummaryAdapter(results); 
+      if(results.size()>0) return schemaService.bulkPersonFriendlySchemaAdapter(results); 
+      return results;
     }
 
 

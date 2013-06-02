@@ -27,6 +27,10 @@ package edu.berkeley.ucic.idmatch
 
 import edu.ualr.oyster.utilities.*;
 
+/**
+ * deprecated
+ * remove this in next release
+ */
 class MatchingService {
  
 

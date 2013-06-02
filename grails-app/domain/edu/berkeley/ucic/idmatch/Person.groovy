@@ -19,12 +19,12 @@ class Person {
     */
     static constraints = {
       
-      referenceId (unique : 'SOR', nullable: false)
-      SOR (nullable: false)
-      sorId (unique: 'SOR', nullable: false)
-      attr4 nullable: true
-      attr5 nullable: true
-      attr6 nullable: true
+      referenceId nullable: true
+      SOR(nullable: false)
+      sorId(unique : 'SOR', nullable: false)
+      lastName nullable: true
+      firstName nullable: true
+      middleInitial nullable: true
       attr7 nullable: true
       attr8 nullable: true
       attr9 nullable: true
@@ -40,15 +40,13 @@ class Person {
     /** attr1 corresponds to a unique identifier like uid or some other campus identifier */ 
     //CIFER API refers to this as reference ID
     String referenceId 
-
-    /* reserved for SOR and sorId */
     String SOR
     String sorId 
+    String lastName
+    String firstName 
+    String middleInitial 
 
     /** generic and configured in idMatch.schemaMap */
-    String attr4
-    String attr5 
-    String attr6
     String attr7
     String attr8
     String attr9

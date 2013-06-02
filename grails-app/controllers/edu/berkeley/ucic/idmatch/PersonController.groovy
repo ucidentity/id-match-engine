@@ -12,6 +12,7 @@ class PersonController {
 
     def personService;
     def securityService;
+    def pendingMatchService;
 
     String http401Message = "Invalid Credentials";
     String http400Message = "Missing Required Params";
@@ -47,6 +48,13 @@ class PersonController {
            render(status : 300, text : sorUsers as JSON );
        }
      }
+
+    def getAllUsers() {
+       if(!securityService.login(request)) {render(status : 401, text : http401Message ); return; }
+       def users = Person.findAll();
+       if(users.size() > 0){render(status : 200, text : users as JSON ); return; };
+       render(status: 404, text : http404Message);
+     }
    
     /**
      * DELETE /v1/SOR/sorId
@@ -73,6 +81,7 @@ class PersonController {
       if(!jsonDataMap?.containsKey("referenceId") || params.SOR==null || params.sorId == null) {render(status: 400, text : http400Message); return; }
       def person = personService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
       if(person == null) { render(status : 400, text : "Failed to create person"); return;}
+      pendingMatchService.delete(params.SOR,params.sorId); //delete any pendingmatch for this SOR/sorId      
       render(status : 200, text : "success fully created "+person.referenceId);
     }
 

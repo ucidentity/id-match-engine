@@ -57,18 +57,17 @@ class PendingMatchService {
 
        def pendingMatch = PendingMatch.get(pendingMatchId);
        //if no resource found or if resource has sorPerson column empty, then leave now
-       if(pendingMatch == null || pendingMatch?.sorPerson == null) { return null;  }
+       if(pendingMatch == null || pendingMatch?.sorPerson == null) { 
+          return null;  }
        log.debug("Found pendingMatch ${pendingMatch.sorPerson} for resource id ${pendingMatchId}");
        def jsonDataMap = new JSONObject(pendingMatch.sorPerson);
        java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
-       if(canonicalMatches.size() > 0) { result.candidates = canonicalMatches;};
-       else { java.util.List fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
+       if(canonicalMatches.size() > 0) { 
+              result.candidates = canonicalMatches;};
+       else { 
+              java.util.List fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
               if(fuzzyMatches.size() > 0) result.candidates = fuzzyMatches;
        }
-       //TODO: remove this after testing
-       //needed atleast one pendingMatch that resulted in candidates for testing purposes only
-       if(!result.candidates.size() >0)result.candidates = Person.findAll();
-
        //TODO:
        //transient properties on domain class do not get returned as part of JSON response
        //hence had to recreate a new Map.
@@ -78,6 +77,26 @@ class PendingMatchService {
        result.sorPerson = pendingMatch.sorPerson;
        log.debug("Exit: ${method} with ${result}");
        return result; 
+    }
+
+    /**
+     *TODO: remove this method after pendingMatch impl is changed to
+     * person with no referenceId
+     */
+    def delete(String SOR, String sorId){
+        String method = "deletePendingMatch with ${SOR} and ${sorId}";
+        log.debug("Enter:${method}");
+        java.util.Map queryParams = [:];
+        queryParams.SOR = SOR;
+        queryParams.sorId = sorId;
+        def pm = PendingMatch.findWhere(queryParams);
+        log.debug("pendingMatch is ${pm}");
+        if(pm !=null) PendingMatch.get(pm.id).delete(flush:true);
+        log.debug("Exit:${method}"); 
+    }
+ 
+    def deleteAll(){
+       PendingMatch.executeUpdate("Delete from PendingMatch");
     }
 
 }

@@ -1,6 +1,6 @@
 #!/bin/sh
 #HOST=http://localhost:8080/dolphin/v1/pendingMatches
-HOST=http://idmatch-d1.calnet.berkeley.edu/dolphin/v1/pendingMatches
+HOST=http://idmatch-t1.calnet.berkeley.edu/dolphin/v1/pendingMatches
 
 pmId=$1
 

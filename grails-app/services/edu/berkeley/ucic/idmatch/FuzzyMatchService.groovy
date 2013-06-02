@@ -43,7 +43,8 @@ class FuzzyMatchService {
       java.util.List results = [];
 
       //get rules that have attributes with values in request and match types in configuration
-      java.util.List validatedFuzzyRules = schemaService.getValidatedFuzzyRules(jsonDataMap);
+      java.util.List asIsRules = configService.getFuzzyRules().values().toArray();
+      java.util.List validatedFuzzyRules = schemaService.getValidatedFuzzyRules(asIsRules,jsonDataMap);
       if(validatedFuzzyRules.size() == 0){
          log.debug("Exit:${method} early as validated rules is empty");
          return results;
@@ -57,7 +58,8 @@ class FuzzyMatchService {
 
       log.info("Exit:${method} returns with results "+results);
       //transform the entries into summary entries as configured in Config.groovy
-      return schemaService.personSummaryAdapter(results);
+      if(results.size()>0) return schemaService.bulkPersonFriendlySchemaAdapter(results);
+      return results;
 
     } //getMatches() done
 
