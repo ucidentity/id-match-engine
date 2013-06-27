@@ -21,34 +21,37 @@ class TransposeService {
     }
 
     def java.util.List findMatches(String inputValue, String registryColName, java.util.List users){
+      String method = "findMatches";
+      log.debug("Enter: ${method} with ${users.size()} users");
       java.util.List results = [];
         OysterUtilityTranspose transpose = new OysterUtilityTranspose();
         users.each() { user ->
            String registryValue = user."${registryColName}"
            if(transpose.differByTranspose(inputValue,registryValue)) results.add(user);
         }
-        log.debug("results found in Transpose ${results}");
+        log.debug("Exit: ${method} with ${results.size()} users");
         return results;
    }
      
     /*
-     * currently oyster transpose always defaults to distance of 1 and hence this method is redundant  
+     * currently oyster transpose always defaults to distance of 1 
+     * this method returns true if the strings match 
+     * not using distance in this release
      */
     def java.util.List findMatches(String inputValue, String registryColName, java.util.List users, Integer distance){
-        log.info("Enter: findMatches for ${users.size()} users");
+        String method = "findMatches";
+        log.info("Enter: ${method} for ${users.size()} users");
         java.util.List results = [];
         OysterUtilityTranspose transpose = new OysterUtilityTranspose();
         users.each() { user ->
            String registryValue = user."${registryColName}"
            log.debug("transpose for ${inputValue} and ${registryValue}");
-           //transpose returns true only if alla and alal not for alla and alle, notice the chars should be same
-           //this is the difference between EditDistance and Transpose
+           //transpose looks for adjacent char switch, not distance
            boolean sameByTranspose = transpose.differByTranspose(inputValue,registryValue);
            boolean sameString = inputValue.equalsIgnoreCase(registryValue);
-           log.debug("${sameByTranspose} and ${sameString}");
            if( sameString || sameByTranspose) results.add(user);
          }
-         log.info("Exit: ${results} users matched");
+         log.info("Exit: ${method} with ${results.size()} matched");
          return results;
    }
 }

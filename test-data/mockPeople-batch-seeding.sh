@@ -17,7 +17,7 @@ P8='{"referenceId" : "9","SOR" : "HR", "sorId" : "012491824", "lName" : "Haas", 
 P9='{"referenceId" : "9","SOR" : "SIS", "sorId" : "20812345", "lName" : "Richardson", "fName" : "Kristine", "ssn" : "76021" , "dobMM" : "08", "dobDD" : "01" }'
 P10='{"referenceId" : "10","SOR" : "SIS", "sorId" : "17831291", "lName" : "Goetsch", "fName" : "Alma", "ssn" : "33323" , "dobMM" : "10", "dobDD" : "31" }'
 P11='{"referenceId" : "11","SOR" : "HR", "sorId" : "012947652", "lName" : "Lee", "fName" : "John", "ssn" : "23456", "dobMM" : "07", "dobDD" : "11"}'
-P12='{"referenceId" : "12","SOR" : "HR", "sorId" : "012612093", "lName" : "Marais", "fName" : "Yvette", "ssn" : "40041" , "dobMM" : "04", "dobDD" : "22" }'
+P12='{"referenceId" : "12","SOR" : "HR", "sorId" : "012612093", "fName" : "Marais", "lName" : "Yvette", "ssn" : "40041" , "dobMM" : "04", "dobDD" : "22" }'
 
 $CMD SIS 23412344 "$P1"
 #

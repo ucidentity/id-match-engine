@@ -39,11 +39,11 @@ class FuzzyMatchService {
     def java.util.List getMatches(java.util.Map jsonDataMap){
 
       String method = "getMatches";
-      log.info( "Enter:${method} with jsonDataMap is "+ jsonDataMap);
+      log.info( "Enter:${method} with jsonDataMap = "+ jsonDataMap);
       java.util.List results = [];
 
-      //get rules that have attributes with values in request and match types in configuration
       java.util.List asIsRules = configService.getFuzzyRules().values().toArray();
+      //get rules that have attributes with values in request and match types in configuration
       java.util.List validatedFuzzyRules = schemaService.getValidatedFuzzyRules(asIsRules,jsonDataMap);
       if(validatedFuzzyRules.size() == 0){
          log.debug("Exit:${method} early as validated rules is empty");
@@ -53,12 +53,15 @@ class FuzzyMatchService {
       //for each rule, get matches
       validatedFuzzyRules.each { rule -> 
          java.util.List matchesByRule = getMatchesByRule(rule, jsonDataMap);
+         log.debug("adding ${matchesByRule.size()} matches from this rule to total matches");
          results.addAll(matchesByRule); //add the matches for this rule to the total results
         } 
 
       log.info("Exit:${method} returns with results "+results);
       //transform the entries into summary entries as configured in Config.groovy
-      if(results.size()>0) return schemaService.bulkPersonFriendlySchemaAdapter(results);
+      if(results.size()>0) {
+          return schemaService.bulkPersonFriendlySchemaAdapter(results, "Fuzzy");
+      }
       return results;
 
     } //getMatches() done
@@ -111,15 +114,15 @@ class FuzzyMatchService {
          String inputValue = jsonDataMap.get(fuzzyAttr);
 
          log.debug("doing a match for ${listToMatch.size()} usrs ");
-         log.debug("with inputValue = ${inputValue} and registryName = ${registryName}");
-         log.debug(" and serviceName = ${serviceName} and distance = ${distance}");
+         log.debug("with inputValue = ${inputValue} and registryColName = ${registryName}");
+         log.debug("using serviceName = ${serviceName} and distance = ${distance}");
          def  fuzzyService = this.class.classLoader.loadClass(serviceName, true)?.newInstance()
          if(distance == null) { 
             listToMatch =  fuzzyService.findMatches(inputValue,registryName,listToMatch); }
          else{ 
              listToMatch = fuzzyService.findMatches(inputValue,registryName,listToMatch,distance as int);  }
         }
-       log.debug("Exit:${method} returns ${listToMatch.size()} users");
+       log.debug("Exit:${method} returns ${listToMatch.size()} matches for this rule");
        return listToMatch; 
 } //getMatchesForEachRule
 

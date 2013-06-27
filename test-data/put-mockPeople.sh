@@ -1,6 +1,6 @@
 #!/bin/sh
-#HOST=http://localhost:8080/dolphin/v1/mockPeople
-HOST=http://idmatch-test.berkeley.edu/dolphin/v1/mockPeople
+HOST=http://localhost:8080/dolphin/v1/mockPeople
+#HOST=http://idmatch-test.berkeley.edu/dolphin/v1/mockPeople
 
 SOR=$1
 sorId=$2

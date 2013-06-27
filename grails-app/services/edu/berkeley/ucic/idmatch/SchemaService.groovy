@@ -149,13 +149,14 @@ class SchemaService {
       * transforms registry Person schema into UI Person schema, see schemaMapping. 
       * 
       */
-      def java.util.List bulkPersonFriendlySchemaAdapter(java.util.List persons){
+      def java.util.List bulkPersonFriendlySchemaAdapter(java.util.List persons, String matchType){
          String method = "bulkPersonFriendlySummaryAdapter"
          log.debug("Enter: ${method} with input list of size "+persons?.size());
          def summaryResults = [];
+         //def peopleSet = persons.toSet();
          persons.each(){ person ->
                log.debug("Converting ${person} to summaryPerson");
-               def summaryPerson = personFriendlySchemaAdapter(person);
+               def summaryPerson = personFriendlySchemaAdapter(person, matchType);
                summaryResults << summaryPerson;
         }
         log.debug("Exit: ${method} with return list of size "+summaryResults?.size());
@@ -174,7 +175,7 @@ class SchemaService {
         def schemaMap = configService.getSchemaMap();
         schemaMap.each(){ key,value ->
              if(jsonDataMap.containsKey(key) && !key.contains("sorId") && !key.contains("SOR") ){
-                 log.debug("${key} and ${value}");
+                 //log.debug("${key} and ${value}");
                  params."${value}" = jsonDataMap.get(key);
               }
         }
@@ -188,18 +189,18 @@ class SchemaService {
      * based on the config.schemaMap in config file
      * TODO: Not yet tested
      */
-     def java.util.Map personFriendlySchemaAdapter(Person personMap){
+     def java.util.Map personFriendlySchemaAdapter(Person personMap, String matchType){
         String method = "personFriendlySchemaAdapter";
         log.debug("Enter: ${method} with ${personMap}");
-        java.util.Map params = [:];
+        java.util.Map friendlyPerson = [:];
         def schemaMap = configService.getSchemaMap();
         schemaMap.each(){ key,value ->
-             log.debug("key and value in schemaMap is "+key+":"+value);
-             log.debug(personMap."${value}");
-             if(personMap."${value}" != null) params."${key}" = personMap."${value}";
+             //log.debug("key:value in schemaMap is ${key}:${value} with json value = ${value}");
+             if(personMap."${value}" != null) friendlyPerson."${key}" = personMap."${value}";
          }
-        log.debug("Exit :${method} with ${params}");
-        return params;
+        friendlyPerson.matchType = matchType;
+        log.debug("Exit :${method} with ${friendlyPerson}");
+        return friendlyPerson;
       }
 
 }

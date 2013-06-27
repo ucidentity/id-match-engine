@@ -18,7 +18,8 @@ T9='{"SOR" : "ADVCON", "sorId" : "012683025", "lName" : "Haas", "fName" : "Mary 
 T10='{"SOR" : "HR", "sorId" : "012612345", "lName" : "Smith", "fName" : "Kristine", "ssn" : "76021" , "dobMM" : "08", "dobDD" : "01" }'
 T11='{"SOR" : "ADVCON", "sorId" : "cads928304", "lName" : "Goetsch", "fName" : "Alma"}'
 T12='{"SOR" : "SIS", "sorId" : "25198367", "lName" : "Chen", "fName" : "Yiwen", "ssn" : "29643" , "dobMM" : "12", "dobDD" : "13" }'
-T13='{"SOR" : "ADVCON", "sorId" : "cads3021132", "lName" : "Yvette", "fName" : "Marais"}'
+#T13='{"SOR" : "ADVCON", "sorId" : "cads3021132", "lName" : "Yvette", "fName" : "Marais"}'
+T13='{"SOR" : "ADVCON", "sorId" : "cads3021132", "lName" : "Yvvetteeee", "fName" : "Marias"}'
 
 
 sh $CMD SIS 23421935 "$T1"

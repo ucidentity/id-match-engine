@@ -32,7 +32,8 @@ class EngineController {
      * return 401 if un-authenticated (403 if un-authz )
      */ 
     def findMatches() {
-      log.debug("Enter findMatches"); 
+      String method = "findMatches";
+      log.debug("Enter: ${method}"); 
       if(securityService.login(request) == false){
           render(status: 401, text: http401Message); return;}
       java.util.Map jsonDataMap = JSON.parse(request);
@@ -44,15 +45,17 @@ class EngineController {
       queryParams.SOR = SOR;
       queryParams.sorId = sorId;
       def p = Person.findWhere(queryParams);
-      if(p != null){ render(status: 200, text : p as JSON ); }
+      if(p != null){ render(status: 200, text : p as JSON ); return; }
       //go here only if person not found for SOR/sorId
          java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
          if(canonicalMatches.size() > 0) {
+              log.debug("Exit: ${method} with ${canonicalMatches.size()} canonical matches");
               render(status: 300, text: canonicalMatches.toSet() as JSON); 
               return;};
          def fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
          if(fuzzyMatches.size() == 0){
               render(status: 404, text : http404Message); return;}
+         log.debug("Exit: ${method} with ${fuzzyMatches.size()} fuzzy matches");
          render(status: 300, text: fuzzyMatches.toSet() as JSON);
      } 
 

@@ -61,9 +61,10 @@ class SoundexService {
         Soundex soundex = new Soundex();
         users.each() { user -> 
            String registryValue = user."${registryColName}"
-           log.debug("compare "+registryValue+" with value"+jsonValue);
+           log.debug("compare ${registryValue} with value ${jsonValue}");
            //only do soundex if first chars match, else skip
-           if(String.valueOf(jsonValue.charAt(0)).equalsIgnoreCase(String.valueOf(registryValue?.charAt(0)))) {
+           if(String.valueOf(jsonValue.charAt(0)).equalsIgnoreCase(String.valueOf(registryValue?.charAt(0))))
+          {
            if(soundex.compareSoundex(jsonValue,registryValue)) results.add(user);}
         }
         log.debug("Exit: ${results.size()} users matched");

@@ -39,6 +39,13 @@ idMatch.canonicalMatchRuleSet = [
 ["sorId","lName"]
 ]
 
+idMatch.canonicaMatchRuleSetNew= [
+rule1 : ["ssn" : "ssn","fName" : "lName","dobDD" : "dobMM"],
+rule2 : ["empId" : "sorId",  "lName" : "lName" ],
+rule3 : ["stuId" : "sorId", "lName" : "lName" ],
+rule4 : ["stuId" : "stuId", "lName" : "lName" ]
+]
+
 
 //new format, notice the blockingFilter, this reduces the potential candidates for matching
 //where there is wild card, then run the match against all users
@@ -53,7 +60,8 @@ idMatch.fuzzyMatchRuleSet = [
   rule2 : [ blockingFilter : ["lName","dobMM","dobDD"] , matchAttributes : ["ssn"] ],
   rule3 : [ blockingFilter : ["ssn","dobMM","dobDD"] , matchAttributes : [] ],
   rule4 : [ blockingFilter : ["sorId","lName"] , matchAttributes : [] ],
-  rule5 : [ blockingFilter : ["lName","fName","dobMM","dobDD"] , matchAttributes : [] ]
+  rule5 : [ blockingFilter : ["lName","fName","dobMM","dobDD"] , matchAttributes : [] ],
+  rule6 : [ blockingFilter : ["*"], matchAttributes : ["lName","fName"] ]
 ]
 
 //this is where the type of match algorithm to use for a given attribute is specified
@@ -62,8 +70,8 @@ idMatch.fuzzyAttributeAlgorithmMap = [
     ssn : [matchType : "EditDistance", distance : "2"],
     dobMM : [matchType : "EditDistance", distance : "1"],
     dobDD : [matchType : "EditDistance", distance : "1"],
-  lName : [matchType : "Transpose", distance : "1"],
-  fName : [matchType : "Soundex"]
+  fName : [matchType : "Transpose", distance : "1"],
+  lName : [matchType : "Soundex"]
 ]
 
 //TODO:

@@ -63,10 +63,10 @@ class PendingMatchService {
        def jsonDataMap = new JSONObject(pendingMatch.sorPerson);
        java.util.List canonicalMatches = canonicalMatchService.getMatches(jsonDataMap);
        if(canonicalMatches.size() > 0) { 
-              result.candidates = canonicalMatches;};
+              result.candidates = canonicalMatches.toSet();};
        else { 
               java.util.List fuzzyMatches = fuzzyMatchService.getMatches(jsonDataMap);
-              if(fuzzyMatches.size() > 0) result.candidates = fuzzyMatches;
+              if(fuzzyMatches.size() > 0) result.candidates = fuzzyMatches.toSet();
        }
        //TODO:
        //transient properties on domain class do not get returned as part of JSON response

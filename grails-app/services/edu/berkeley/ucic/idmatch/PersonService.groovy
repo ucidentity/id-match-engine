@@ -81,11 +81,12 @@ class PersonService {
            log.debug("Creating new user");
            java.util.Map newParams = schemaService.personRegistrySchemaAdapter(jsonDataMap);
             def incomingReferenceId = jsonDataMap.get("referenceId");
-            if((incomingReferenceId == null) ||(incomingReferenceId.contains("New"))){
+            if((incomingReferenceId == null) ||(incomingReferenceId?.equalsIgnoreCase("New"))){
+                log.debug("incoming referenceId is ${incomingReferenceId}");
                 newParams.referenceId = RandomStringUtils.randomNumeric(3);
+                log.debug("assigning new referenceId");
             }else{ 
-           newParams.referenceId = jsonDataMap.get("referenceId"); } 
-           newParams.referenceId = RandomStringUtils.randomNumeric(10); 
+                newParams.referenceId = jsonDataMap.get("referenceId"); } 
            newParams.SOR = SOR; 
            newParams.sorId = sorId; 
            person =  new Person(newParams);}

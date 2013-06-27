@@ -1,6 +1,6 @@
 #!/bin/sh
-#HOST=http://localhost:8080/dolphin/v1/mockPending
-HOST=http://idmatch-t1.calnet.berkeley.edu/dolphin/v1/mockPending
+HOST=http://localhost:8080/dolphin/v1/mockPending
+#HOST=http://idmatch-t1.calnet.berkeley.edu/dolphin/v1/mockPending
 
 SOR=$1
 sorId=$2

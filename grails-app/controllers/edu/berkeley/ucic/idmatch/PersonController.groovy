@@ -82,7 +82,7 @@ class PersonController {
       def person = personService.createOrUpdate(params.SOR,params.sorId,jsonDataMap);
       if(person == null) { render(status : 400, text : "Failed to create person"); return;}
       pendingMatchService.delete(params.SOR,params.sorId); //delete any pendingmatch for this SOR/sorId      
-      render(status : 200, text : "success fully created "+person.referenceId);
+      render(status : 200, text : "Success: for "+person.referenceId);
     }
 
 

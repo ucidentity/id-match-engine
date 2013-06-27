@@ -41,7 +41,7 @@ class PendingMatchController {
         if(!params.id) render (status : 400, text : http400Message );
         def p =  pendingMatchService.get(params.id);
         if(p == null){ render(status : 404, text : http404Message ); return; }
-        log.debug("pendingMatch returned has candidates -> ${p.candidates} and sorPerson -> ${p.sorPerson}");
+        log.debug("Exit: show with ${p.toString()}");
         render(status : 300, text : p as JSON);
     }
 
@@ -62,7 +62,7 @@ class PendingMatchController {
       def p = pendingMatchService.createOrUpdate(jsonDataMap);
       if(p == null){ render(status : 400, text: "Create/Update Failed"); return;
       }
-      render(status : 200, text : "Request Successful for ${p.id}");
+      render(status : 200, text : "Success: for ${p.id}");
     }
    
 }

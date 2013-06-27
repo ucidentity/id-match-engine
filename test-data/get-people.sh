@@ -1,6 +1,6 @@
 #!/bin/sh
-#HOST=http://localhost:8080/dolphin/v1/people
-HOST=http://idmatch-t1.calnet.berkeley.edu/dolphin/v1/people
+HOST=http://localhost:8080/dolphin/v1/people
+#HOST=http://idmatch-t1.calnet.berkeley.edu/dolphin/v1/people
 
 SOR=$1
 sorId=$2
